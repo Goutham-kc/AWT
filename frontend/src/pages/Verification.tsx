@@ -36,10 +36,10 @@ export const Verification: React.FC = () => {
         throw new Error(data.message || 'OTP Verification failed');
       }
 
-      setSuccessMsg(`${data.message} Redirecting to login...`);
+      setSuccessMsg(`${data.message} Redirecting...`);
       setTimeout(() => {
         navigate('/marketplace');
-      }, 3000);
+      }, 1500);
     } catch (err: any) {
       setErrorMsg(err.message || 'Verification failed');
     } finally {

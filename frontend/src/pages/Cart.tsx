@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export const Cart: React.FC = () => {
-  const { cart, user, token, removeFromCart, clearCart, updateUserCredits } = useApp();
+  const { cart, user, token, removeFromCart, updateUserCredits } = useApp();
   const navigate = useNavigate();
 
   const [useReferralCredits, setUseReferralCredits] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'validating' | 'processing'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   // Cart summary calculations
@@ -25,44 +25,74 @@ export const Cart: React.FC = () => {
 
   const handleCheckout = async () => {
     if (!token) return;
-    setLoading(true);
+    setCheckoutStatus('validating');
     setErrorMsg('');
 
     try {
-      // Loop checkout for all items in the cart
+      const validateRes = await fetch('/api/bookings/cart/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ items: cart })
+      });
+      const validateData = await validateRes.json();
+      if (!validateData.valid) {
+        throw new Error(validateData.errors ? validateData.errors.join(', ') : 'Cart validation failed');
+      }
+
+      setCheckoutStatus('processing');
+      let isFirstItem = true;
+      const successfulListings: string[] = [];
+      let lastError = '';
+
       for (const item of cart) {
-        const res = await fetch('/api/bookings/request', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            listingId: item.listingId,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            useReferralCredits: useReferralCredits
-          })
-        });
-        const data = await res.json();
-        
-        if (!res.ok) {
-          throw new Error(data.message || 'Failed to request booking');
+        try {
+          const res = await fetch('/api/bookings/request', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              listingId: item.listingId,
+              startDate: item.startDate,
+              endDate: item.endDate,
+              useReferralCredits: isFirstItem ? useReferralCredits : false
+            })
+          });
+          const data = await res.json();
+          
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to request booking');
+          }
+          successfulListings.push(item.listingId);
+          isFirstItem = false;
+        } catch (itemErr: any) {
+          lastError = itemErr.message || 'Failed to request booking for some items';
+          break; // Stop further processing if one fails
         }
       }
 
-      // Deduct credits locally if used
-      if (useReferralCredits) {
+      // Deduct credits locally if used and at least one booking succeeded
+      if (useReferralCredits && successfulListings.length > 0) {
         updateUserCredits(Math.max(0, userCredits - referralDiscount));
       }
 
-      clearCart();
-      alert('Booking requests sent successfully! Redirecting to messages to coordinate pickup.');
-      navigate('/conversations');
+      // Remove successful items from cart
+      successfulListings.forEach(id => removeFromCart(id));
+
+      if (lastError) {
+        throw new Error(lastError);
+      } else {
+        alert('Booking requests sent successfully! Redirecting to messages to coordinate pickup.');
+        navigate('/conversations');
+      }
     } catch (err: any) {
       setErrorMsg(err.message || 'Checkout failed');
     } finally {
-      setLoading(false);
+      setCheckoutStatus('idle');
     }
   };
 
@@ -181,10 +211,10 @@ export const Cart: React.FC = () => {
 
           <button 
             onClick={handleCheckout}
-            disabled={loading}
+            disabled={checkoutStatus !== 'idle'}
             className="w-full py-2.5 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all disabled:opacity-50"
           >
-            {loading ? 'Processing Checkout...' : 'Request Booking'}
+            {checkoutStatus === 'validating' ? 'Validating...' : checkoutStatus === 'processing' ? 'Processing...' : 'Request Booking'}
           </button>
 
           <p className="text-[11px] text-outline text-center">

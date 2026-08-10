@@ -11,6 +11,7 @@ import { Cart } from './pages/Cart';
 import { Chat } from './pages/Chat';
 import { Referrals } from './pages/Referrals';
 import { Notifications } from './pages/Notifications';
+import CreateListing from './pages/CreateListing';
 
 const App: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const App: React.FC = () => {
             <Route path="/conversations" element={<Chat />} />
             <Route path="/referrals" element={<Referrals />} />
             <Route path="/notifications" element={<Notifications />} />
+            <Route path="/create-listing" element={<CreateListing />} />
           </Routes>
         </div>
       </Router>

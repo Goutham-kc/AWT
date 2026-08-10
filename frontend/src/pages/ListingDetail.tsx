@@ -90,13 +90,10 @@ export const ListingDetail: React.FC = () => {
 
     // Check conflict against blocked dates
     const hasConflict = listing.blockedDates.some(blockedStr => {
-      const bd = new Date(blockedStr);
-      // Strip time
-      bd.setHours(0,0,0,0);
-      const st = new Date(start);
-      st.setHours(0,0,0,0);
-      const en = new Date(end);
-      en.setHours(0,0,0,0);
+      // Compare dates in YYYY-MM-DD format
+      const bd = new Date(blockedStr).toISOString().split('T')[0];
+      const st = new Date(start).toISOString().split('T')[0];
+      const en = new Date(end).toISOString().split('T')[0];
       return bd >= st && bd <= en;
     });
 

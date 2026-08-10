@@ -9,10 +9,12 @@ export const Navbar: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
+    setLoading(true);
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -41,6 +43,8 @@ export const Navbar: React.FC = () => {
       navigate('/marketplace');
     } catch (err: any) {
       setErrorMsg(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -66,6 +70,9 @@ export const Navbar: React.FC = () => {
               </Link>
               <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/referrals">
                 Referrals
+              </Link>
+              <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/create-listing">
+                List an Item
               </Link>
             </>
           )}
@@ -171,9 +178,10 @@ export const Navbar: React.FC = () => {
               
               <button 
                 type="submit" 
-                className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold"
+                disabled={loading}
+                className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50"
               >
-                Log In
+                {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
             

@@ -31,6 +31,7 @@ export const Marketplace: React.FC = () => {
 
   const [listings, setListings] = useState<ListingItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   // Filter States
   const [campus, setCampus] = useState('');
@@ -42,6 +43,7 @@ export const Marketplace: React.FC = () => {
 
   const fetchListings = async () => {
     setLoading(true);
+    setErrorMsg('');
     try {
       const params = new URLSearchParams();
       if (campus) params.append('campus', campus);
@@ -55,9 +57,12 @@ export const Marketplace: React.FC = () => {
       const data = await res.json();
       if (res.ok) {
         setListings(data);
+      } else {
+        setErrorMsg(data.message || 'Failed to fetch listings');
       }
     } catch (err) {
       console.error('Failed to load listings:', err);
+      setErrorMsg('Failed to load listings. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -187,6 +192,18 @@ export const Marketplace: React.FC = () => {
             Search
           </button>
         </form>
+
+        {errorMsg && (
+          <div className="bg-error-container/20 border border-error-red text-error-red p-3 rounded-lg flex items-center justify-between shadow-sm">
+            <span className="font-semibold text-sm">{errorMsg}</span>
+            <button 
+              onClick={() => fetchListings()}
+              className="px-4 py-1.5 bg-error-red text-white text-xs font-bold rounded-md hover:bg-error-red/90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <div className="text-center py-12 text-outline">Loading listings...</div>

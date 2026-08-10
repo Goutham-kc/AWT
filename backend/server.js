@@ -42,13 +42,8 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Serve Static Frontend UI files from project root
-app.use(express.static(path.join(__dirname, '..')));
-
-// Fallback root route to serve marketplace.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'marketplace.html'));
-});
+// Serve Static React Frontend UI files in production
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Mount API Routes
 app.use('/api/auth', authRoutes);
@@ -60,6 +55,11 @@ app.use('/api/referrals', referralRoutes);
 // Health Check Endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Student Rental Hub Backend is running' });
+});
+
+// Fallback wildcard route to serve React app's index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 // Configure Socket.io connections

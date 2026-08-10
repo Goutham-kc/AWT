@@ -31,10 +31,24 @@ const io = new Server(server, {
   }
 });
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Serve Static Frontend UI files from project root
+app.use(express.static(path.join(__dirname, '..')));
+
+// Fallback root route to serve marketplace.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'marketplace.html'));
+});
 
 // Mount API Routes
 app.use('/api/auth', authRoutes);

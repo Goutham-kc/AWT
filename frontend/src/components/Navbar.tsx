@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export const Navbar: React.FC = () => {
-  const { user, token, logout, login, cart } = useApp();
+  const { user, token, logout, login, cart, isLoginOpen, setIsLoginOpen } = useApp();
   const navigate = useNavigate();
 
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -83,6 +82,14 @@ export const Navbar: React.FC = () => {
                   {cart.length}
                 </span>
               )}
+            </Link>
+          )}
+
+          {/* Notifications Icon */}
+          {token && (
+            <Link className="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors group" to="/notifications">
+              <span className="material-symbols-outlined">notifications</span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error-red rounded-full"></span>
             </Link>
           )}
 

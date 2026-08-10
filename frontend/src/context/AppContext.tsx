@@ -27,6 +27,8 @@ interface AppContextType {
   token: string | null;
   user: User | null;
   cart: CartItem[];
+  isLoginOpen: boolean;
+  setIsLoginOpen: (val: boolean) => void;
   login: (token: string, user: User) => void;
   logout: () => void;
   addToCart: (item: CartItem) => void;
@@ -41,6 +43,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [user, setUser] = useState<User | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Load User profile & Cart from LocalStorage on mount
   useEffect(() => {
@@ -131,6 +134,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       token,
       user,
       cart,
+      isLoginOpen,
+      setIsLoginOpen,
       login,
       logout,
       addToCart,

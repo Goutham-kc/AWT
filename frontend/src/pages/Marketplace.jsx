@@ -2,34 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-interface Lister {
-  _id: string;
-  name: string;
-  institution: string;
-  homeCampus: string;
-  isVerified: boolean;
-}
 
-interface ListingItem {
-  _id: string;
-  title: string;
-  description: string;
-  category: string;
-  condition: string;
-  pricePerDay: number;
-  deposit: number;
-  imageUrl: string | null;
-  location: string;
-  campus: string;
-  lister: Lister;
-  allowDirectBooking: boolean;
-  availabilityStatus: string;
-}
 
-export const Marketplace: React.FC = () => {
+export const Marketplace = () => {
   const navigate = useNavigate();
 
-  const [listings, setListings] = useState<ListingItem[]>([]);
+  const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -72,7 +50,7 @@ export const Marketplace: React.FC = () => {
     fetchListings();
   }, [campus, category, onlyAvailable]); // Auto-refresh on campus, category, availability toggles
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetchListings();
   };

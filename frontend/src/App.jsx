@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import { Navbar } from './components/Navbar';
 import { Landing } from './pages/Landing';
@@ -13,7 +13,7 @@ import { Referrals } from './pages/Referrals';
 import { Notifications } from './pages/Notifications';
 import CreateListing from './pages/CreateListing';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <AppProvider>
       <Router>

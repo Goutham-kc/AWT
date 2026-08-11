@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-export const Landing: React.FC = () => {
+export const Landing = () => {
   const navigate = useNavigate();
   const { token, setIsLoginOpen } = useApp();
   const [showBanner, setShowBanner] = useState(true);
@@ -72,7 +72,7 @@ export const Landing: React.FC = () => {
                 onClick={() => navigate('/marketplace')}
                 className="w-full sm:w-auto font-bold px-8 py-3 rounded-full border-2 border-white/50 text-white hover:bg-white/10 hover:border-white transition-all flex items-center justify-center gap-2 active:scale-95 duration-200"
               >
-                Browse as Guest
+                Browse
               </button>
             </div>
           </div>

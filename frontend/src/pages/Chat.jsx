@@ -1,62 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { useApp } from '../context/AppContext';
 
-interface Participant {
-  _id: string;
-  name: string;
-  homeCampus: string;
-}
-
-interface AssociatedListing {
-  _id: string;
-  title: string;
-  pricePerDay: number;
-  imageUrl: string | null;
-}
-
-interface LastMessage {
-  _id: string;
-  content: string;
-  sender: {
-    _id: string;
-    name: string;
-  };
-}
-
-interface Conversation {
-  _id: string;
-  participants: Participant[];
-  associatedListing: AssociatedListing | null;
-  lastMessage: LastMessage | null;
-  updatedAt: string;
-}
-
-interface Message {
-  _id: string;
-  conversation: string;
-  sender: {
-    _id: string;
-    name: string;
-  };
-  content: string;
-  type: string;
-  metadata?: {
-    proposedPrice?: number;
-    meetupLocation?: string;
-    meetupTime?: string;
-  };
-  createdAt: string;
-}
-
-export const Chat: React.FC = () => {
+export const Chat = () => {
   const { token, user } = useApp();
-  const socketRef = useRef<Socket | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const socketRef = useRef(null);
+  const messagesEndRef = useRef(null);
 
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConv, setActiveConv] = useState<Conversation | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [conversations, setConversations] = useState([]);
+  const [activeConv, setActiveConv] = useState(null);
+  const [messages, setMessages] = useState([]);
   
   // Message input state
   const [inputText, setInputText] = useState('');
@@ -101,7 +54,7 @@ export const Chat: React.FC = () => {
     });
 
     // Listen for new incoming messages
-    socket.on('new_message', (msg: Message) => {
+    socket.on('new_message', (msg) => {
       // Append to active message log if conversation matches
       setMessages((prev) => {
         if (prev.length > 0 && prev[0].conversation === msg.conversation) {
@@ -148,27 +101,27 @@ export const Chat: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputText.trim() || !activeConv || !user) return;
 
     socketRef.current?.emit('send_message', {
       conversationId: activeConv._id,
       senderId: user.id,
-      content: inputText,
+      content,
       type: 'text'
     });
 
     setInputText('');
   };
 
-  const handleSendProposal = (e: React.FormEvent) => {
+  const handleSendProposal = (e) => {
     e.preventDefault();
     if (!activeConv || !user) return;
 
     let contentStr = '';
     let type = 'text';
-    let metadata: any = {};
+    let metadata = {};
 
     if (proposedPrice) {
       type = 'price_proposal';
@@ -186,7 +139,7 @@ export const Chat: React.FC = () => {
     socketRef.current?.emit('send_message', {
       conversationId: activeConv._id,
       senderId: user.id,
-      content: contentStr,
+      content,
       type,
       metadata
     });
@@ -198,7 +151,7 @@ export const Chat: React.FC = () => {
     setShowProposal(false);
   };
 
-  const getRecipientName = (conv: Conversation) => {
+  const getRecipientName = (conv) => {
     const peer = conv.participants.find(p => p._id !== user?.id);
     return peer ? peer.name : 'Unknown User';
   };

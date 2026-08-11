@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-export const Navbar: React.FC = () => {
+export const Navbar = () => {
   const { user, token, logout, login, cart, isLoginOpen, setIsLoginOpen } = useApp();
   const navigate = useNavigate();
 
@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setLoading(true);
@@ -41,7 +41,7 @@ export const Navbar: React.FC = () => {
       setEmail('');
       setPassword('');
       navigate('/marketplace');
-    } catch (err: any) {
+    } catch (err) {
       setErrorMsg(err.message || 'Something went wrong');
     } finally {
       setLoading(false);

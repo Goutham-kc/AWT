@@ -1,48 +1,14 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
-export interface CartItem {
-  listingId: string;
-  title: string;
-  pricePerDay: number;
-  deposit: number;
-  startDate: string;
-  endDate: string;
-  days: number;
-  subtotal: number;
-  serviceFee: number;
-  grandTotal: number;
-}
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  institution: string;
-  homeCampus: string;
-  referralCode: string;
-  referralCredits: number;
-}
 
-interface AppContextType {
-  token: string | null;
-  user: User | null;
-  cart: CartItem[];
-  isLoginOpen: boolean;
-  setIsLoginOpen: (val: boolean) => void;
-  login: (token: string, user: User) => void;
-  logout: () => void;
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (listingId: string) => void;
-  clearCart: () => void;
-  updateUserCredits: (credits: number) => void;
-}
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext(undefined);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [user, setUser] = useState<User | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
+export const AppProvider = ({ children }) => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [user, setUser] = useState(null);
+  const [cart, setCart] = useState([]);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   // Load User profile & Cart from LocalStorage on mount
@@ -68,7 +34,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           throw new Error('Session expired');
         })
         .then(userData => {
-          const mappedUser: User = {
+          const mappedUser = {
             id: userData._id,
             name: userData.name,
             email: userData.email,
@@ -88,7 +54,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [token]);
 
-  const login = (newToken: string, newUser: User) => {
+  const login = (newToken, newUser) => {
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem('token', newToken);
@@ -104,13 +70,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem('cart');
   };
 
-  const addToCart = (item: CartItem) => {
+  const addToCart = (item) => {
     const updatedCart = [...cart.filter(i => i.listingId !== item.listingId), item];
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
   };
 
-  const removeFromCart = (listingId: string) => {
+  const removeFromCart = (listingId) => {
     const updatedCart = cart.filter(i => i.listingId !== listingId);
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -121,7 +87,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.removeItem('cart');
   };
 
-  const updateUserCredits = (credits: number) => {
+  const updateUserCredits = (credits) => {
     if (user) {
       const updatedUser = { ...user, referralCredits: credits };
       setUser(updatedUser);

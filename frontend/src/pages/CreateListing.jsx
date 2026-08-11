@@ -34,15 +34,15 @@ export default function CreateListing() {
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+      [name]: type === 'checkbox' ? e.target.checked : value
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -68,7 +68,7 @@ export default function CreateListing() {
       }
 
       navigate(`/listing/${data._id}`);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message || 'Something went wrong');
     } finally {
       setLoading(false);

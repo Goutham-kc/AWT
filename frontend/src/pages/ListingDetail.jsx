@@ -1,39 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import type { CartItem } from '../context/AppContext';
 
-interface Lister {
-  _id: string;
-  name: string;
-  institution: string;
-  homeCampus: string;
-  isVerified: boolean;
-}
 
-interface ListingItem {
-  _id: string;
-  title: string;
-  description: string;
-  category: string;
-  condition: string;
-  pricePerDay: number;
-  deposit: number;
-  imageUrl: string | null;
-  location: string;
-  campus: string;
-  lister: Lister;
-  allowDirectBooking: boolean;
-  availabilityStatus: string;
-  blockedDates: string[];
-}
 
-export const ListingDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+
+export const ListingDetail = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const { token, addToCart } = useApp();
 
-  const [listing, setListing] = useState<ListingItem | null>(null);
+  const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -132,7 +109,7 @@ export const ListingDetail: React.FC = () => {
       return;
     }
 
-    const cartPayload: CartItem = {
+    const cartPayload = {
       listingId: listing._id,
       title: listing.title,
       pricePerDay: listing.pricePerDay,

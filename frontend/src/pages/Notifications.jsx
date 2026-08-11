@@ -2,21 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
 
-interface NotificationItem {
-  id: string;
-  type: 'message' | 'booking' | 'referral' | 'system';
-  title: string;
-  content: string;
-  time: string;
-  unread: boolean;
-  link: string;
-}
 
-export const Notifications: React.FC = () => {
+export const Notifications = () => {
   const { token, user } = useApp();
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<'all' | 'message' | 'booking' | 'referral'>('all');
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [filter, setFilter] = useState('all');
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,15 +19,15 @@ export const Notifications: React.FC = () => {
       }
 
       try {
-        const tempNotifications: NotificationItem[] = [];
+        const tempNotifications = [];
 
-        // 1. Fetch rentals dashboard (Bookings as Renter)
+        // 1. Fetch rentals dashboard (Bookings)
         const resRentals = await fetch('/api/bookings/my-rentals', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const rentals = await resRentals.json();
         if (resRentals.ok && Array.isArray(rentals)) {
-          rentals.forEach((rental: any, idx: number) => {
+          rentals.forEach((rental, idx) => {
             tempNotifications.push({
               id: `rent-${rental._id || idx}`,
               type: 'booking',
@@ -49,13 +40,13 @@ export const Notifications: React.FC = () => {
           });
         }
 
-        // 2. Fetch booking requests received (Bookings as Lister)
+        // 2. Fetch booking requests received (Bookings)
         const resBookings = await fetch('/api/bookings/my-bookings', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const bookings = await resBookings.json();
         if (resBookings.ok && Array.isArray(bookings)) {
-          bookings.forEach((booking: any, idx: number) => {
+          bookings.forEach((booking, idx) => {
             if (booking.status === 'pending') {
               tempNotifications.push({
                 id: `book-${booking._id || idx}`,
@@ -63,7 +54,7 @@ export const Notifications: React.FC = () => {
                 title: 'New Booking Request Received',
                 content: `${booking.renter?.name || 'Classmate'} requested to rent your "${booking.listing?.title || 'Item'}".`,
                 time: new Date(booking.createdAt).toLocaleDateString(),
-                unread: true,
+                unread: false,
                 link: '/conversations'
               });
             }
@@ -76,7 +67,7 @@ export const Notifications: React.FC = () => {
         });
         const referrals = await resReferrals.json();
         if (resReferrals.ok && referrals.invitees && Array.isArray(referrals.invitees)) {
-          referrals.invitees.forEach((invitee: any, idx: number) => {
+          referrals.invitees.forEach((invitee, idx) => {
             tempNotifications.push({
               id: `ref-${idx}`,
               type: 'referral',
@@ -100,7 +91,7 @@ export const Notifications: React.FC = () => {
           link: '/marketplace'
         });
 
-        // Sort notifications: unread first, then normal sequence
+        // Sort notifications, then normal sequence
         tempNotifications.sort((a, b) => (a.unread === b.unread ? 0 : a.unread ? -1 : 1));
         setNotifications(tempNotifications);
       } catch (err) {
@@ -135,7 +126,7 @@ export const Notifications: React.FC = () => {
             onClick={handleMarkAllRead}
             className="font-label-md text-label-md text-primary hover:text-primary-container transition-colors py-2 px-4 rounded-lg bg-white border border-outline-variant hover:bg-surface-container-low self-start md:self-auto font-semibold shadow-sm"
           >
-            Mark all as read
+            Mark all
           </button>
         )}
       </div>
@@ -150,7 +141,7 @@ export const Notifications: React.FC = () => {
         ].map((item) => (
           <button
             key={item.key}
-            onClick={() => setFilter(item.key as any)}
+            onClick={() => setFilter(item.key)}
             className={`px-4 py-2 rounded-full font-label-md text-sm whitespace-nowrap transition-colors ${
               filter === item.key 
                 ? 'bg-primary text-white font-bold shadow-sm' 

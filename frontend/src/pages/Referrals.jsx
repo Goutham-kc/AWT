@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
-interface Invitee {
-  name: string;
-  isVerified: boolean;
-  joinedAt: string;
-}
 
-interface ReferralSummary {
-  referralCode: string | null;
-  referralCredits: number;
-  inviteesCount: number;
-  invitees: Invitee[];
-}
 
-export const Referrals: React.FC = () => {
+export const Referrals = () => {
   const { token } = useApp();
-  const [summary, setSummary] = useState<ReferralSummary | null>(null);
+  const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 

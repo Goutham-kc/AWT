@@ -1,0 +1,493 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Academica Exchange - Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#eeedf7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e8e7f1",
+                    "tertiary-fixed": "#ffdbce",
+                    "on-primary-fixed-variant": "#173bab",
+                    "error": "#ba1a1a",
+                    "secondary": "#006b5f",
+                    "tertiary": "#611e00",
+                    "on-primary-container": "#a8b8ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-variant": "#e3e1eb",
+                    "primary-container": "#1e40af",
+                    "surface-dim": "#dad9e3",
+                    "warning-amber": "#F59E0B",
+                    "on-tertiary-fixed": "#380d00",
+                    "on-surface-variant": "#444653",
+                    "primary-fixed": "#dde1ff",
+                    "tertiary-container": "#872d00",
+                    "on-secondary-fixed": "#00201c",
+                    "outline-variant": "#c4c5d5",
+                    "on-tertiary-container": "#ffa583",
+                    "on-background": "#1a1b22",
+                    "surface-container-highest": "#e3e1eb",
+                    "on-tertiary-fixed-variant": "#802a00",
+                    "surface-bright": "#fbf8ff",
+                    "secondary-fixed": "#71f8e4",
+                    "on-primary-fixed": "#001453",
+                    "on-error-container": "#93000a",
+                    "on-surface": "#1a1b22",
+                    "secondary-fixed-dim": "#4fdbc8",
+                    "primary": "#00288e",
+                    "secondary-container": "#6df5e1",
+                    "inverse-surface": "#2f3037",
+                    "surface-container-low": "#f4f2fc",
+                    "success-green": "#10B981",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "inverse-on-surface": "#f1f0fa",
+                    "campus-tag-bg": "#EFF6FF",
+                    "outline": "#757684",
+                    "error-red": "#EF4444",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#b8c4ff",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "energy-orange": "#F97316",
+                    "on-error": "#ffffff",
+                    "on-secondary-fixed-variant": "#005048",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#006f64",
+                    "background": "#fbf8ff",
+                    "surface": "#fbf8ff",
+                    "surface-tint": "#3755c3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "32px",
+                    "gutter": "16px",
+                    "stack-md": "16px",
+                    "stack-sm": "8px",
+                    "base": "4px",
+                    "container-margin": "24px"
+            },
+            "fontFamily": {
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-sm": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "display-lg-mobile": [
+                            "Plus Jakarta Sans"
+                    ]
+            },
+            "fontSize": {
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-sm": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+        }
+        .listing-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-container-margin py-stack-lg flex flex-col md:flex-row gap-stack-lg">
+<!-- Sidebar Filters -->
+<aside class="w-full md:w-64 flex-shrink-0 space-y-stack-lg">
+<!-- Campus Selector -->
+<div class="bg-surface-container-lowest p-stack-md rounded-xl border border-outline-variant shadow-sm sticky top-[100px]">
+<h3 class="font-label-md text-label-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary">school</span>
+                    Campus Selector
+                </h3>
+<div class="relative">
+<select class="w-full appearance-none bg-surface-container-low border border-outline-variant rounded-lg py-2 pl-3 pr-10 font-body-sm text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer text-on-surface">
+<option selected="" value="my_campus">My Campus (Default)</option>
+<option value="stanford">Stanford University</option>
+<option value="nyu">New York University</option>
+<option value="mit">MIT</option>
+<option value="all">All Campuses</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<!-- Categories -->
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-stack-md border-b border-outline-variant pb-2">Categories</h3>
+<ul class="space-y-2">
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Textbooks</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Electronics</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Dorm Essentials</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" type="checkbox">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Services</span>
+</label>
+</li>
+</ul>
+</div>
+<!-- Price Filter -->
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-stack-md border-b border-outline-variant pb-2">Price (Per Day)</h3>
+<div class="flex items-center gap-2">
+<div class="relative flex-1">
+<span class="absolute left-2 top-1/2 -translate-y-1/2 text-outline font-body-sm">₹</span>
+<input class="w-full pl-6 pr-2 py-1.5 bg-surface-container-lowest border border-outline-variant rounded-md focus:outline-none focus:border-primary font-body-sm text-body-sm" placeholder="Min" type="number">
+</div>
+<span class="text-outline-variant">-</span>
+<div class="relative flex-1">
+<span class="absolute left-2 top-1/2 -translate-y-1/2 text-outline font-body-sm">₹</span>
+<input class="w-full pl-6 pr-2 py-1.5 bg-surface-container-lowest border border-outline-variant rounded-md focus:outline-none focus:border-primary font-body-sm text-body-sm" placeholder="Max" type="number">
+</div>
+</div>
+</div>
+<!-- Duration Filter -->
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-stack-md border-b border-outline-variant pb-2">Rental Duration</h3>
+<ul class="space-y-2">
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" name="duration" type="radio">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Any</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" name="duration" type="radio">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Daily</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" name="duration" type="radio">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Weekly</span>
+</label>
+</li>
+<li class="">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="border-outline-variant text-primary focus:ring-primary cursor-pointer w-4 h-4" name="duration" type="radio">
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Semester</span>
+</label>
+</li>
+</ul>
+</div>
+</aside>
+<!-- Product Grid Area -->
+<div class="flex-1">
+<!-- Sorting / Results Info -->
+<div class="flex justify-between items-center mb-stack-md pb-stack-sm border-b border-outline-variant">
+<p class="font-body-sm text-body-sm text-on-surface-variant">Showing <span class="font-bold text-on-surface">24</span> results in <span class="text-primary font-medium">Textbooks</span></p>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-outline">Sort by:</span>
+<select class="bg-transparent border-none text-on-surface font-label-md text-label-md focus:ring-0 cursor-pointer pr-8 py-1">
+<option>Recommended</option>
+<option>Price: Low to High</option>
+<option>Price: High to Low</option>
+<option>Newest</option>
+</select>
+</div>
+</div>
+<!-- Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="listing-card bg-surface-container-lowest rounded-[16px] overflow-hidden border border-outline-variant transition-all duration-300 flex flex-col group cursor-pointer relative" onclick="window.location.href=\'listing_detail_classic.html\'">
+<!-- Image Area -->
+<div class="relative aspect-[4/3] w-full overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, professional photograph of a thick college biology textbook resting on a modern wooden desk in a well-lit library setting. The textbook cover is partially visible, indicating a high-quality academic resource. Soft natural light highlights the textbook, creating a bright, studious atmosphere consistent with a modern student marketplace platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwY9hrJXdsbIMav5Pt3G581kHNAkQdALxmlNezD_EsVTnSyUt_08fGfdSHPlCbFAIlTymgBkIeu5g_1ldNrKCAgz-n3mDEBPQd_zZAAzoWxtEP_oZ5eIlQn_ai69fx61dpvkhIYZ-wpUrfG_Ca1ozS8ZMmnftXR8YnK5dglXJgypg9-vuQtHqSdvOevPj9GRwLCpQ5K9VKp3dPy_gSF6862EGUtJJ1LXSYVIfkXbvvhOhRJFVXrx0g">
+<div class="absolute top-2 left-2 bg-campus-tag-bg text-primary px-2 py-1 rounded-md font-label-sm text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                            Stanford
+                        </div>
+<button class="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-outline hover:text-error-red hover:bg-white transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">favorite_border</span>
+</button>
+</div>
+<!-- Content Area -->
+<div class="p-stack-md flex-1 flex flex-col">
+<div class="flex justify-between items-start gap-2 mb-1">
+<h4 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">Advanced Molecular Biology, 4th Ed.</h4>
+<span class="font-headline-sm text-headline-sm text-primary whitespace-nowrap">₹12<span class="text-[12px] font-normal text-outline-variant">/d</span></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-sm line-clamp-1">Condition: Like New</p>
+
+</div>
+</div>
+<!-- Card 2 -->
+<div class="listing-card bg-surface-container-lowest rounded-[16px] overflow-hidden border border-outline-variant transition-all duration-300 flex flex-col group cursor-pointer relative" onclick="window.location.href=\'listing_detail_classic.html\'">
+<div class="relative aspect-[4/3] w-full overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-quality product photo of a sleek, modern graphing calculator sitting next to some graph paper on a clean white desk. The lighting is bright and evenly distributed, emphasizing the device's screen and buttons. The aesthetic is academic and tech-oriented, fitting a premium student marketplace design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMTCzdlzdSaNPJBsvjHQMVxBkWZR-q1vH7fy0q068qGMkhCfzAoALrf4ALIMLFTOjK-qdiFLjsw2E4sRen-wk7MhglhIICWJbLUyv3JHO7J_qC-oSnCp53qnwiEt1ESah2v8_6DGMN56cVPk4hQHoMQjX-_vzBv3hdlzvbfgiZVPaq3CRNb9AQ1gWRl4Mheal2mZOoPX5AfQc70OOkfMRJqhGBhl0kPh_ekvGb5tlOFPYSY5mXT-5Q">
+<div class="absolute top-2 left-2 bg-campus-tag-bg text-primary px-2 py-1 rounded-md font-label-sm text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                            NYU
+                        </div>
+</div>
+<div class="p-stack-md flex-1 flex flex-col">
+<div class="flex justify-between items-start gap-2 mb-1">
+<h4 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">TI-84 Plus CE Graphing Calc</h4>
+<span class="font-headline-sm text-headline-sm text-primary whitespace-nowrap">₹5<span class="text-[12px] font-normal text-outline-variant">/d</span></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-sm line-clamp-1">Includes charging cable</p>
+
+</div>
+</div>
+<!-- Card 3 -->
+<div class="listing-card bg-surface-container-lowest rounded-[16px] overflow-hidden border border-outline-variant transition-all duration-300 flex flex-col group cursor-pointer relative" onclick="window.location.href=\'listing_detail_classic.html\'">
+<div class="relative aspect-[4/3] w-full overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A bright, clean image of a noise-canceling over-ear headphone set resting on a minimalist laptop keyboard. The setting suggests a quiet study environment, perhaps a dorm room or library. The lighting is soft and modern, highlighting the premium quality of the electronics, suitable for an academic marketplace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQbYLOP0sDqlcj55BZmV-lt6WaIlxmAv0KMZww0kh-hMoySng1E2CVWTJSoymc1D_p_ZO4ymYZBikiDaXzAdu_TG-DCkolEEHO0Ig7ppNjwUckk-i8BwbqbhiNVk4YvEhkNSu7adnqv4CoXC-pVSwjcXUUMVo6xxeVlu6Xfqds1mZ4wrj3rbXMKfujPHTo8EL7xXRCpJIKN8Xe7kZm0pRANvWxTzmWNFyfJyXtdXrCqE-cOQF5aote">
+<div class="absolute top-2 left-2 bg-campus-tag-bg text-primary px-2 py-1 rounded-md font-label-sm text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                            MIT
+                        </div>
+</div>
+<div class="p-stack-md flex-1 flex flex-col">
+<div class="flex justify-between items-start gap-2 mb-1">
+<h4 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">Sony WH-1000XM4 Headphones</h4>
+<span class="font-headline-sm text-headline-sm text-primary whitespace-nowrap">₹15<span class="text-[12px] font-normal text-outline-variant">/d</span></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-sm line-clamp-1">Perfect for finals week study sessions.</p>
+
+</div>
+</div>
+<!-- Card 4 -->
+<div class="listing-card bg-surface-container-lowest rounded-[16px] overflow-hidden border border-outline-variant transition-all duration-300 flex flex-col group cursor-pointer relative" onclick="window.location.href=\'listing_detail_classic.html\'">
+<div class="relative aspect-[4/3] w-full overflow-hidden bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional photo of a modern, compact mini-fridge situated in a corner of a tidy college dorm room. The fridge is sleek black or silver, catching a gentle sheen from window light. The environment feels organized and collegiate, aligning with a reliable student-to-student rental service aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1Iol5sskEHrE6QOyLnNsdPjyY_ZEE3stmExNRbTfL3H7D3X9hGepptuJkLi1GIKUW58_amGrSHc8t40ATirGJmsi8ZJr5631OTbXw2nanS2nQ7HLlzfpf2_nXulKfOGOA2TodD0vJRFY-JZFfX4Y9A091TtQcRbmm6ApcolFFf2IpEENgY_KoQ52E1y5o4_bmysY-qqwNj6uiwbqO3CzLA3kJVJQ-bmSB6ORZ7O7Lbc6lt4ro9Vf9">
+<div class="absolute top-2 left-2 bg-campus-tag-bg text-primary px-2 py-1 rounded-md font-label-sm text-[10px] flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">location_on</span>
+                            Stanford
+                        </div>
+</div>
+<div class="p-stack-md flex-1 flex flex-col">
+<div class="flex justify-between items-start gap-2 mb-1">
+<h4 class="font-label-md text-label-md text-on-surface font-bold line-clamp-2 leading-tight">Dorm Mini Fridge (3.2 cu ft)</h4>
+<span class="font-headline-sm text-headline-sm text-primary whitespace-nowrap">₹45<span class="text-[12px] font-normal text-outline-variant">/mo</span></span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-sm line-clamp-1">Must be able to pick up from West Campus.</p>
+
+</div>
+</div>
+</div>
+<!-- Load More (Pagination) -->
+<div class="mt-stack-lg flex justify-center">
+<button class="px-6 py-2 border border-outline-variant rounded-full text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors duration-200">
+                    Load More Results
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest border-t border-outline-variant dark:border-outline full-width mt-auto">
+
+</footer>
+
+
+
+<script>
+function updateCartBadge() {
+  const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+  const badges = document.querySelectorAll('a[href="cart.html"] span.bg-error-red');
+  badges.forEach(b => {
+    b.textContent = cart.length;
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateCartBadge();
+  
+  // Attach quick add-to-cart listener
+  const cards = document.querySelectorAll('.listing-card');
+  cards.forEach((card, idx) => {
+    const title = card.querySelector('h4')?.textContent.strip() || `Item ${idx+1}`;
+    const priceText = card.querySelector('span.text-primary')?.textContent || '₹15/d';
+    const img = card.querySelector('img')?.src || '';
+
+    // Add quick cart button if missing
+    let cartBtn = card.querySelector('button.add-cart-btn');
+    if (!cartBtn) {
+      cartBtn = document.createElement('button');
+      cartBtn.className = 'add-cart-btn mt-2 w-full py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg font-label-md text-xs transition-colors flex items-center justify-center gap-1';
+      cartBtn.innerHTML = '<span class="material-symbols-outlined text-sm">shopping_cart</span> Add to Cart';
+      card.querySelector('.p-stack-md')?.appendChild(cartBtn);
+    }
+    
+    cartBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      cart.push({
+        id: 'item_' + Date.now(),
+        title: card.querySelector('h4')?.textContent || 'Rental Item',
+        price: priceText,
+        deposit: '₹100',
+        lister: 'Alex Mercer',
+        campus: 'Stanford University',
+        img: img
+      });
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      updateCartBadge();
+      alert('Added to Cart!');
+    });
+  });
+});
+</script>
+
+</body></html>

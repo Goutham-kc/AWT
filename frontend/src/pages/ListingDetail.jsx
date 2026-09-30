@@ -129,6 +129,40 @@ export const ListingDetail = () => {
     }, 4000);
   };
 
+  const handleMessageLister = async () => {
+    if (!token) {
+      alert('Please log in first to message the listing creator.');
+      return;
+    }
+
+    if (!listing?.lister?._id) {
+      alert('Enquiry messaging is available for registered seller accounts.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/chats/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          recipientId: listing.lister._id,
+          listingId: listing._id
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        navigate('/conversations', { state: { conversationId: data._id } });
+      } else {
+        alert(data.message || 'Failed to start conversation thread');
+      }
+    } catch (err) {
+      alert('Error initiating message conversation');
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-12 text-outline">Loading listing profile...</div>;
   }
@@ -266,18 +300,25 @@ export const ListingDetail = () => {
           <h4 className="font-label-md font-semibold text-on-surface">Listed By</h4>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-lg">
-              {listing.lister.name.charAt(0)}
+              {listing.lister.name ? listing.lister.name.charAt(0) : 'U'}
             </div>
             <div>
               <div className="font-semibold text-on-surface flex items-center gap-1">
-                {listing.lister.name}
+                {listing.lister.name || 'Campus Student'}
                 {listing.lister.isVerified && (
                   <span className="material-symbols-outlined text-success-green text-base">verified</span>
                 )}
               </div>
-              <div className="text-xs text-outline font-semibold">{listing.lister.institution} · {listing.lister.homeCampus}</div>
+              <div className="text-xs text-outline font-semibold">{listing.lister.institution || 'Verified University'} · {listing.lister.homeCampus || listing.campus}</div>
             </div>
           </div>
+
+          <button 
+            onClick={handleMessageLister}
+            className="w-full py-2.5 bg-primary/10 hover:bg-primary hover:text-white text-primary font-bold text-sm rounded-lg transition-colors flex items-center justify-center gap-2 mt-2"
+          >
+            <span className="material-symbols-outlined text-lg">forum</span> Enquire / Message Creator
+          </button>
         </div>
 
       </div>

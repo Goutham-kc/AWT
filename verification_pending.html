@@ -1,0 +1,300 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Verification Pending - Academica Exchange</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "error-red": "#EF4444",
+                        "surface-container-high": "#e8e7f1",
+                        "outline-variant": "#c4c5d5",
+                        "secondary-container": "#6df5e1",
+                        "tertiary": "#611e00",
+                        "inverse-on-surface": "#f1f0fa",
+                        "surface-container-highest": "#e3e1eb",
+                        "on-primary-fixed-variant": "#173bab",
+                        "surface-container-low": "#f4f2fc",
+                        "surface-bright": "#fbf8ff",
+                        "on-primary-container": "#a8b8ff",
+                        "outline": "#757684",
+                        "inverse-surface": "#2f3037",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "secondary-fixed": "#71f8e4",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dad9e3",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "on-tertiary-fixed": "#380d00",
+                        "warning-amber": "#F59E0B",
+                        "surface": "#fbf8ff",
+                        "primary": "#00288e",
+                        "tertiary-container": "#872d00",
+                        "on-surface-variant": "#444653",
+                        "on-background": "#1a1b22",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffa583",
+                        "campus-tag-bg": "#EFF6FF",
+                        "secondary": "#006b5f",
+                        "surface-container": "#eeedf7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#005048",
+                        "error-container": "#ffdad6",
+                        "background": "#fbf8ff",
+                        "primary-container": "#1e40af",
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "success-green": "#10B981",
+                        "inverse-primary": "#b8c4ff",
+                        "energy-orange": "#F97316",
+                        "surface-variant": "#e3e1eb",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#3755c3",
+                        "on-secondary-container": "#006f64",
+                        "primary-fixed": "#dde1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "container-margin": "24px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            80%, 100% { transform: scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center p-container-margin font-body-md">
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- Main Container -->
+<main class="w-full max-w-lg bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] border border-outline-variant p-stack-lg flex flex-col items-center text-center relative overflow-hidden">
+<!-- Decorative Background Element -->
+<div class="absolute top-0 left-0 w-full h-32 bg-campus-tag-bg opacity-50 -z-10 rounded-t-xl pointer-events-none"></div>
+<!-- Icon / Visual Indicator -->
+<div class="relative w-24 h-24 mb-stack-lg flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/10 rounded-full pulse-ring pointer-events-none"></div>
+<div class="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center z-10 shadow-sm">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: &quot;FILL&quot; 1;">mark_email_unread</span>
+</div>
+</div>
+<!-- Typography: Header & Subtitle -->
+<h1 class="font-headline-md text-headline-md text-on-surface mb-stack-sm md:font-display-lg md:text-display-lg">Check your inbox</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg max-w-md">
+            We've sent a verification link to your institutional email.
+        </p>
+<!-- Email Display Box -->
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-stack-md w-full mb-stack-lg flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: &quot;FILL&quot; 1;">school</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">student@university.edu</span>
+</div>
+<!-- Instructions -->
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg max-w-sm">
+            Please click the link in the email to confirm your identity and access Academica Exchange.
+        </p>
+<!-- Actions -->
+<div class="w-full flex flex-col gap-stack-sm">
+<button class="w-full bg-primary text-on-primary hover:bg-primary-container font-label-md text-label-md py-3 px-6 rounded-lg transition-colors duration-200 shadow-sm flex justify-center items-center gap-2">
+<span class="material-symbols-outlined">open_in_new</span>
+                Open Email App
+            </button>
+<!-- Resend Section with Timer -->
+<div class="mt-stack-sm text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2">Didn't receive the email?</p>
+<button class="text-primary hover:text-primary-container font-label-md text-label-md transition-colors disabled:text-outline disabled:cursor-not-allowed flex items-center justify-center gap-1 mx-auto" id="resendBtn" disabled="">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+                    Resend link in <span id="timerText" class="">0:52</span>
+</button>
+</div>
+</div>
+<!-- Support Link -->
+
+</main>
+<!-- Micro-interaction Script for Timer -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const resendBtn = document.getElementById('resendBtn');
+            const timerText = document.getElementById('timerText');
+            let timeLeft = 59;
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                const seconds = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+                timerText.textContent = `0:${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    resendBtn.removeAttribute('disabled');
+                    resendBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">refresh</span> Resend Verification Link';
+                    resendBtn.classList.add('cursor-pointer');
+                }
+            }, 1000);
+
+            resendBtn.addEventListener('click', function() {
+                if (!this.hasAttribute('disabled')) {
+                    // Simulate resend action
+                    this.setAttribute('disabled', 'true');
+                    timeLeft = 59;
+                    this.innerHTML = '<span class="material-symbols-outlined text-[16px]">refresh</span> Resend link in <span id="timerText">0:59</span>';
+                    
+                    // Restart timer logic (simplified for demo)
+                    const newTimerText = document.getElementById('timerText');
+                    const newCountdown = setInterval(() => {
+                        timeLeft--;
+                        const seconds = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+                        if(newTimerText) newTimerText.textContent = `0:${seconds}`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(newCountdown);
+                            this.removeAttribute('disabled');
+                            this.innerHTML = '<span class="material-symbols-outlined text-[16px]">refresh</span> Resend Verification Link';
+                        }
+                    }, 1000);
+                }
+            });
+        });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pendingEmail = localStorage.getItem('pendingEmail') || 'student@university.edu';
+  const mockOTP = localStorage.getItem('mockOTP');
+  
+  // Show target email on page if element exists
+  const emailEls = document.querySelectorAll('p, span');
+  emailEls.forEach(el => {
+    if (el.textContent.includes('@')) {
+      el.textContent = pendingEmail;
+    }
+  });
+
+  const otpInputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+  if (mockOTP && otpInputs.length >= 6) {
+    const digits = mockOTP.split('');
+    otpInputs.forEach((inp, idx) => {
+      if (digits[idx]) inp.value = digits[idx];
+    });
+  }
+
+  const verifyBtn = document.querySelector('button.bg-primary, button[type="submit"]');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      let otpVal = '';
+      otpInputs.forEach(i => otpVal += i.value);
+      if (!otpVal) otpVal = mockOTP || '123456';
+
+      try {
+        const res = await fetch('/api/auth/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: pendingEmail, otp: otpVal })
+        });
+        const data = await res.json();
+        if (data.referralCode) {
+          localStorage.setItem('userReferralCode', data.referralCode);
+        }
+      } catch (err) {
+        console.log('OTP verified locally:', err);
+      }
+      
+      localStorage.setItem('userEmail', pendingEmail);
+      localStorage.setItem('isVerified', 'true');
+      alert('Verification successful! Welcome to Academica Exchange.');
+      window.location.href = 'marketplace.html';
+    });
+  }
+});
+</script>
+
+</body></html>

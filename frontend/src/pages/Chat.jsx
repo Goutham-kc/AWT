@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { useApp } from '../context/AppContext';
 
 export const Chat = () => {
   const { token, user } = useApp();
+  const location = useLocation();
+  const targetConvId = location.state?.conversationId;
+
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
@@ -30,6 +34,13 @@ export const Chat = () => {
       const data = await res.json();
       if (res.ok) {
         setConversations(data);
+        if (targetConvId) {
+          const found = data.find(c => c._id === targetConvId);
+          if (found) setActiveConv(found);
+          else if (data.length > 0) setActiveConv(data[0]);
+        } else if (data.length > 0 && !activeConv) {
+          setActiveConv(data[0]);
+        }
       }
     } catch (err) {
       console.error('Failed to fetch conversations:', err);
@@ -38,7 +49,7 @@ export const Chat = () => {
 
   useEffect(() => {
     fetchConversations();
-  }, [token]);
+  }, [token, targetConvId]);
 
   // Connect Socket.io client
   useEffect(() => {

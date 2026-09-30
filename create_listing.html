@@ -1,0 +1,274 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Academica Exchange - Create Listing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#3d57ba",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb4a2",
+                        "on-tertiary-fixed-variant": "#822610",
+                        "secondary-fixed-dim": "#83d5c6",
+                        "inverse-surface": "#213145",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c5c5d4",
+                        "background": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed": "#00201c",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#7e97fe",
+                        "tertiary-container": "#691401",
+                        "on-primary-fixed": "#001453",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "primary-container": "#00288e",
+                        "primary": "#00175c",
+                        "on-primary-fixed-variant": "#213da0",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed": "#9ff2e2",
+                        "secondary-container": "#9cefdf",
+                        "inverse-on-surface": "#eaf1ff",
+                        "outline": "#757684",
+                        "inverse-primary": "#b8c4ff",
+                        "surface": "#f8f9ff",
+                        "on-secondary-container": "#0b6f63",
+                        "on-tertiary-fixed": "#3d0700",
+                        "on-tertiary-container": "#f47a5c",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary": "#440900",
+                        "on-secondary-fixed-variant": "#005047",
+                        "secondary": "#006b5f",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#444652",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdad2",
+                        "surface-container": "#e5eeff",
+                        "primary-fixed-dim": "#b8c4ff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "24px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "margin-desktop": "48px",
+                        "margin-mobile": "16px",
+                        "xl": "32px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "headline-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "label-md": ["14px", { lineHeight: "20px", letterSpacing: "0.05em", fontWeight: "600" }],
+                        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F8FAFC; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md">
+<!-- Top Navigation Bar -->
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="mb-xl">
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Create Rental Listing</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Fill out the details below to list your item on the marketplace.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Form Section -->
+<div class="lg:col-span-2 space-y-lg">
+<!-- Photos Section -->
+<section class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,40,142,0.05)] border border-outline-variant/30">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Photos</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm">
+<div class="aspect-square border-2 border-dashed border-outline-variant rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container-low transition-colors group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary mb-xs">add_a_photo</span>
+<span class="font-label-sm text-label-sm text-outline group-hover:text-primary">Add Photo</span>
+</div>
+<!-- Placeholders for uploaded photos -->
+<div class="aspect-square bg-surface-container-low rounded-lg relative overflow-hidden group">
+<div class="bg-cover bg-center w-full h-full" data-alt="A brightly lit, high-quality photograph of a slightly used university textbook on advanced mathematics, placed on a clean wooden desk. The corporate modern collegiate style is evident with crisp lighting, deep oxford blue accents nearby, and a generally professional, trustworthy light-mode academic aesthetic." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuDjL3fDhV1MA5ibaR1YoWAADRA6KQ-jA6frZuJXE4pbmtbswYXKPYdke6lUXFX5PfmfIYYZ0DxnCgmTWxJWZ4oOaFAH5yZu2XAUQDmvNi9UBQMF2zTlnwHeBchcuQx1MTSk4GOxEZoZ75tA1fQR8kRr_Tb2gr88AEsgFyrSE3BGsxVjRO1O1JpdWvVvxPLU6_JPC_COQK54E-cNV9B4_udQ2EBlc_9-ga08vxidsH2v3ray4-zrpagT1A&quot;);"></div>
+<button class="absolute top-xs right-xs bg-error text-white rounded-full p-xs opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-sm">Add up to 8 photos. The first photo will be the cover.</p>
+</section>
+<!-- Item Details Section -->
+<section class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,40,142,0.05)] border border-outline-variant/30">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Item Details</h2>
+<div class="space-y-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Title</label>
+<input class="w-full border-outline-variant border rounded-DEFAULT px-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest" placeholder="e.g. Introduction to Algorithms, 3rd Edition" type="text">
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Category</label>
+<select class="w-full border-outline-variant border rounded-DEFAULT px-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest text-on-surface">
+<option>Textbooks</option>
+<option>Electronics</option>
+<option>Housing</option>
+<option>Furniture</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Condition</label>
+<select class="w-full border-outline-variant border rounded-DEFAULT px-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest text-on-surface">
+<option>New</option>
+<option>Like New</option>
+<option>Good</option>
+<option>Fair</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Description</label>
+<textarea class="w-full border-outline-variant border rounded-DEFAULT px-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest resize-none" placeholder="Describe the item's condition, features, and reason for renting..." rows="4"></textarea>
+</div>
+</div>
+</section>
+<!-- Pricing & Location -->
+<section class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,40,142,0.05)] border border-outline-variant/30">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Pricing &amp; Location</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Rental Price (₹ per day)</label>
+<div class="relative">
+<span class="absolute left-md top-1/2 transform -translate-y-1/2 text-outline">₹</span>
+<input class="w-full border-outline-variant border rounded-DEFAULT pl-[32px] pr-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest" placeholder="0.00" type="number">
+</div>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Security Deposit (₹)</label>
+<select class="w-full border-outline-variant border rounded-DEFAULT px-md py-sm focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none font-body-md text-body-md bg-surface-container-lowest text-on-surface">
+<option>North Campus Library</option>
+<option>Student Union</option>
+<option>South Campus Dorms</option>
+<option>Off-Campus (Meetup)</option>
+</select><p class="font-body-sm text-body-sm text-outline mt-xs">Security deposits ensure item safety during rental.</p>
+</div>
+<div class="md:col-span-2 mt-md"><label class="block font-label-md text-label-md text-on-surface mb-xs">Pickup Location</label></div></div>
+</section>
+</div>
+<!-- Sticky Summary Sidebar -->
+<div class="lg:col-span-1">
+<div class="sticky top-[100px] bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_20px_rgba(0,40,142,0.05)] border border-outline-variant/30 flex flex-col gap-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-sm">Listing Summary</h3>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary">verified</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Verified Student Account</span>
+</div>
+<div class="bg-surface-container-low p-md rounded-lg">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider mb-xs">Preview</p>
+<p class="font-headline-md text-headline-md text-on-surface truncate">Item Title</p>
+<p class="font-body-lg text-body-lg text-[#F97316] font-semibold mt-xs">₹0.00</p>
+</div>
+<p class="font-body-sm text-body-sm text-outline mt-sm">By posting this listing, you agree to the Academica Exchange community guidelines and terms of service.</p>
+<button class="w-full bg-primary-container text-white rounded-DEFAULT py-sm font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity mt-md flex justify-center items-center gap-sm hover:brightness-110 hover:shadow-md hover:-translate-y-0.5 transition-all">
+                        Publish Listing
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+<button class="w-full bg-transparent text-primary-container border border-primary-container rounded-DEFAULT py-sm font-label-md text-label-md hover:bg-surface-container-low transition-colors mt-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                        Save Draft
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+
+
+
+
+
+
+
+
+
+</body></html>

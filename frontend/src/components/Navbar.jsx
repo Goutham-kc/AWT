@@ -80,17 +80,16 @@ export const Navbar = () => {
 
         {/* Actions */}
         <div className="flex items-center gap-stack-sm ml-gutter">
-          {/* Cart Icon */}
-          {token && (
-            <Link className="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors group" to="/cart">
-              <span className="material-symbols-outlined">shopping_cart</span>
-              {cart.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">
-                  {cart.length}
-                </span>
-              )}
-            </Link>
-          )}
+          {/* Cart Icon & Link */}
+          <Link className="relative px-3 py-1.5 flex items-center gap-1.5 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" to="/cart" title="Your Cart">
+            <span className="material-symbols-outlined text-xl">shopping_cart</span>
+            <span className="font-semibold text-sm">Cart</span>
+            {cart.length > 0 && (
+              <span className="ml-0.5 px-1.5 py-0.2 bg-error-red text-white text-[11px] font-bold rounded-full">
+                {cart.length}
+              </span>
+            )}
+          </Link>
 
           {/* Notifications Icon */}
           {token && (

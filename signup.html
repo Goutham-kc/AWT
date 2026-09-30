@@ -1,0 +1,394 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Academica Exchange - Sign Up</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "error-red": "#EF4444",
+                        "surface-container-high": "#e8e7f1",
+                        "outline-variant": "#c4c5d5",
+                        "secondary-container": "#6df5e1",
+                        "tertiary": "#611e00",
+                        "inverse-on-surface": "#f1f0fa",
+                        "surface-container-highest": "#e3e1eb",
+                        "on-primary-fixed-variant": "#173bab",
+                        "surface-container-low": "#f4f2fc",
+                        "surface-bright": "#fbf8ff",
+                        "on-primary-container": "#a8b8ff",
+                        "outline": "#757684",
+                        "inverse-surface": "#2f3037",
+                        "secondary-fixed-dim": "#4fdbc8",
+                        "secondary-fixed": "#71f8e4",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#dad9e3",
+                        "on-surface": "#1a1b22",
+                        "on-tertiary-fixed-variant": "#802a00",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001453",
+                        "on-tertiary-fixed": "#380d00",
+                        "warning-amber": "#F59E0B",
+                        "surface": "#fbf8ff",
+                        "primary": "#00288e",
+                        "tertiary-container": "#872d00",
+                        "on-surface-variant": "#444653",
+                        "on-background": "#1a1b22",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#b8c4ff",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#ffa583",
+                        "campus-tag-bg": "#EFF6FF",
+                        "secondary": "#006b5f",
+                        "surface-container": "#eeedf7",
+                        "on-secondary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#005048",
+                        "error-container": "#ffdad6",
+                        "background": "#fbf8ff",
+                        "primary-container": "#1e40af",
+                        "tertiary-fixed": "#ffdbce",
+                        "tertiary-fixed-dim": "#ffb59a",
+                        "success-green": "#10B981",
+                        "inverse-primary": "#b8c4ff",
+                        "energy-orange": "#F97316",
+                        "surface-variant": "#e3e1eb",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#3755c3",
+                        "on-secondary-container": "#006f64",
+                        "primary-fixed": "#dde1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "container-margin": "24px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Input Focus Glow */
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2); /* primary-container with opacity */
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col font-body-md antialiased">
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- Note: TopNavBar and Footer are suppressed as this is a linear transactional (Signup) page. -->
+<main class="flex-grow flex items-center justify-center p-container-margin md:p-stack-lg">
+<div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-0 bg-surface-container-lowest rounded-xl shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)] overflow-hidden">
+<!-- Left Side: Visual / Value Prop -->
+<div class="hidden md:flex flex-col relative bg-surface-container-low p-stack-lg justify-between">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-60" data-alt="A vibrant, modern college campus scene bathed in warm morning sunlight. Students are walking across a lush green quad holding textbooks and laptops. The architecture blends classic collegiate brick buildings with sleek modern glass structures. The overall aesthetic is bright, optimistic, and uses a palette of soft institutional blues, verdant greens, and crisp whites to convey a sense of academic community and safety." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAErybtE1T35IVwCglcY3eOhBgZ_KvwA2TY_Npwco6pS7OdQAJD1p9AbSEZ64HTIg41BmKSJZnpJ9KOMUhCZu4iqfZwORXhcyajtSQpyNxvj70GqihnbvXM5ejbiL39GOUKfV_-F_4d419ictfu6S7geyrIKnhlT5PHkBlV6zA_dNp3jYw6bnD4GjqFRASKEINPQuRC8kGOoA6Lj7ftF6gJ837n8THhEqHpWLFXEJE5JU3R6RtXKJPF">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/80 to-transparent"></div>
+</div>
+<div class="relative z-10">
+<a class="inline-flex items-center gap-2 mb-stack-lg" href="/">
+<span class="material-symbols-outlined text-primary fill text-3xl">school</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Academica Exchange</span>
+</a>
+<h2 class="font-display-lg text-display-lg text-on-surface mb-stack-sm">Join the Verified Student Marketplace</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">Buy, sell, and rent safely within your campus community. Exclusive to verified .edu email addresses.</p>
+</div>
+<div class="relative z-10 flex gap-stack-md">
+<!-- Trust Badges -->
+
+
+</div>
+</div>
+<!-- Right Side: Signup Form -->
+<div class="p-stack-lg md:p-12 flex flex-col justify-center relative">
+<!-- Mobile Logo -->
+<div class="md:hidden flex items-center gap-2 mb-stack-lg">
+<span class="material-symbols-outlined text-primary fill text-2xl">school</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">Academica Exchange</span>
+</div>
+<div class="mb-stack-lg">
+<h1 class="font-headline-md text-headline-md text-on-surface md:font-display-lg-mobile md:text-display-lg-mobile mb-2">Create an Account</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Already have an account? <a class="text-primary font-label-md text-label-md hover:underline" href="/login">Log In</a></p>
+</div>
+<form class="space-y-stack-md" id="signupForm" action="verification_pending.html">
+<!-- Full Name -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1" for="fullName">Full Name</label>
+<div class="relative input-glow rounded-lg">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors" id="fullName" placeholder="Jane Doe" required="" type="text">
+</div>
+</div>
+<!-- Institution Dropdown -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1" for="institution">College / Institution</label>
+<div class="relative input-glow rounded-lg">
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary appearance-none transition-colors" id="institution" required="">
+<option disabled="" selected="" value="">Select your institution...</option>
+<option value="state_u">State University</option>
+<option value="tech_inst">Institute of Technology</option>
+<option value="liberal_arts">Liberal Arts College</option>
+<option value="other">Other (Requires manual verification)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-3 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- College Email -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1" for="email">College Email (.edu)</label>
+<div class="relative input-glow rounded-lg">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-4 pr-10 py-3 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors peer" id="email" placeholder="jane.doe@university.edu" required="" type="email">
+<!-- Inline Validation Icons (Controlled via JS) -->
+<div class="absolute right-3 top-3 hidden peer-[.is-valid]:block">
+<span class="material-symbols-outlined text-success-green fill">check_circle</span>
+</div>
+<div class="absolute right-3 top-3 hidden peer-[.is-invalid]:block">
+<span class="material-symbols-outlined text-error-red fill">error</span>
+</div>
+</div>
+<p class="mt-1 font-body-sm text-body-sm text-on-surface-variant" id="emailHint">Must be a valid .edu address to access the marketplace.</p>
+</div>
+<!-- Password Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1" for="password">Password</label>
+<div class="relative input-glow rounded-lg">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" id="password" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1" for="confirmPassword">Confirm Password</label>
+<div class="relative input-glow rounded-lg">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary transition-colors" id="confirmPassword" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+</div>
+<!-- Referral Code -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-1 flex justify-between" for="referral">
+<span class="">Referral Code</span>
+<span class="text-on-surface-variant font-normal">Optional</span>
+</label>
+<div class="relative input-glow rounded-lg">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 font-body-md text-body-md text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors uppercase" id="referral" placeholder="e.g. WELCOME24" type="text">
+</div>
+</div>
+<!-- Submit Button -->
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg hover:bg-primary-container transition-colors duration-200 mt-stack-md flex justify-center items-center gap-2 shadow-sm" type="submit">
+                        Verify Student Status &amp; Sign Up
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+
+</form>
+</div>
+</div>
+</main>
+<!-- Success Toast (Hidden by default) -->
+<div class="fixed bottom-container-margin right-container-margin transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none" id="successToast">
+<div class="bg-surface-container-highest border border-outline-variant rounded-lg shadow-lg p-4 flex items-start gap-3 max-w-sm">
+<span class="material-symbols-outlined text-success-green fill mt-0.5">check_circle</span>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Referral applied</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Credit pending your first rental.</p>
+</div>
+</div>
+</div>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('email');
+            const emailHint = document.getElementById('emailHint');
+            const form = document.getElementById('signupForm');
+            const referralInput = document.getElementById('referral');
+            const toast = document.getElementById('successToast');
+
+            // Inline Email Validation (.edu check)
+            emailInput.addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                
+                // Reset states
+                emailInput.classList.remove('border-error-red', 'border-success-green', 'is-valid', 'is-invalid');
+                emailHint.classList.remove('text-error-red', 'text-success-green');
+                emailHint.textContent = "Must be a valid .edu address to access the marketplace.";
+
+                if (val.length === 0) return;
+
+                if (val.endsWith('.edu') && val.includes('@')) {
+                    emailInput.classList.add('border-success-green', 'is-valid');
+                    emailHint.classList.add('text-success-green');
+                    emailHint.textContent = "Valid institutional email detected.";
+                } else if (val.includes('@') && !val.endsWith('.edu')) {
+                    emailInput.classList.add('border-error-red', 'is-invalid');
+                    emailHint.classList.add('text-error-red');
+                    emailHint.textContent = "Please use a valid .edu email address.";
+                }
+            });
+
+            // Form Submit Simulation
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Simple validation check before showing toast
+                if(!emailInput.value.endsWith('.edu')) {
+                    emailInput.focus();
+                    return;
+                }
+
+                // Show success toast if referral was entered
+                if (referralInput.value.trim().length > 0) {
+                    toast.classList.remove('translate-y-20', 'opacity-0');
+                    toast.classList.add('translate-y-0', 'opacity-100');
+                    
+                    setTimeout(() => {
+                        toast.classList.remove('translate-y-0', 'opacity-100');
+                        toast.classList.add('translate-y-20', 'opacity-0');
+                    }, 4000);
+                } else {
+                    // Simulate standard success redirect (for demo purposes)
+                    alert("Account created successfully (simulation). Redirecting to onboarding...");
+                }
+            });
+        });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  if (!form) return;
+  
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const nameInput = form.querySelector('input[type="text"]');
+    const emailInput = form.querySelector('input[type="email"]');
+    const passwordInputs = form.querySelectorAll('input[type="password"]');
+    const selectInputs = form.querySelectorAll('select');
+    const refInput = form.querySelector('input[placeholder*="OPTIONAL"], input[placeholder*="referral" i]');
+    
+    const name = nameInput ? nameInput.value : 'Student User';
+    const email = emailInput ? emailInput.value : '';
+    const password = passwordInputs[0] ? passwordInputs[0].value : 'password123';
+    const institution = selectInputs[0] ? selectInputs[0].value : 'Stanford University';
+    const homeCampus = selectInputs[1] ? selectInputs[1].value : 'Main Campus';
+    const referredBy = refInput ? refInput.value : '';
+
+    if (!email) {
+      alert('Please enter your college email.');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, institution, homeCampus, referredBy })
+      });
+      const data = await res.json();
+      
+      localStorage.setItem('pendingEmail', email);
+      if (data.otp) {
+        localStorage.setItem('mockOTP', data.otp);
+      }
+      
+      window.location.href = 'verification_pending.html';
+    } catch (err) {
+      console.warn('Backend unavailable, proceeding with mock verification flow:', err);
+      localStorage.setItem('pendingEmail', email);
+      localStorage.setItem('mockOTP', '123456');
+      window.location.href = 'verification_pending.html';
+    }
+  });
+});
+</script>
+
+</body></html>

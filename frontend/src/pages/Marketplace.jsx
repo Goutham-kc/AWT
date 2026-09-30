@@ -62,10 +62,15 @@ const SAMPLE_LISTINGS = [
 
 export const Marketplace = () => {
   const navigate = useNavigate();
-  const { addToCart } = useApp();
+  const { addToCart, token } = useApp();
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Rental Days Calculator Modal State
+  const [selectedCartItem, setSelectedCartItem] = useState(null);
+  const [rentalDays, setRentalDays] = useState(1);
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
 
   // Filter States
   const [campus, setCampus] = useState('');
@@ -73,6 +78,84 @@ export const Marketplace = () => {
   const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
+  // Calculate dynamic pricing attributes
+  const pricePerDay = selectedCartItem ? selectedCartItem.pricePerDay : 0;
+  const deposit = selectedCartItem ? selectedCartItem.deposit : 0;
+  const days = Math.max(1, Number(rentalDays) || 1);
+  const subtotal = pricePerDay * days;
+  const serviceFee = Number((subtotal * 0.05).toFixed(2));
+  const grandTotal = subtotal + deposit + serviceFee;
+
+  const calculateEndDate = (startStr, numDays) => {
+    const s = new Date(startStr || Date.now());
+    s.setDate(s.getDate() + (numDays - 1));
+    return s.toISOString().split('T')[0];
+  };
+
+  const handleConfirmAddToCart = () => {
+    if (!selectedCartItem) return;
+    if (!token) {
+      alert('Please log in first to rent items.');
+      setSelectedCartItem(null);
+      return;
+    }
+
+    const calculatedEndDate = calculateEndDate(startDate, days);
+
+    addToCart({
+      listingId: selectedCartItem._id,
+      title: selectedCartItem.title,
+      pricePerDay,
+      deposit,
+      startDate,
+      endDate: calculatedEndDate,
+      days,
+      subtotal,
+      serviceFee,
+      grandTotal,
+      campus: selectedCartItem.campus
+    });
+
+    alert(`Added "${selectedCartItem.title}" to Cart for ${days} day(s) (Total: ₹${grandTotal})!`);
+    setSelectedCartItem(null);
+  };
+
+  const handleMessageSeller = async (e, item) => {
+    e.stopPropagation();
+    if (!token) {
+      alert('Please log in first to message the seller.');
+      return;
+    }
+
+    const recipientId = item.lister?._id;
+    if (!recipientId) {
+      navigate('/conversations');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/chats/conversations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          recipientId,
+          listingId: item._id
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        navigate('/conversations', { state: { conversationId: data._id } });
+      } else {
+        alert(data.message || 'Failed to start conversation thread');
+      }
+    } catch (err) {
+      alert('Error initiating message conversation');
+    }
+  };
 
   const fetchListings = async () => {
     setLoading(true);
@@ -271,16 +354,24 @@ export const Marketplace = () => {
                       <span className="text-lg font-bold text-primary">₹{item.pricePerDay}</span>
                       <span className="text-[11px] text-outline"> / day</span>
                     </div>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        addToCart({ listingId: item._id, title: item.title, pricePerDay: item.pricePerDay, deposit: item.deposit, campus: item.campus });
-                        alert(`Added "${item.title}" to Cart!`);
-                      }}
-                      className="px-3 py-1 bg-primary/10 hover:bg-primary hover:text-white text-primary text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
-                    >
-                      <span className="material-symbols-outlined text-sm">shopping_cart</span> Add
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button 
+                        onClick={(e) => handleMessageSeller(e, item)}
+                        className="px-2.5 py-1 bg-surface-container-low hover:bg-primary/10 text-on-surface-variant hover:text-primary text-xs font-semibold rounded-lg transition-colors flex items-center gap-1 border border-outline-variant"
+                        title="Message seller to enquire directly"
+                      >
+                        <span className="material-symbols-outlined text-sm">forum</span> Enquire
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedCartItem(item);
+                        }}
+                        className="px-3 py-1 bg-primary/10 hover:bg-primary hover:text-white text-primary text-xs font-bold rounded-lg transition-colors flex items-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-sm">shopping_cart</span> Add
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -288,6 +379,92 @@ export const Marketplace = () => {
           </div>
         )}
       </div>
+
+      {/* Days & Cost Calculator Modal */}
+      {selectedCartItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl border border-outline-variant shadow-lg max-w-md w-full p-6 relative">
+            <button 
+              onClick={() => setSelectedCartItem(null)} 
+              className="absolute top-4 right-4 text-outline hover:text-on-surface"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            
+            <h2 className="font-headline text-xl font-bold text-primary mb-1">Configure Rental Duration</h2>
+            <p className="text-xs text-on-surface-variant mb-4 font-semibold">Item: {selectedCartItem.title}</p>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-on-surface mb-1">Rental Start Date</label>
+                <input 
+                  type="date" 
+                  value={startDate}
+                  min={new Date().toISOString().split('T')[0]}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-outline-variant rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-on-surface mb-1">Number of Days Needed</label>
+                <div className="flex items-center gap-2">
+                  <input 
+                    type="number" 
+                    min="1"
+                    max="180"
+                    value={rentalDays}
+                    onChange={(e) => setRentalDays(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-full px-3 py-2 border border-outline-variant rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary font-bold"
+                  />
+                  <span className="text-xs text-outline font-bold whitespace-nowrap">days</span>
+                </div>
+              </div>
+
+              {/* Dynamic Cost Breakdown */}
+              <div className="bg-surface-container-low p-4 rounded-lg border border-outline-variant space-y-2 text-xs">
+                <h4 className="font-bold text-on-surface text-sm border-b border-outline-variant pb-1">Calculated Cost Breakdown</h4>
+                <div className="flex justify-between text-on-surface-variant">
+                  <span>Daily Rate</span>
+                  <span>₹{pricePerDay} / day</span>
+                </div>
+                <div className="flex justify-between text-on-surface-variant">
+                  <span>Duration Subtotal ({days} day{days > 1 ? 's' : ''})</span>
+                  <span>₹{subtotal}</span>
+                </div>
+                <div className="flex justify-between text-on-surface-variant">
+                  <span>Security Deposit (Refundable)</span>
+                  <span>₹{deposit}</span>
+                </div>
+                <div className="flex justify-between text-on-surface-variant">
+                  <span>Campus Service Fee (5%)</span>
+                  <span>₹{serviceFee}</span>
+                </div>
+                <div className="flex justify-between border-t border-outline-variant pt-2 font-bold text-primary text-sm">
+                  <span>Grand Total</span>
+                  <span>₹{grandTotal}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button 
+                  onClick={() => setSelectedCartItem(null)}
+                  className="w-1/2 py-2 border border-outline text-on-surface rounded-lg font-bold text-sm hover:bg-surface-container-low"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={handleConfirmAddToCart}
+                  className="w-1/2 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:bg-primary-container shadow-sm"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

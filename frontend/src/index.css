@@ -1,13 +1,50 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
 
-@layer base {
-  body {
-    @apply bg-surface text-on-surface font-sans antialiased min-h-screen flex flex-col;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-headline;
-  }
+@theme {
+  --color-primary: #00288e;
+  --color-primary-container: #1e40af;
+  --color-primary-fixed: #dde1ff;
+  --color-primary-fixed-dim: #b8c4ff;
+  
+  --color-secondary: #006b5f;
+  --color-secondary-container: #6df5e1;
+
+  --color-surface: #fbf8ff;
+  --color-surface-dim: #dad9e3;
+  --color-surface-bright: #fbf8ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f4f2fc;
+  --color-surface-container: #eeedf7;
+  --color-surface-container-high: #e8e7f1;
+  --color-surface-container-highest: #e3e1eb;
+
+  --color-on-surface: #1a1b22;
+  --color-on-surface-variant: #444653;
+  --color-on-primary: #ffffff;
+
+  --color-outline: #757684;
+  --color-outline-variant: #c4c5d5;
+
+  --color-error-red: #ef4444;
+  --color-success-green: #10b981;
+  --color-energy-orange: #f97316;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-headline: 'Plus Jakarta Sans', system-ui, sans-serif;
+
+  --spacing-gutter: 24px;
+  --spacing-container-margin: 24px;
+  --spacing-stack-lg: 32px;
+  --spacing-stack-md: 16px;
+  --spacing-stack-sm: 8px;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
 }
 
 .listing-card:hover {

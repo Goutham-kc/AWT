@@ -1,0 +1,570 @@
+<!DOCTYPE html><html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Messages - Academica Exchange</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#006f64",
+                    "secondary-container": "#6df5e1",
+                    "success-green": "#10B981",
+                    "primary-fixed": "#dde1ff",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e8e7f1",
+                    "on-secondary-fixed-variant": "#005048",
+                    "campus-tag-bg": "#EFF6FF",
+                    "primary": "#00288e",
+                    "tertiary-fixed-dim": "#ffb59a",
+                    "on-primary-container": "#a8b8ff",
+                    "on-secondary-fixed": "#00201c",
+                    "surface-container": "#eeedf7",
+                    "secondary": "#006b5f",
+                    "on-background": "#1a1b22",
+                    "surface-container-low": "#f4f2fc",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#001453",
+                    "on-error": "#ffffff",
+                    "primary-container": "#1e40af",
+                    "error-red": "#EF4444",
+                    "inverse-on-surface": "#f1f0fa",
+                    "tertiary-container": "#872d00",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffdbce",
+                    "on-surface-variant": "#444653",
+                    "surface-tint": "#3755c3",
+                    "inverse-surface": "#2f3037",
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e3e1eb",
+                    "on-surface": "#1a1b22",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed-variant": "#173bab",
+                    "on-tertiary-fixed-variant": "#802a00",
+                    "secondary-fixed-dim": "#4fdbc8",
+                    "primary-fixed-dim": "#b8c4ff",
+                    "background": "#fbf8ff",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c4c5d5",
+                    "surface": "#fbf8ff",
+                    "surface-bright": "#fbf8ff",
+                    "energy-orange": "#F97316",
+                    "tertiary": "#611e00",
+                    "on-tertiary-fixed": "#380d00",
+                    "on-tertiary-container": "#ffa583",
+                    "inverse-primary": "#b8c4ff",
+                    "secondary-fixed": "#71f8e4",
+                    "on-primary": "#ffffff",
+                    "outline": "#757684",
+                    "surface-dim": "#dad9e3",
+                    "surface-variant": "#e3e1eb",
+                    "warning-amber": "#F59E0B"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "stack-lg": "32px",
+                    "base": "4px",
+                    "container-margin": "24px",
+                    "gutter": "16px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "display-lg-mobile": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "body-md": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "label-md": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "headline-sm": [
+                            "Plus Jakarta Sans"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "display-lg-mobile": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.02em",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "body-md": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "display-lg": [
+                            "48px",
+                            {
+                                    "lineHeight": "56px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "label-md": [
+                            "14px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.01em",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-sm": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "body-lg": [
+                            "18px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+    },
+        },
+      }
+    </script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body class="bg-surface h-screen flex flex-col font-body-md text-on-surface antialiased overflow-hidden selection:bg-primary-container selection:text-on-primary">
+<!-- Top Navigation (Shared Component Shell) -->
+<!-- Suppressed active state logic as this is a specific message interface, but we render the shell as it's a top-level feature (messaging) -->
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center bg-surface-container-low text-primary" title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- Main Messaging Interface -->
+<main class="flex-1 flex overflow-hidden w-full max-w-7xl mx-auto bg-surface relative">
+<!-- Left Sidebar: Conversation List -->
+<aside class="w-full md:w-[380px] flex-shrink-0 flex flex-col border-r border-outline-variant bg-surface h-full absolute md:relative z-20 md:z-auto transition-transform duration-300 transform md:translate-x-0 bg-surface">
+<!-- Sidebar Header -->
+<div class="px-container-margin py-stack-md border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-10 flex flex-col gap-stack-sm">
+<div class="flex justify-between items-center">
+<h1 class="font-headline-sm text-headline-sm text-on-surface">Messages</h1>
+<button aria-label="New Message" class="p-1 rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[20px]">edit_square</span>
+</button>
+</div>
+<!-- Search Input -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="w-full pl-9 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-body-sm text-on-surface placeholder-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm" placeholder="Search conversations..." type="text">
+</div>
+</div>
+<!-- Conversation List Scrollable Area -->
+<div class="flex-1 overflow-y-auto overscroll-contain">
+<!-- Active Conversation Item -->
+<button class="w-full text-left p-container-margin border-b border-outline-variant bg-surface-container-low hover:bg-surface-container transition-colors flex gap-stack-md items-start group focus:outline-none focus:bg-surface-container">
+<div class="relative flex-shrink-0">
+<img class="w-12 h-12 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A close up portrait of a young male college student smiling warmly in a bright campus quad on a sunny day. He is wearing a blue t-shirt and has short neat hair. The style is modern, approachable, and well-lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYQvFL6q_3BRKKGIKm2tEVkP3Cahr4vTxuQNAE-dMt-Fr3q_Fehax0kUCXzTtX5kDDFJHw6UtrWiJhCQswj3B_LCembkZyC2V4BzMkeGjnegqOU3hXkNOmHrH-KAYIvCv-RtdG8coqPGMPafcIEELjyfNjoTR-AFTJ-N3k-jGHgLwOqEdzw8QViymykGziEODraEqJJFe4DwX9naPCMDLw_IcXk9L_jN8f7E_nIaJw24w3SK3DUD04">
+<!-- Presence Indicator -->
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-success-green rounded-full border-2 border-surface-container-low group-hover:border-surface-container transition-colors"></div>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<div class="flex items-center gap-1 min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Alex Mercer</span>
+<span aria-label="Verified" class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex-shrink-0 ml-2">10:42 AM</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm bg-campus-tag-bg text-primary px-2 py-0.5 rounded-full inline-block truncate max-w-[120px]">Stanford Univ.</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate pr-4">Sounds good! I can meet you by the library at 2 PM.</p>
+</div>
+<!-- Listing Thumbnail Preview -->
+<div class="flex-shrink-0 pt-1">
+<img class="w-10 h-10 rounded object-cover shadow-sm border border-outline-variant" data-alt="A sleek black Specialized Tarmac SL7 road bike leaning against a brick wall on a sunny college campus. The image is a clear, well-lit product shot suitable for a marketplace listing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa05kvkqH05S7QjFhZ19drOjVHf9Eejj_WfnRR_-rGLsCJxbyTRfokZg713_ZRN7qXHxJzYv-33bu_Rm5IwWEyAVmNaSRB2IyqJ8aNTQO23GlQfjMbN5tFvt_zVdGBQWoIYW9pNGQISjpVpJPrvDhVFdNTQI6OISkiYzt2ohTdXmV4cILtzPHGyO9XI6ExMMuwK80xOblSvqwfj6YCcPYuDTo7JUp_SsZn6LhVhQ_dZ-44bBjvoqPp">
+</div>
+</button>
+<!-- Inactive Conversation Item 1 -->
+<button class="w-full text-left p-container-margin border-b border-outline-variant bg-surface hover:bg-surface-container-lowest transition-colors flex gap-stack-md items-start group focus:outline-none">
+<div class="relative flex-shrink-0">
+<img class="w-12 h-12 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A portrait of a young female college student with glasses, smiling slightly while studying in a modern, well-lit campus library. She wears a casual grey hoodie. The lighting is soft and natural." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtqwc_2jWIx0yXtrQQMf4LGsV3S7IoSRimG4pzu7qupd2UI4154nZXxxABRcSgNklRUOGs9JdYQZhNlbermL3KJgl4hUA74TgAd1-NEGShPczlSV9OIbsCg7rtsFdkDMxrIm22_U2GC-LQmDeHM9ibkBi7yZJSULiXmYNjdZ2Oyttz9hBBS89yqA6ldx7rDbNohShy00xcNx8X5lls6NaVI1szX_s7L4DJ-n1YghwHHmoDUv0Dd2D-">
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<div class="flex items-center gap-1 min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Sarah Jenkins</span>
+<span aria-label="Verified" class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex-shrink-0 ml-2">Yesterday</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded-full inline-block truncate max-w-[120px]">UC Berkeley</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate pr-4">Is the textbook still available for the semester?</p>
+</div>
+<!-- Unread Badge -->
+<div class="flex-shrink-0 pt-2 flex flex-col items-end gap-1">
+<img class="w-10 h-10 rounded object-cover shadow-sm border border-outline-variant opacity-70" data-alt="A thick college textbook titled 'Advanced Calculus' sitting on a wooden desk. Bright, clean lighting, typical of a marketplace product photo." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrtEliOu6TIAh5goqK0Y0sirX3Ov15ZzhMCEMFbxvZCXZjbp6ErHvZGjIzToxQ33CATEQRRAtkeUt4v4Qyjh3lGBJMLtCg6lUtt8tGW5GUcm0s6osNGDECi4pQ0WqyUBh0PGPz1_2bxbPMlm4-jMneaM-rJteSmu8r-OdjssIAgbgFBGTNKTsDb1BpWj6tI52c6sKm1gtx_-NReDBhVKQLVK6hqhfZ_xRDwEmDdimuuUy4naWWynNp">
+<span class="bg-energy-orange text-on-error font-label-sm text-[10px] w-5 h-5 flex items-center justify-center rounded-full absolute right-container-margin top-1/2 -translate-y-1/2 shadow-sm">1</span>
+</div>
+</button>
+<!-- Inactive Conversation Item 2 -->
+<button class="w-full text-left p-container-margin border-b border-outline-variant bg-surface hover:bg-surface-container-lowest transition-colors flex gap-stack-md items-start group focus:outline-none">
+<div class="relative flex-shrink-0">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant font-headline-sm border border-outline-variant">
+                            MR
+                        </div>
+</div>
+<div class="flex-1 min-w-0 flex flex-col gap-1">
+<div class="flex justify-between items-baseline">
+<div class="flex items-center gap-1 min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Marcus Reed</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex-shrink-0 ml-2">Oct 12</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-2 py-0.5 rounded-full inline-block truncate max-w-[120px]">Guest</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate pr-4">Thanks again for renting the camera lens, it worked perfectly.</p>
+</div>
+</button>
+</div>
+</aside>
+<!-- Right Main Area: Active Thread View -->
+<section class="flex-1 flex flex-col h-full bg-surface-container-lowest relative z-10 w-full overflow-hidden">
+<!-- Sticky Header: Linked Item & Context -->
+<header class="px-container-margin py-stack-md border-b border-outline-variant bg-surface/90 backdrop-blur-md sticky top-0 z-30 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-stack-md shadow-sm">
+<!-- Mobile Back Button (Visible only on small screens when sidebar is hidden) -->
+<button aria-label="Back to messages" class="md:hidden flex items-center gap-1 text-on-surface-variant hover:text-primary mb-2 sm:mb-0 focus:outline-none">
+<span class="material-symbols-outlined text-[20px]">arrow_back_ios</span>
+<span class="font-label-md text-label-md">Back</span>
+</button>
+<!-- Contextual Info -->
+<div class="flex items-center gap-stack-md min-w-0 w-full sm:w-auto">
+<img class="w-16 h-16 rounded-lg object-cover shadow-sm border border-outline-variant hidden sm:block" data-alt="A sleek black Specialized Tarmac SL7 road bike leaning against a brick wall on a sunny college campus. The image is a clear, well-lit product shot suitable for a marketplace listing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-V-AYsy80LxADue2L9_0543NoJ0a9BlC40Gq0sGE_ajppoh0iv5WeJteYC6kQgeyXcPbO7ce-ee1CcCAYLBCvAUN9Oaz4XCFmRFeOEjpmny9UeNIkGGKRkYF6MYZUm9C-KspkH1ZKfwjs5k3iTQDoDjhqlZuWLxwxTXqbOJR03ckzA6H-X1abYP8IYkGw-WXgUyIiCuwQN3nLpQv2hCijygFdSWT0JpfTCFzon_N5FPeSxmxxGEX3">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Renting</span>
+<span class="font-label-sm text-label-sm bg-success-green/10 text-secondary px-2 py-0.5 rounded-full border border-success-green/20">₹45/day</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate mt-1">Specialized Tarmac SL7 Expert</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-body-sm text-body-sm text-on-surface-variant">with</span>
+<span class="font-label-md text-label-md text-on-surface">Alex Mercer</span>
+<span aria-label="Verified" class="material-symbols-outlined text-[16px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full sm:w-auto font-label-md text-label-md bg-surface-container text-primary border border-outline-variant px-4 py-2 rounded-lg hover:bg-surface-container-low hover:border-primary transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary whitespace-nowrap shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">currency_exchange</span>
+                    Propose New Price
+                </button>
+</header>
+<!-- Scrollable Message Area -->
+<div class="flex-1 overflow-y-auto p-container-margin flex flex-col gap-stack-lg bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNlOGU3ZjEiIGZpbGwtb3BhY2l0eT0iMC41Ii8+PC9zdmc+')] bg-repeat">
+<!-- System Message / Date Divider -->
+<div class="flex justify-center my-2">
+<span class="font-label-sm text-label-sm bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full shadow-sm border border-outline-variant/50">Today, 9:15 AM</span>
+</div>
+<!-- Received Message (Other User) -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl">
+<img class="w-8 h-8 rounded-full object-cover shadow-sm border border-outline-variant flex-shrink-0 hidden sm:block" data-alt="A close up portrait of a young male college student smiling warmly in a bright campus quad on a sunny day. He is wearing a blue t-shirt and has short neat hair. The style is modern, approachable, and well-lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClbCCS63l3w_IpJ8iOmAKhJO0U4j42zTv1x60EtUjUZb6zQ8iL-bP82GN2a2mEB5G7joKYrdYAuWx-btuq9bz7sla0Kbm3h6CvYZCNT7_FRB826HV30FpxL8Pl807VkOuooi01fwfoiUgOkukL7IK4ZR22LIH45mhZ-_l8SC_djXJPHCSJ3GYz8xFPX3Hok2TV4NVzT5onKjOci_LvUT3K7I13F6fguu9paRWp6Uv-HAK1czvmCtwK">
+<div class="flex flex-col gap-1 items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-1 sm:hidden">Alex M.</span>
+<div class="bg-surface border border-outline-variant text-on-surface p-3 rounded-2xl rounded-bl-sm shadow-sm relative group max-w-xl">
+<p class="font-body-md text-body-md whitespace-pre-wrap">Hey! I saw you requested to rent the Tarmac for this weekend. It's available.</p>
+</div>
+<span class="font-label-sm text-[11px] text-on-surface-variant ml-1">9:16 AM</span>
+</div>
+</div>
+<!-- Received Message (Other User - Grouped) -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl mt-[-16px]">
+<div class="w-8 h-8 flex-shrink-0 hidden sm:block"></div> <!-- Spacer for avatar -->
+<div class="flex flex-col gap-1 items-start">
+<div class="bg-surface border border-outline-variant text-on-surface p-3 rounded-2xl shadow-sm relative group max-w-xl">
+<p class="font-body-md text-body-md whitespace-pre-wrap">Just a heads up, the pedals are currently setup for Look Keo cleats. Does that work for you, or do you need me to swap them out for flats?</p>
+</div>
+<span class="font-label-sm text-[11px] text-on-surface-variant ml-1">9:17 AM</span>
+</div>
+</div>
+<!-- Sent Message (Current User) -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl self-end justify-end">
+<div class="flex flex-col gap-1 items-end">
+<div class="bg-primary-container text-on-primary p-3 rounded-2xl rounded-br-sm shadow-sm relative group max-w-xl">
+<p class="font-body-md text-body-md whitespace-pre-wrap">Awesome! Look Keo is perfect, actually. That saves me from bringing my own pedals.</p>
+</div>
+<div class="flex items-center gap-1 mr-1">
+<span class="font-label-sm text-[11px] text-on-surface-variant">10:05 AM</span>
+<span aria-label="Read" class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Sent Message (Current User - Grouped) -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl self-end justify-end mt-[-16px]">
+<div class="flex flex-col gap-1 items-end">
+<div class="bg-primary-container text-on-primary p-3 rounded-2xl shadow-sm relative group max-w-xl">
+<p class="font-body-md text-body-md whitespace-pre-wrap">Where on campus is best for you to meet up for the handoff? I have classes near the Engineering quad until 1 PM.</p>
+</div>
+<div class="flex items-center gap-1 mr-1">
+<span class="font-label-sm text-[11px] text-on-surface-variant">10:08 AM</span>
+<span aria-label="Read" class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Received Message (Other User) -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl">
+<img class="w-8 h-8 rounded-full object-cover shadow-sm border border-outline-variant flex-shrink-0 hidden sm:block" data-alt="A close up portrait of a young male college student smiling warmly in a bright campus quad on a sunny day. He is wearing a blue t-shirt and has short neat hair. The style is modern, approachable, and well-lit." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZTuFGEpDis4KmPQ6mtB_rBkQC0nN3-jQMDBDs0uKF7gpXwDQ5GtylFTDoYhfqqj4sHil8Qtxr9cdhvcLX6VRmDN5YazDrLoNpYgkPx49lbMrpe1VYETMHl7n5bbjoBRXG7t8YiMyKjsXMhsVJEjF9RGWcWwhKgNj9ue3FtVhVjhwNc7TBYEwyYVeeFiWm4IT_ZeSlglwiR7ckbEqqudTnrck6L95WyYvePK3T06enYWB2x1HESvKd">
+<div class="flex flex-col gap-1 items-start">
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-1 sm:hidden">Alex M.</span>
+<div class="bg-surface border border-outline-variant text-on-surface p-3 rounded-2xl rounded-bl-sm shadow-sm relative group max-w-xl flex flex-col gap-2">
+<p class="font-body-md text-body-md whitespace-pre-wrap">Sounds good! I can meet you by the library at 2 PM.</p>
+<!-- Interactive Card embedded in message -->
+<div class="mt-2 border border-outline-variant rounded-lg p-3 bg-surface-container-lowest flex items-center gap-3 w-full max-w-[280px]">
+<div class="bg-surface-container-high p-2 rounded-md text-primary">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-md text-label-md text-on-surface truncate">Main Campus Library</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">North Entrance</span>
+</div>
+</div>
+</div>
+<span class="font-label-sm text-[11px] text-on-surface-variant ml-1">10:42 AM</span>
+</div>
+</div>
+<!-- Typing Indicator -->
+<div class="flex items-end gap-stack-sm w-full max-w-3xl opacity-50">
+<div class="w-8 h-8 flex-shrink-0 hidden sm:block"></div>
+<div class="bg-surface border border-outline-variant p-3 rounded-2xl rounded-bl-sm shadow-sm flex items-center gap-1 w-16 h-10">
+<div class="w-1.5 h-1.5 bg-outline rounded-full animate-bounce" style="animation-delay: 0s;"></div>
+<div class="w-1.5 h-1.5 bg-outline rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+<div class="w-1.5 h-1.5 bg-outline rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+</div>
+</div>
+<!-- Spacer to ensure last message isn't hidden behind input -->
+<div class="h-4"></div>
+</div>
+<!-- Bottom: Message Input Area -->
+<div class="bg-surface border-t border-outline-variant p-container-margin flex flex-col gap-stack-sm shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.05)] z-20">
+<!-- Quick Actions (Bento-style pills) -->
+<div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex-shrink-0 font-label-sm text-label-sm bg-surface-container text-on-surface-variant border border-outline-variant px-3 py-1.5 rounded-full hover:bg-surface-container-high hover:text-primary transition-colors focus:outline-none focus:border-primary flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                        Propose Meetup
+                    </button>
+<button class="flex-shrink-0 font-label-sm text-label-sm bg-surface-container text-on-surface-variant border border-outline-variant px-3 py-1.5 rounded-full hover:bg-surface-container-high hover:text-primary transition-colors focus:outline-none focus:border-primary flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">pin_drop</span>
+                        Share Location
+                    </button>
+<button class="flex-shrink-0 font-label-sm text-label-sm bg-surface-container text-on-surface-variant border border-outline-variant px-3 py-1.5 rounded-full hover:bg-surface-container-high hover:text-primary transition-colors focus:outline-none focus:border-primary flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">shopping_cart</span>
+                        View in Cart
+                    </button>
+</div>
+<!-- Input Field Container -->
+<div class="flex items-end gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-2 shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+<button aria-label="Add attachment" class="p-2 text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low rounded-lg focus:outline-none focus:ring-2 focus:ring-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">add_circle</span>
+</button>
+<textarea class="flex-1 max-h-32 min-h-[44px] bg-transparent border-none focus:ring-0 resize-none py-3 font-body-md text-body-md text-on-surface placeholder-outline" placeholder="Type a message..." rows="1" style="height: 44px; overflow-y: hidden;"></textarea>
+<button aria-label="Send message" class="p-2 bg-primary-container text-on-primary rounded-lg hover:bg-primary transition-all active:scale-95 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+<div class="text-center w-full">
+<span class="font-label-sm text-[10px] text-outline text-center">Press Enter to send, Shift+Enter for new line.</span>
+</div>
+</div>
+</section>
+</main>
+<style>
+        /* Hide scrollbar for quick actions but allow scrolling */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script>
+        // Simple script to auto-resize textarea
+        const textarea = document.querySelector('textarea');
+        textarea.addEventListener('input', function() {
+            this.style.height = '44px'; // Reset height to recalculate
+            this.style.height = Math.min(this.scrollHeight, 128) + 'px'; // Max height ~32rem
+            if (this.scrollHeight > 128) {
+                this.style.overflowY = 'auto';
+            } else {
+                this.style.overflowY = 'hidden';
+            }
+        });
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let socket;
+  try {
+    socket = io();
+    socket.on('connect', () => {
+      console.log('Real-time Socket.io connected! ID:', socket.id);
+    });
+    
+    socket.on('new_message', (data) => {
+      appendMessageBubble(data.content, false, data.senderName || 'Alex Mercer');
+    });
+  } catch(e) {
+    console.log('Socket.io offline mode:', e);
+  }
+
+  const sendBtn = document.querySelector('button[aria-label="Send message"]');
+  const textarea = document.querySelector('textarea');
+  const msgContainer = document.querySelector('main section div.flex-1.overflow-y-auto');
+
+  function appendMessageBubble(text, isSent, senderName) {
+    if (!msgContainer || !text) return;
+    const bubbleWrapper = document.createElement('div');
+    if (isSent) {
+      bubbleWrapper.className = 'flex items-end gap-stack-sm w-full max-w-3xl self-end justify-end';
+      bubbleWrapper.innerHTML = `
+        <div class="flex flex-col gap-1 items-end">
+          <div class="bg-primary-container text-on-primary p-3 rounded-2xl rounded-br-sm shadow-sm relative group max-w-xl">
+            <p class="font-body-md text-body-md whitespace-pre-wrap">${text}</p>
+          </div>
+          <span class="font-label-sm text-[11px] text-on-surface-variant mr-1">Just now</span>
+        </div>`;
+    } else {
+      bubbleWrapper.className = 'flex items-end gap-stack-sm w-full max-w-3xl';
+      bubbleWrapper.innerHTML = `
+        <div class="flex flex-col gap-1 items-start">
+          <span class="font-label-sm text-label-sm text-on-surface-variant ml-1">${senderName}</span>
+          <div class="bg-surface border border-outline-variant text-on-surface p-3 rounded-2xl rounded-bl-sm shadow-sm relative group max-w-xl">
+            <p class="font-body-md text-body-md whitespace-pre-wrap">${text}</p>
+          </div>
+          <span class="font-label-sm text-[11px] text-on-surface-variant ml-1">Just now</span>
+        </div>`;
+    }
+    msgContainer.appendChild(bubbleWrapper);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+  }
+
+  function handleSend() {
+    if (!textarea) return;
+    const val = textarea.value.trim();
+    if (!val) return;
+    
+    appendMessageBubble(val, true, 'You');
+    textarea.value = '';
+    
+    if (socket && socket.connected) {
+      socket.emit('send_message', { content: val });
+    }
+  }
+
+  if (sendBtn) sendBtn.addEventListener('click', handleSend);
+  if (textarea) {
+    textarea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    });
+  }
+});
+</script>
+
+</body></html>

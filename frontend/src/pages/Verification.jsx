@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-export const Verification: React.FC = () => {
+export const Verification = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { login } = useApp();
@@ -20,7 +20,7 @@ export const Verification: React.FC = () => {
     }
   }, [emailState]);
 
-  const handleVerifyOTP = async (e: React.FormEvent) => {
+  const handleVerifyOTP = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -56,7 +56,7 @@ export const Verification: React.FC = () => {
       setTimeout(() => {
         navigate('/marketplace');
       }, 1500);
-    } catch (err: any) {
+    } catch (err) {
       setErrorMsg(err.message || 'Verification failed');
     } finally {
       setLoading(false);

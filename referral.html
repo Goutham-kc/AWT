@@ -1,0 +1,306 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Academica Exchange - Referral Program</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#3d57ba",
+                        "primary-fixed": "#dde1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb4a2",
+                        "on-tertiary-fixed-variant": "#822610",
+                        "secondary-fixed-dim": "#83d5c6",
+                        "inverse-surface": "#213145",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-error-container": "#93000a",
+                        "outline-variant": "#c5c5d4",
+                        "background": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "on-secondary-fixed": "#00201c",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#7e97fe",
+                        "tertiary-container": "#691401",
+                        "on-primary-fixed": "#001453",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "primary-container": "#00288e",
+                        "primary": "#00175c",
+                        "on-primary-fixed-variant": "#213da0",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed": "#9ff2e2",
+                        "secondary-container": "#9cefdf",
+                        "inverse-on-surface": "#eaf1ff",
+                        "outline": "#757684",
+                        "inverse-primary": "#b8c4ff",
+                        "surface": "#f8f9ff",
+                        "on-secondary-container": "#0b6f63",
+                        "on-tertiary-fixed": "#3d0700",
+                        "on-tertiary-container": "#f47a5c",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary": "#440900",
+                        "on-secondary-fixed-variant": "#005047",
+                        "secondary": "#006b5f",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#444652",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdad2",
+                        "surface-container": "#e5eeff",
+                        "primary-fixed-dim": "#b8c4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "margin-desktop": "48px",
+                        "margin-mobile": "16px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Plus Jakarta Sans"],
+                        "body-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .shadow-soft { box-shadow: 0px 4px 20px rgba(0, 40, 142, 0.05); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<header class="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
+  <div class="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
+    <!-- Brand -->
+    <a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2 hover:opacity-90 transition-opacity" href="marketplace.html">
+      <span class="material-symbols-outlined text-[28px] text-primary">school</span>
+      Academica Exchange
+    </a>
+    <!-- Navigation Links -->
+    <nav class="hidden lg:flex items-center gap-stack-md">
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors" href="marketplace.html">Marketplace</a>
+      <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="create_listing.html">
+        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+        Post Listing
+      </a>
+      <a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1" href="referral.html">
+        <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
+        Referrals
+      </a>
+    </nav>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-stack-sm">
+      <!-- Messages -->
+      <a href="messages.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Messages">
+        <span class="material-symbols-outlined">chat</span>
+        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-primary rounded-full ring-2 ring-surface"></span>
+      </a>
+      <!-- Cart -->
+      <a href="cart.html" class="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center " title="Cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-error-red text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-surface">2</span>
+      </a>
+      <!-- Profile/Login -->
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200">
+        Log In
+      </a>
+      <a href="signup.html" class="hidden md:inline-flex px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm">
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-surface-container-lowest docked full-width top-0 border-b border-outline-variant dark:border-outline flat no shadows sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto h-16">
+<div class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">
+                Academica Exchange
+            </div>
+<div class="hidden md:flex gap-md h-full items-center">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md hover:text-primary dark:hover:text-inverse-primary transition-colors h-full flex items-center px-sm" href="marketplace.html">Marketplace</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md hover:text-primary dark:hover:text-inverse-primary transition-colors h-full flex items-center px-sm" href="#">Messaging</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md hover:text-primary dark:hover:text-inverse-primary transition-colors h-full flex items-center px-sm" href="#">Rentals</a>
+<a class="text-primary dark:text-inverse-primary font-label-md font-bold border-b-2 border-primary dark:border-inverse-primary h-full flex items-center px-sm opacity-80 transition-opacity" href="#">Referrals</a>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="bg-primary-container font-label-md py-sm px-md rounded-full hover:opacity-90 transition-opacity hidden md:block hover:brightness-110 hover:shadow-md hover:-translate-y-0.5 transition-all text-white">post listing</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-xl">
+<div class="mb-xl">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-sm">Refer for Rentals</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Invite your peers to join Academica Exchange. Earn credit for every successful rental they complete on the platform.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter mb-xl">
+<!-- Link Sharing Card -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-soft border border-surface-container-high lg:col-span-2 flex flex-col justify-between">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">Your Referral Link</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-lg">Share this link directly or via social media. When someone signs up and completes their first rental, you both receive a ₹20 campus credit.</p>
+<div class="flex items-center gap-sm mb-lg">
+<div class="flex-grow bg-surface-container border border-outline-variant rounded-md px-md py-sm font-body-md text-on-surface truncate">
+                            https://academica.exchange/ref/jdoe2024
+                        </div>
+<button class="bg-primary-container font-label-md px-md py-sm rounded-md hover:opacity-90 transition-opacity whitespace-nowrap flex items-center gap-xs hover:brightness-110 hover:shadow-md hover:-translate-y-0.5 transition-all text-white">
+<span class="material-symbols-outlined text-sm">content_copy</span> Copy Link
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-sm">
+<button class="flex items-center justify-center gap-xs bg-surface-container border border-outline-variant rounded-md py-sm hover:bg-surface-container-high transition-colors text-on-surface-variant font-label-md hover:shadow-md hover:-translate-y-0.5 transition-all">
+<span class="material-symbols-outlined">mail</span> Email
+                    </button>
+<button class="flex items-center justify-center gap-xs bg-surface-container border border-outline-variant rounded-md py-sm hover:bg-surface-container-high transition-colors text-on-surface-variant font-label-md hover:shadow-md hover:-translate-y-0.5 transition-all">
+<span class="material-symbols-outlined">forum</span> Messages
+                    </button>
+</div>
+</div>
+<!-- Credit Balance Card -->
+<div class="rounded-xl p-lg shadow-soft border border-surface-container-high flex flex-col justify-center items-center text-center bg-primary-container">
+<div class="w-16 h-16 rounded-full bg-white/20 text-white flex items-center justify-center mb-md"><span class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: &quot;FILL&quot; 1;">account_balance_wallet</span></div>
+<h3 class="font-label-md text-label-md text-white uppercase tracking-wider mb-xs">Available Credit</h3>
+<div class="font-display-lg text-display-lg text-white mb-md">₹120.00</div>
+<p class="font-body-sm text-body-sm text-white/80 mb-lg">From 6 successful referrals</p>
+<button class="w-full border border-white text-white font-label-md py-sm rounded-md hover:bg-white hover:text-primary transition-colors hover:shadow-md hover:-translate-y-0.5 transition-all">Redeem Credits</button>
+</div>
+</div>
+<!-- Referral Status Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-soft border border-surface-container-high overflow-hidden">
+<div class="px-lg py-md border-b border-outline-variant bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Recent Referrals</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-bright text-on-surface-variant font-label-sm uppercase tracking-wider">
+<th class="px-lg py-md font-medium">Invitee</th>
+<th class="px-lg py-md font-medium">Date Sent</th>
+<th class="px-lg py-md font-medium">Status</th>
+<th class="px-lg py-md font-medium text-right">Reward</th>
+</tr>
+</thead>
+<tbody class="font-body-sm text-on-surface">
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-sm">AS</div>
+<span class="">Alex Smith</span>
+</td>
+<td class="px-lg py-md text-on-surface-variant">Oct 24, 2024</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm"><span class="material-symbols-outlined text-[14px]">check_circle</span> Completed Rental</span>
+</td>
+<td class="px-lg py-md text-right font-label-md text-secondary">+₹20.00</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-sm">MJ</div>
+<span class="">Maria Johnson</span>
+</td>
+<td class="px-lg py-md text-on-surface-variant">Oct 22, 2024</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-surface-container-highest text-on-surface font-label-sm">
+<span class="material-symbols-outlined text-[14px]">pending</span> Pending Sign-up
+                                </span>
+</td>
+<td class="px-lg py-md text-right font-label-md text-on-surface-variant">--</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-lg py-md flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-label-sm">DK</div>
+<span class="">David Kim</span>
+</td>
+<td class="px-lg py-md text-on-surface-variant">Oct 15, 2024</td>
+<td class="px-lg py-md">
+<span class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-sm"><span class="material-symbols-outlined text-[14px]">check_circle</span> Completed Rental</span>
+</td>
+<td class="px-lg py-md text-right font-label-md text-secondary">+₹20.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Footer -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const code = localStorage.getItem('userReferralCode') || 'ACAD-892';
+  const codeEls = document.querySelectorAll('input[readonly], span.font-mono');
+  codeEls.forEach(el => {
+    if (el.tagName === 'INPUT') el.value = `https://academica.exchange/signup?ref=${code}`;
+    else el.textContent = code;
+  });
+
+  const copyBtns = document.querySelectorAll('button:contains("Copy"), button:has(span:contains("content_copy"))');
+  copyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(`https://academica.exchange/signup?ref=${code}`);
+      alert(`Referral link copied: https://academica.exchange/signup?ref=${code}`);
+    });
+  });
+});
+</script>
+
+</body></html>

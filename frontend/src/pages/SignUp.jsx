@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const SignUp: React.FC = () => {
+export const SignUp = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -12,7 +12,7 @@ export const SignUp: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSignUpSubmit = async (e: React.FormEvent) => {
+  const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setLoading(true);
@@ -38,7 +38,7 @@ export const SignUp: React.FC = () => {
 
       // Successful signup, redirect to verification pending
       navigate('/verify', { state: { email } });
-    } catch (err: any) {
+    } catch (err) {
       setErrorMsg(err.message || 'Something went wrong');
     } finally {
       setLoading(false);

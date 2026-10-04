@@ -4,6 +4,8 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
 
 // Import routes
@@ -26,24 +28,32 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*', // Allow all origins for MVP / local testing convenience
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const frontendDist = path.join(__dirname, '../frontend/dist');
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Serve Static React Frontend UI files in production
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// Legacy .html redirects to React routes
+app.get('/cart.html', (req, res) => res.redirect('/cart'));
+app.get('/marketplace.html', (req, res) => res.redirect('/marketplace'));
+app.get('/messages.html', (req, res) => res.redirect('/conversations'));
+app.get('/create_listing.html', (req, res) => res.redirect('/create-listing'));
+app.get('/referral.html', (req, res) => res.redirect('/referrals'));
+app.get('/signup.html', (req, res) => res.redirect('/signup'));
+app.get('/verification_pending.html', (req, res) => res.redirect('/verify'));
+app.get('/listing_detail_classic.html', (req, res) => res.redirect('/marketplace'));
+
+// Serve Static React Frontend UI files from dist
+app.use(express.static(frontendDist));
 
 // Mount API Routes
 app.use('/api/auth', authRoutes);
@@ -57,9 +67,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'Student Rental Hub Backend is running' });
 });
 
-// Fallback wildcard route to serve React app's index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// Fallback wildcard route to serve React app's index.html for SPA routing
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+    return next();
+  }
+  res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
 // Configure Socket.io connections

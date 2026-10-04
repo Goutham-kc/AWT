@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-export const Cart: React.FC = () => {
+export const Cart = () => {
   const { cart, user, token, removeFromCart, updateUserCredits } = useApp();
   const navigate = useNavigate();
 
   const [useReferralCredits, setUseReferralCredits] = useState(false);
-  const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'validating' | 'processing'>('idle');
+  const [checkoutStatus, setCheckoutStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   // Cart summary calculations
@@ -20,6 +20,40 @@ export const Cart: React.FC = () => {
   const referralDiscount = useReferralCredits 
     ? Math.min(userCredits, subtotalSum, 50) 
     : 0;
+
+  const handleMessageLister = async (listingId) => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    try {
+      const resListing = await fetch(`/api/listings/${listingId}`);
+      if (resListing.ok) {
+        const listingData = await resListing.json();
+        if (listingData?.lister?._id) {
+          const resConv = await fetch('/api/chats/conversations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              recipientId: listingData.lister._id,
+              listingId
+            })
+          });
+          const dataConv = await resConv.json();
+          if (resConv.ok) {
+            navigate('/conversations', { state: { conversationId: dataConv._id } });
+            return;
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Error opening chat from cart:', err);
+    }
+    navigate('/conversations');
+  };
 
   const grandTotal = subtotalSum + depositSum + serviceFeeSum - referralDiscount;
 
@@ -44,7 +78,7 @@ export const Cart: React.FC = () => {
 
       setCheckoutStatus('processing');
       let isFirstItem = true;
-      const successfulListings: string[] = [];
+      const successfulListings = [];
       let lastError = '';
 
       for (const item of cart) {
@@ -69,7 +103,7 @@ export const Cart: React.FC = () => {
           }
           successfulListings.push(item.listingId);
           isFirstItem = false;
-        } catch (itemErr: any) {
+        } catch (itemErr) {
           lastError = itemErr.message || 'Failed to request booking for some items';
           break; // Stop further processing if one fails
         }
@@ -89,7 +123,7 @@ export const Cart: React.FC = () => {
         alert('Booking requests sent successfully! Redirecting to messages to coordinate pickup.');
         navigate('/conversations');
       }
-    } catch (err: any) {
+    } catch (err) {
       setErrorMsg(err.message || 'Checkout failed');
     } finally {
       setCheckoutStatus('idle');
@@ -150,13 +184,22 @@ export const Cart: React.FC = () => {
                   <div className="text-lg font-bold text-primary">{item.subtotal} credits</div>
                 </div>
                 
-                <button 
-                  onClick={() => removeFromCart(item.listingId)} 
-                  className="p-2 text-error-red hover:bg-error-container/10 rounded-full transition-colors"
-                  title="Remove from Cart"
-                >
-                  <span className="material-symbols-outlined">delete</span>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleMessageLister(item.listingId)}
+                    className="p-2 text-primary hover:bg-primary/10 rounded-full transition-colors"
+                    title="Message Lister / Ask Question"
+                  >
+                    <span className="material-symbols-outlined">forum</span>
+                  </button>
+                  <button 
+                    onClick={() => removeFromCart(item.listingId)} 
+                    className="p-2 text-error-red hover:bg-error-container/10 rounded-full transition-colors"
+                    title="Remove from Cart"
+                  >
+                    <span className="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))}

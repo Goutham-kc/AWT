@@ -47,6 +47,43 @@ body {
   margin: 0;
 }
 
+/* Common layout and utility fallbacks */
+.px-container-margin {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .px-container-margin {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .px-container-margin {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.py-stack-lg { padding-top: 2rem; padding-bottom: 2rem; }
+.py-stack-md { padding-top: 1rem; padding-bottom: 1rem; }
+.py-stack-sm { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+.gap-stack-lg { gap: 2rem; }
+.gap-stack-md { gap: 1rem; }
+.gap-stack-sm { gap: 0.5rem; }
+.gap-gutter { gap: 1.5rem; }
+.ml-gutter { margin-left: 1.5rem; }
+.space-y-stack-lg > * + * { margin-top: 2rem; }
+.space-y-stack-md > * + * { margin-top: 1rem; }
+.mb-stack-lg { margin-bottom: 2rem; }
+.font-headline { font-family: var(--font-headline); }
+.font-label-md { font-weight: 600; font-size: 0.875rem; }
+.text-label-md { font-size: 0.875rem; }
+.text-label-sm { font-size: 0.75rem; }
+.font-body-sm { font-size: 0.875rem; }
+.text-body-sm { font-size: 0.875rem; }
+.text-body-lg { font-size: 1.125rem; }
+
 .listing-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);

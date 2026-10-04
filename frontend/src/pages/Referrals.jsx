@@ -42,7 +42,7 @@ export const Referrals = () => {
   }
 
   return (
-    <div className="flex-1 w-full max-w-4xl mx-auto px-container-margin py-stack-lg space-y-stack-lg">
+    <div className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="bg-white p-8 rounded-xl border border-outline-variant shadow-sm text-center max-w-2xl mx-auto space-y-6">
         <div>
           <span className="material-symbols-outlined text-5xl text-primary mb-2">stars</span>
@@ -61,7 +61,7 @@ export const Referrals = () => {
 
             <button 
               onClick={handleCopyLink}
-              className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all"
+              className="w-full py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all cursor-pointer"
             >
               {copied ? 'Copied Link!' : 'Copy Invite Link'}
             </button>

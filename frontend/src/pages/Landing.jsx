@@ -11,7 +11,7 @@ export const Landing = () => {
     <div className="flex-grow flex flex-col">
       {/* Referral Banner */}
       {showBanner && (
-        <div className="bg-primary/10 text-primary px-6 py-2 flex justify-between items-center text-sm border-b border-outline-variant relative z-40">
+        <div className="bg-primary/10 text-primary px-4 sm:px-6 lg:px-8 py-2.5 flex justify-between items-center text-sm border-b border-outline-variant relative z-40">
           <div className="max-w-7xl mx-auto w-full flex justify-between items-center">
             <p className="font-semibold">
               🎁 Invite a classmate, both get 50 credits!{' '}
@@ -20,7 +20,7 @@ export const Landing = () => {
               </Link>
             </p>
             <button 
-              className="text-primary hover:text-primary-container p-1 rounded-full transition-colors" 
+              className="text-primary hover:text-primary-container p-1 rounded-full transition-colors cursor-pointer" 
               onClick={() => setShowBanner(false)}
             >
               <span className="material-symbols-outlined text-[18px]">close</span>
@@ -30,8 +30,8 @@ export const Landing = () => {
       )}
 
       {/* Hero Section */}
-      <section className="relative w-full bg-gradient-to-br from-primary via-primary-container to-primary text-white min-h-[500px] flex items-center py-16 px-6">
-        <div className="relative z-10 max-w-7xl mx-auto w-full text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+      <section className="relative w-full bg-gradient-to-br from-primary via-primary-container to-primary text-white min-h-[500px] flex items-center py-16">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-6 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-semibold">
               <span className="material-symbols-outlined text-[16px]">verified</span>
@@ -86,7 +86,7 @@ export const Landing = () => {
 
       {/* Trust Strip */}
       <section className="border-y border-outline-variant bg-white py-6">
-        <div className="max-w-7xl mx-auto px-6 flex flex-wrap justify-center items-center gap-12 text-on-surface">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-center items-center gap-8 md:gap-12 text-on-surface">
           <div className="flex items-center gap-2 text-sm font-bold">
             <span className="material-symbols-outlined text-primary">mark_email_read</span>
             <span>Verified with your college email</span>
@@ -103,7 +103,7 @@ export const Landing = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 max-w-7xl mx-auto px-6 w-full">
+      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="text-center mb-12 space-y-2">
           <h2 className="font-headline text-3xl font-bold text-on-surface">How It Works</h2>
           <p className="text-on-surface-variant max-w-2xl mx-auto">Three simple steps to join the most trusted campus marketplace.</p>
@@ -147,7 +147,7 @@ export const Landing = () => {
 
       {/* Category Preview */}
       <section className="py-16 bg-surface-container-low w-full">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-end mb-8">
             <div className="space-y-1">
               <h2 className="font-headline text-3xl font-bold text-on-surface">Explore Categories</h2>
@@ -188,7 +188,7 @@ export const Landing = () => {
 
       {/* Footer */}
       <footer className="bg-surface-container py-12 border-t border-outline-variant mt-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center px-6 max-w-7xl mx-auto gap-8 text-sm">
+        <div className="flex flex-col md:flex-row justify-between items-center px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto gap-8 text-sm">
           <div className="text-center md:text-left">
             <div className="font-headline text-lg font-bold text-primary mb-1">Academica Exchange</div>
             <div className="text-on-surface-variant">© 2026 Academica Exchange. All rights reserved.</div>

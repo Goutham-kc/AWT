@@ -180,10 +180,10 @@ export const ListingDetail = () => {
   }
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-container-margin py-stack-lg flex flex-col lg:flex-row gap-stack-lg">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
       
       {/* Left: Media Gallery and Description */}
-      <div className="flex-1 space-y-stack-lg">
+      <div className="flex-1 space-y-6">
         <div className="bg-surface-container-high rounded-xl aspect-[4/3] flex items-center justify-center border border-outline-variant relative overflow-hidden shadow-sm">
           {listing.imageUrl ? (
             <img src={listing.imageUrl} alt={listing.title} className="w-full h-full object-cover" />
@@ -202,8 +202,8 @@ export const ListingDetail = () => {
           </div>
 
           <div className="border-t border-outline-variant pt-4 space-y-2">
-            <h4 className="font-label-md font-semibold text-on-surface">Description</h4>
-            <p className="text-on-surface-variant font-body-sm text-sm whitespace-pre-line leading-relaxed">
+            <h4 className="text-sm font-semibold text-on-surface">Description</h4>
+            <p className="text-on-surface-variant text-sm whitespace-pre-line leading-relaxed">
               {listing.description}
             </p>
           </div>
@@ -216,7 +216,7 @@ export const ListingDetail = () => {
       </div>
 
       {/* Right: Booking Panel & Lister Profile */}
-      <div className="w-full lg:w-96 flex-shrink-0 space-y-stack-lg">
+      <div className="w-full lg:w-96 flex-shrink-0 space-y-6">
         
         {/* Booking Card */}
         <div className="bg-white p-6 rounded-xl border border-outline-variant shadow-sm space-y-4">
@@ -289,7 +289,7 @@ export const ListingDetail = () => {
           <button 
             onClick={handleAddToCart}
             disabled={dateConflict || !startDate || !endDate}
-            className="w-full py-2.5 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
           >
             Add to Cart
           </button>
@@ -297,7 +297,7 @@ export const ListingDetail = () => {
 
         {/* Lister Profile Card */}
         <div className="bg-white p-6 rounded-xl border border-outline-variant shadow-sm space-y-3">
-          <h4 className="font-label-md font-semibold text-on-surface">Listed By</h4>
+          <h4 className="text-sm font-semibold text-on-surface">Listed By</h4>
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-lg">
               {listing.lister.name ? listing.lister.name.charAt(0) : 'U'}

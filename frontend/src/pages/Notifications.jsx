@@ -114,25 +114,25 @@ export const Notifications = () => {
   });
 
   return (
-    <div className="flex-grow w-full max-w-4xl mx-auto px-container-margin py-stack-lg flex flex-col min-h-[500px]">
+    <div className="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col min-h-[500px]">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <h1 className="font-headline text-3xl sm:text-4xl font-bold text-on-surface mb-2">Notifications</h1>
-          <p className="font-body-md text-on-surface-variant">Stay updated on your rentals, messages, and campus activity.</p>
+          <p className="text-on-surface-variant text-sm">Stay updated on your rentals, messages, and campus activity.</p>
         </div>
         
         {notifications.some(n => n.unread) && (
           <button 
             onClick={handleMarkAllRead}
-            className="font-label-md text-label-md text-primary hover:text-primary-container transition-colors py-2 px-4 rounded-lg bg-white border border-outline-variant hover:bg-surface-container-low self-start md:self-auto font-semibold shadow-sm"
+            className="text-sm text-primary hover:text-primary-container transition-colors py-2 px-4 rounded-lg bg-white border border-outline-variant hover:bg-surface-container-low self-start md:self-auto font-semibold shadow-sm cursor-pointer"
           >
-            Mark all
+            Mark all read
           </button>
         )}
       </div>
 
       {/* Filters Strip */}
-      <div className="flex gap-2 mb-stack-lg overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
         {[
           { key: 'all', label: 'All' },
           { key: 'message', label: 'Messages' },
@@ -142,7 +142,7 @@ export const Notifications = () => {
           <button
             key={item.key}
             onClick={() => setFilter(item.key)}
-            className={`px-4 py-2 rounded-full font-label-md text-sm whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors cursor-pointer ${
               filter === item.key 
                 ? 'bg-primary text-white font-bold shadow-sm' 
                 : 'bg-white border border-outline-variant text-on-surface hover:bg-surface-container-low'

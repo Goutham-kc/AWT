@@ -152,7 +152,7 @@ export const SignUp = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50"
+            className="w-full py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50 cursor-pointer"
           >
             {loading ? 'Registering...' : 'Register'}
           </button>

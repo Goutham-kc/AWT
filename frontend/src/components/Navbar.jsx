@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export const Navbar = () => {
   const { user, token, logout, login, cart, isLoginOpen, setIsLoginOpen } = useApp();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -49,41 +51,78 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="bg-surface border-b border-outline-variant shadow-sm top-0 sticky z-50">
-      <div className="flex justify-between items-center w-full px-container-margin py-stack-md max-w-7xl mx-auto">
-        {/* Brand */}
-        <div className="flex items-center gap-gutter">
-          <Link className="font-headline text-2xl font-bold text-primary" to="/marketplace">
-            Academica Exchange
+    <header className="bg-white/95 backdrop-blur-md border-b border-outline-variant shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        {/* Left Section: Brand Logo & Navigation Links */}
+        <div className="flex items-center gap-6 lg:gap-8">
+          <Link 
+            className="font-headline text-xl sm:text-2xl font-extrabold text-primary flex items-center gap-2 tracking-tight group" 
+            to="/marketplace"
+          >
+            <span className="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">school</span>
+            <span>Academica Exchange</span>
           </Link>
+
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            <Link 
+              className={`text-sm font-semibold transition-colors py-1 ${
+                location.pathname === '/marketplace' 
+                  ? 'text-primary font-bold border-b-2 border-primary' 
+                  : 'text-on-surface-variant hover:text-primary'
+              }`} 
+              to="/marketplace"
+            >
+              Marketplace
+            </Link>
+            {token && (
+              <>
+                <Link 
+                  className={`text-sm font-semibold transition-colors py-1 ${
+                    location.pathname === '/conversations' 
+                      ? 'text-primary font-bold border-b-2 border-primary' 
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`} 
+                  to="/conversations"
+                >
+                  Messages
+                </Link>
+                <Link 
+                  className={`text-sm font-semibold transition-colors py-1 ${
+                    location.pathname === '/referrals' 
+                      ? 'text-primary font-bold border-b-2 border-primary' 
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`} 
+                  to="/referrals"
+                >
+                  Referrals
+                </Link>
+                <Link 
+                  className={`text-sm font-semibold transition-colors py-1 ${
+                    location.pathname === '/create-listing' 
+                      ? 'text-primary font-bold border-b-2 border-primary' 
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`} 
+                  to="/create-listing"
+                >
+                  List an Item
+                </Link>
+              </>
+            )}
+          </nav>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-stack-md">
-          <Link className="text-primary font-bold pb-1 hover:text-primary transition-colors" to="/marketplace">
-            Marketplace
-          </Link>
-          {token && (
-            <>
-              <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/conversations">
-                Messages
-              </Link>
-              <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/referrals">
-                Referrals
-              </Link>
-              <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/create-listing">
-                List an Item
-              </Link>
-            </>
-          )}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-stack-sm ml-gutter">
+        {/* Right Section: Actions (Cart, Notifications, Auth) */}
+        <div className="flex items-center gap-2 sm:gap-4">
           {/* Cart Icon & Link */}
-          <Link className="relative px-3 py-1.5 flex items-center gap-1.5 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" to="/cart" title="Your Cart">
-            <span className="material-symbols-outlined text-xl">shopping_cart</span>
-            <span className="font-semibold text-sm">Cart</span>
+          <Link 
+            className="relative px-3 py-1.5 flex items-center gap-1.5 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors group" 
+            to="/cart" 
+            title="Your Cart"
+          >
+            <span className="material-symbols-outlined text-xl group-hover:text-primary transition-colors">shopping_cart</span>
+            <span className="font-semibold text-sm hidden sm:inline">Cart</span>
             {cart.length > 0 && (
               <span className="ml-0.5 px-1.5 py-0.2 bg-error-red text-white text-[11px] font-bold rounded-full">
                 {cart.length}
@@ -93,43 +132,96 @@ export const Navbar = () => {
 
           {/* Notifications Icon */}
           {token && (
-            <Link className="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors group" to="/notifications">
-              <span className="material-symbols-outlined">notifications</span>
+            <Link 
+              className="relative p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors group" 
+              to="/notifications"
+              title="Notifications"
+            >
+              <span className="material-symbols-outlined text-xl group-hover:text-primary transition-colors">notifications</span>
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-error-red rounded-full"></span>
             </Link>
           )}
 
           {/* User Session Profile Buttons */}
           {token ? (
-            <div className="flex items-center gap-stack-md">
-              <span className="hidden lg:inline text-on-surface-variant text-label-md">
+            <div className="flex items-center gap-3">
+              <span className="hidden lg:inline text-on-surface-variant text-sm">
                 Hi, <strong className="text-primary">{user?.name}</strong>
               </span>
               <button 
                 onClick={logout} 
-                className="px-4 py-2 border border-outline hover:bg-surface-dim hover:text-on-surface rounded-lg transition-colors font-label-md text-label-sm"
+                className="px-3.5 py-1.5 border border-outline hover:bg-surface-dim hover:text-on-surface rounded-lg transition-colors text-sm font-semibold cursor-pointer"
               >
                 Log Out
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-stack-sm">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button 
                 onClick={() => setIsLoginOpen(true)} 
-                className="px-4 py-2 text-primary font-label-md text-label-md border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200"
+                className="px-3.5 py-1.5 text-primary text-sm font-semibold border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200 cursor-pointer"
               >
                 Log In
               </button>
               <Link 
-                className="px-4 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm"
+                className="px-3.5 py-1.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm cursor-pointer"
                 to="/signup"
               >
                 Get Started
               </Link>
             </div>
           )}
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-on-surface-variant hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer"
+            aria-label="Toggle navigation menu"
+          >
+            <span className="material-symbols-outlined text-2xl">
+              {mobileMenuOpen ? 'close' : 'menu'}
+            </span>
+          </button>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-outline-variant bg-white px-4 py-3 space-y-1 shadow-lg">
+          <Link
+            to="/marketplace"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+          >
+            Marketplace
+          </Link>
+          {token && (
+            <>
+              <Link
+                to="/conversations"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+              >
+                Messages
+              </Link>
+              <Link
+                to="/referrals"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+              >
+                Referrals
+              </Link>
+              <Link
+                to="/create-listing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+              >
+                List an Item
+              </Link>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Login Modal Overlay */}
       {isLoginOpen && (

@@ -142,7 +142,7 @@ export const Cart = () => {
           <p className="text-on-surface-variant text-sm">Rent textbooks, calculators, cycles, and other campus gears from fellow students.</p>
           <button 
             onClick={() => navigate('/marketplace')} 
-            className="px-6 py-2.5 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all"
+            className="px-6 py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all cursor-pointer"
           >
             Browse Marketplace
           </button>
@@ -152,10 +152,10 @@ export const Cart = () => {
   }
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-container-margin py-stack-lg flex flex-col lg:flex-row gap-stack-lg">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
       
       {/* Left: Cart Items List */}
-      <div className="flex-1 space-y-stack-md">
+      <div className="flex-1 space-y-4">
         <h2 className="font-headline text-2xl font-bold text-primary mb-2">Shopping Cart</h2>
         
         {errorMsg && (
@@ -181,7 +181,7 @@ export const Cart = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-stack-md w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-outline-variant">
+              <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-outline-variant">
                 <div className="text-right">
                   <div className="text-sm font-semibold text-outline">Subtotal</div>
                   <div className="text-lg font-bold text-primary">{item.subtotal} credits</div>
@@ -258,7 +258,7 @@ export const Cart = () => {
           <button 
             onClick={handleCheckout}
             disabled={checkoutStatus !== 'idle'}
-            className="w-full py-2.5 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all disabled:opacity-50"
+            className="w-full py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container font-bold shadow-sm transition-all disabled:opacity-50 cursor-pointer"
           >
             {checkoutStatus === 'validating' ? 'Validating...' : checkoutStatus === 'processing' ? 'Processing...' : 'Request Booking'}
           </button>

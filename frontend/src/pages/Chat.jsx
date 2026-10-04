@@ -168,7 +168,7 @@ export const Chat = () => {
   };
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-container-margin py-stack-lg flex gap-stack-lg h-[calc(100vh-90px)] min-h-[500px]">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6 h-[calc(100vh-80px)] min-h-[500px]">
       
       {/* Left panel: Conversation list */}
       <aside className="w-full md:w-80 flex-shrink-0 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col">
@@ -300,7 +300,7 @@ export const Chat = () => {
                       isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-surface border border-outline-variant text-on-surface rounded-tl-none'
                     }`}>
                       <div className="text-[10px] opacity-75 font-semibold mb-0.5">{msg.sender.name}</div>
-                      <p className="font-body-sm leading-relaxed">{msg.content}</p>
+                      <p className="text-sm leading-relaxed">{msg.content}</p>
                       <div className="text-[9px] opacity-50 text-right mt-1">
                         {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>

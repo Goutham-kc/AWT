@@ -228,8 +228,8 @@ export const ListingDetail = () => {
           <div className="flex justify-between items-baseline">
             <span className="text-sm font-semibold text-outline">Rental Fee</span>
             <div>
-              <span className="text-2xl font-bold text-primary">{listing.pricePerDay}</span>
-              <span className="text-xs text-outline"> credits/day</span>
+              <span className="text-2xl font-bold text-primary">₹{listing.pricePerDay}</span>
+              <span className="text-xs text-outline"> / day</span>
             </div>
           </div>
 
@@ -262,19 +262,19 @@ export const ListingDetail = () => {
             <div className="border-t border-outline-variant pt-4 space-y-2 text-sm text-on-surface-variant">
               <div className="flex justify-between">
                 <span>Rental Subtotal ({days} days)</span>
-                <span>{subtotal} credits</span>
+                <span className="font-semibold">₹{subtotal}</span>
               </div>
               <div className="flex justify-between">
                 <span>Security Deposit (Refundable)</span>
-                <span>{listing.deposit} credits</span>
+                <span className="font-semibold">₹{listing.deposit}</span>
               </div>
               <div className="flex justify-between">
                 <span>Campus Service Fee (5%)</span>
-                <span>{serviceFee} credits</span>
+                <span className="font-semibold">₹{serviceFee}</span>
               </div>
               <div className="flex justify-between border-t border-outline-variant pt-2 font-bold text-primary text-base">
                 <span>Grand Total</span>
-                <span>{grandTotal} credits</span>
+                <span>₹{grandTotal}</span>
               </div>
             </div>
           )}

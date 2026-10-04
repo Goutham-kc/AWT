@@ -247,9 +247,9 @@ export const Navbar = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsLoginOpen(false);
           }}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 transition-opacity animate-in fade-in duration-200"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 overflow-y-auto transition-opacity animate-in fade-in duration-200"
         >
-          <div className="bg-white rounded-2xl border border-outline-variant shadow-2xl max-w-md w-full p-6 sm:p-8 relative">
+          <div className="my-auto bg-white rounded-2xl border border-outline-variant shadow-2xl max-w-md w-full p-6 sm:p-8 relative">
             <button 
               onClick={() => setIsLoginOpen(false)} 
               className="absolute top-4 right-4 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer"

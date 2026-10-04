@@ -176,15 +176,15 @@ export const Cart = () => {
                   Dates: {new Date(item.startDate).toLocaleDateString()} to {new Date(item.endDate).toLocaleDateString()} ({item.days} days)
                 </p>
                 <div className="flex gap-4 mt-2 text-xs text-on-surface-variant font-semibold">
-                  <div>Price: <span className="text-primary">{item.pricePerDay} credits/day</span></div>
-                  <div>Deposit: <span className="text-primary">{item.deposit} credits</span></div>
+                  <div>Price: <span className="text-primary font-bold">₹{item.pricePerDay} / day</span></div>
+                  <div>Deposit: <span className="text-primary font-bold">₹{item.deposit}</span></div>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-outline-variant">
                 <div className="text-right">
                   <div className="text-sm font-semibold text-outline">Subtotal</div>
-                  <div className="text-lg font-bold text-primary">{item.subtotal} credits</div>
+                  <div className="text-lg font-bold text-primary">₹{item.subtotal}</div>
                 </div>
                 
                 <div className="flex items-center gap-1">
@@ -217,15 +217,15 @@ export const Cart = () => {
           <div className="space-y-2 text-sm text-on-surface-variant border-b border-outline-variant pb-4">
             <div className="flex justify-between">
               <span>Rental Subtotal</span>
-              <span>{subtotalSum} credits</span>
+              <span className="font-semibold">₹{subtotalSum}</span>
             </div>
             <div className="flex justify-between">
               <span>Security Deposits</span>
-              <span>{depositSum} credits</span>
+              <span className="font-semibold">₹{depositSum}</span>
             </div>
             <div className="flex justify-between">
               <span>Campus Service Fees (5%)</span>
-              <span>{serviceFeeSum} credits</span>
+              <span className="font-semibold">₹{serviceFeeSum}</span>
             </div>
 
             {/* Referral Credits toggle */}
@@ -237,14 +237,14 @@ export const Cart = () => {
                     id="referralToggle"
                     checked={useReferralCredits}
                     onChange={() => setUseReferralCredits(!useReferralCredits)}
-                    className="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded"
+                    className="h-4 w-4 text-primary focus:ring-primary border-outline-variant rounded cursor-pointer"
                   />
                   <label htmlFor="referralToggle" className="text-xs font-bold text-primary cursor-pointer">
-                    Apply Referral Credits (Bal: {userCredits})
+                    Apply Referral Credits (₹{userCredits} bal)
                   </label>
                 </div>
                 {useReferralCredits && (
-                  <span className="text-xs font-bold text-success-green">-{referralDiscount} credits</span>
+                  <span className="text-xs font-bold text-success-green">-₹{referralDiscount}</span>
                 )}
               </div>
             )}
@@ -252,7 +252,7 @@ export const Cart = () => {
 
           <div className="flex justify-between border-t border-outline-variant pt-2 font-bold text-primary text-lg">
             <span>Grand Total</span>
-            <span>{grandTotal} credits</span>
+            <span>₹{grandTotal}</span>
           </div>
 
           <button 
@@ -264,7 +264,7 @@ export const Cart = () => {
           </button>
 
           <p className="text-[11px] text-outline text-center">
-            *Rental requests do not charge credits immediately. Lister must approve before rental transaction is booked.
+            *Rental requests do not charge immediately. Lister must approve before rental transaction is booked.
           </p>
         </div>
       </div>

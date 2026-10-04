@@ -191,7 +191,7 @@ export const Chat = () => {
 
     if (proposedPrice) {
       type = 'price_proposal';
-      contentStr = `Proposal: New price proposal for rental rate at ${proposedPrice} credits/day.`;
+      contentStr = `Proposal: New price proposal for rental rate at ₹${proposedPrice} / day.`;
       metadata.proposedPrice = Number(proposedPrice);
     } else if (meetupLocation && meetupTime) {
       type = 'meetup_proposal';
@@ -328,7 +328,7 @@ export const Chat = () => {
                 </h3>
                 {activeConv.associatedListing && (
                   <p className="text-xs text-primary font-semibold mt-0.5">
-                    Referencing Item: {activeConv.associatedListing.title} ({activeConv.associatedListing.pricePerDay} credits/day)
+                    Referencing Item: {activeConv.associatedListing.title} (₹{activeConv.associatedListing.pricePerDay} / day)
                   </p>
                 )}
               </div>
@@ -347,7 +347,7 @@ export const Chat = () => {
                 <h4 className="text-sm font-bold text-primary">Propose Meetup or Rate adjustment</h4>
                 <form onSubmit={handleSendProposal} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="block text-xs font-semibold text-on-surface">Adjust Rate (credits/day)</label>
+                    <label className="block text-xs font-semibold text-on-surface">Adjust Rate (₹/day)</label>
                     <input 
                       type="number" 
                       placeholder="e.g. 12"

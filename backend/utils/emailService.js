@@ -41,7 +41,8 @@ export const sendVerificationEmail = async (toEmail, otp, userName = 'Student') 
     return { success: false, fallback: true, otp };
   }
 
-  const fromAddress = process.env.SMTP_FROM || `"TKMCE Student Rental Hub" <${process.env.SMTP_USER}>`;
+  const fromName = process.env.SMTP_FROM_NAME || 'TKMCE Student Rental Hub';
+  const fromAddress = `"${fromName}" <${process.env.SMTP_USER}>`;
 
   const htmlContent = `
     <!DOCTYPE html>

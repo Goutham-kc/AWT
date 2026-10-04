@@ -11,9 +11,10 @@ import { sendVerificationEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
-// Only @tkmce.ac.in emails are allowed to register
+// Only @tkmce.ac.in emails are allowed to register (plus delusionalea153@gmail.com for Resend dev testing)
 const isValidCollegeEmail = (email) => {
-  return email.toLowerCase().trim().endsWith('@tkmce.ac.in');
+  const clean = email.toLowerCase().trim();
+  return clean.endsWith('@tkmce.ac.in') || clean === 'delusionalea153@gmail.com';
 };
 
 // @desc    Register a new user

@@ -6,11 +6,9 @@ import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Helper to validate whitelisted college domains
+// Only @tkmce.ac.in emails are allowed to register
 const isValidCollegeEmail = (email) => {
-  const domains = ['.edu', '.ac.in', '.edu.in', '.edu.co', '.edu.sg'];
-  const emailLower = email.toLowerCase();
-  return domains.some(domain => emailLower.endsWith(domain));
+  return email.toLowerCase().trim().endsWith('@tkmce.ac.in');
 };
 
 // @desc    Register a new user
@@ -25,7 +23,7 @@ router.post('/signup', async (req, res) => {
     }
 
     if (!isValidCollegeEmail(email)) {
-      return res.status(400).json({ message: 'Registration is restricted to whitelisted college email domains (e.g. .edu, .ac.in)' });
+      return res.status(400).json({ message: 'Only @tkmce.ac.in email addresses are allowed to register.' });
     }
 
     // Use Mongoose findOne to check for duplicate email

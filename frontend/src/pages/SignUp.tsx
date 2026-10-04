@@ -84,11 +84,11 @@ export const SignUp: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200"
-                placeholder="e.g. goutham@mit.edu"
+                placeholder="e.g. yourname@tkmce.ac.in"
                 required
               />
               <span className="text-[11px] text-outline mt-1 block">
-                Restricted to whitelisted domains (.edu, .ac.in)
+                Only @tkmce.ac.in email addresses are accepted
               </span>
             </div>
 

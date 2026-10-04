@@ -36,8 +36,8 @@ export const SignUp = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Successful signup, redirect to verification pending
-      navigate('/verify', { state: { email } });
+      // Successful signup, redirect to verification pending with OTP
+      navigate('/verify', { state: { email, otp: data.otp } });
     } catch (err) {
       setErrorMsg(err.message || 'Something went wrong');
     } finally {

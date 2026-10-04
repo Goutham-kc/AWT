@@ -7,16 +7,19 @@ export const Verification = () => {
   const navigate = useNavigate();
   const { login } = useApp();
   const emailState = location.state?.email || '';
+  const initialOtp = location.state?.otp || '';
 
   const [email, setEmail] = useState(emailState);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(initialOtp);
+  const [demoOtp, setDemoOtp] = useState(initialOtp);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
 
   useEffect(() => {
     if (!emailState) {
-      setErrorMsg('No email provided. Please enter your email manually.');
+      setErrorMsg('No email provided. Please enter your @tkmce.ac.in email manually.');
     }
   }, [emailState]);
 
@@ -63,17 +66,66 @@ export const Verification = () => {
     }
   };
 
+  const handleResendOTP = async () => {
+    if (!email) {
+      setErrorMsg('Please enter your email address to get the code.');
+      return;
+    }
+    setErrorMsg('');
+    setSuccessMsg('');
+    setResending(true);
+
+    try {
+      const res = await fetch('/api/auth/resend-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to generate code');
+      }
+
+      if (data.otp) {
+        setDemoOtp(data.otp);
+        setOtp(data.otp);
+      }
+      setSuccessMsg('Fresh verification code generated successfully!');
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to generate OTP');
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-surface-container-low">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl border border-outline-variant shadow-md">
+      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-xl border border-outline-variant shadow-md">
         <div>
           <h2 className="mt-2 text-center text-3xl font-headline font-bold text-primary">
             Verification Pending
           </h2>
           <p className="mt-2 text-center text-sm text-on-surface-variant">
-            Please enter the 6-digit OTP code sent to your email
+            Enter your 6-digit OTP code to activate your student account
           </p>
         </div>
+
+        {demoOtp && (
+          <div className="bg-primary/10 border border-primary/30 text-primary p-3 rounded-lg text-sm flex items-center justify-between">
+            <div>
+              <span className="block text-xs uppercase font-bold tracking-wider text-on-surface-variant">Verification Code</span>
+              <span className="font-mono text-xl font-bold tracking-widest text-primary">{demoOtp}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOtp(demoOtp)}
+              className="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded hover:bg-primary-container transition-colors shadow-sm"
+            >
+              Auto-fill Code
+            </button>
+          </div>
+        )}
 
         {errorMsg && (
           <div className="bg-error-container/20 border border-error-red text-error-red p-3 rounded-lg text-sm font-semibold">
@@ -87,7 +139,7 @@ export const Verification = () => {
           </div>
         )}
 
-        <form className="mt-8 space-y-4" onSubmit={handleVerifyOTP}>
+        <form className="mt-6 space-y-4" onSubmit={handleVerifyOTP}>
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-semibold text-on-surface mb-1">Email Address</label>
@@ -96,7 +148,7 @@ export const Verification = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200"
-                placeholder="e.g. name@college.edu"
+                placeholder="e.g. yourname@tkmce.ac.in"
                 required
               />
             </div>
@@ -120,9 +172,21 @@ export const Verification = () => {
             disabled={loading}
             className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50"
           >
-            {loading ? 'Verifying...' : 'Verify OTP'}
+            {loading ? 'Verifying...' : 'Verify OTP & Log In'}
           </button>
         </form>
+
+        <div className="text-center text-sm text-on-surface-variant pt-2 border-t border-outline-variant/50">
+          Didn't receive the code?{' '}
+          <button
+            type="button"
+            disabled={resending}
+            onClick={handleResendOTP}
+            className="text-primary font-bold hover:underline disabled:opacity-50 ml-1"
+          >
+            {resending ? 'Generating...' : 'Get / Resend Code'}
+          </button>
+        </div>
       </div>
     </div>
   );

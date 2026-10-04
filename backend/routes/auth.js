@@ -169,6 +169,38 @@ router.post('/verify-otp', async (req, res) => {
   }
 });
 
+// @desc    Resend verification OTP
+// @route   POST /api/auth/resend-otp
+// @access  Public
+router.post('/resend-otp', async (req, res) => {
+  const { email } = req.body;
+  try {
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found. Please sign up first.' });
+    }
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'Account is already verified. Please log in.' });
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.verificationOTP = otp;
+    user.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await user.save();
+
+    console.log(`[MOCK EMAIL SERVICE] Resent OTP for ${user.email}: ${otp}`);
+
+    res.json({
+      message: 'A new verification OTP has been generated.',
+      otp
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // @desc    Authenticate user & get token
 // @route   POST /api/auth/login
 // @access  Public

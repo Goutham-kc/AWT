@@ -2,6 +2,10 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Listing from '../models/Listing.js';
+import Booking from '../models/Booking.js';
+import Conversation from '../models/Conversation.js';
+import Message from '../models/Message.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -26,10 +30,35 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Only @tkmce.ac.in email addresses are allowed to register.' });
     }
 
-    // Use Mongoose findOne to check for duplicate email
-    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Use Mongoose findOne to check for existing email
+    const userExists = await User.findOne({ email: normalizedEmail });
     if (userExists) {
-      return res.status(400).json({ message: 'An account with this email already exists' });
+      // If user is already verified, block duplicate registration
+      if (userExists.isVerified) {
+        return res.status(400).json({ message: 'An account with this email already exists' });
+      }
+
+      // If user registered previously but never completed OTP verification:
+      // Refresh OTP and update details so they can complete verification
+      const salt = await bcrypt.genSalt(10);
+      userExists.passwordHash = await bcrypt.hash(password, salt);
+      userExists.name = name;
+      userExists.institution = institution;
+      userExists.homeCampus = homeCampus;
+      userExists.verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      userExists.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins expiry
+      userExists.referredBy = referredBy || null;
+      await userExists.save();
+
+      console.log(`[MOCK EMAIL SERVICE] OTP for ${normalizedEmail}: ${userExists.verificationOTP}`);
+
+      return res.status(200).json({
+        message: 'A new verification OTP has been sent to your email.',
+        email: userExists.email,
+        otp: userExists.verificationOTP
+      });
     }
 
     // Hash password using bcrypt
@@ -43,7 +72,7 @@ router.post('/signup', async (req, res) => {
     // Create and save user document via Mongoose
     const user = await User.create({
       name,
-      email: email.toLowerCase().trim(),
+      email: normalizedEmail,
       passwordHash,
       institution,
       homeCampus,
@@ -53,7 +82,7 @@ router.post('/signup', async (req, res) => {
       isVerified: false
     });
 
-    console.log(`[MOCK EMAIL SERVICE] OTP for ${email}: ${otp}`);
+    console.log(`[MOCK EMAIL SERVICE] OTP for ${normalizedEmail}: ${otp}`);
 
     res.status(201).json({
       message: 'Signup successful. A verification OTP has been sent to your email.',
@@ -208,6 +237,32 @@ router.get('/me', protect, async (req, res) => {
     referralCredits: user.referralCredits,
     isVerified: user.isVerified
   });
+});
+
+// @desc    Clean all accounts and related records (strictly via Mongoose)
+// @route   POST /api/auth/clean-accounts
+// @access  Public
+router.post('/clean-accounts', async (req, res) => {
+  try {
+    const u = await User.deleteMany({});
+    const l = await Listing.deleteMany({});
+    const b = await Booking.deleteMany({});
+    const c = await Conversation.deleteMany({});
+    const m = await Message.deleteMany({});
+
+    res.json({
+      message: 'All accounts and related data cleaned successfully',
+      deleted: {
+        users: u.deletedCount,
+        listings: l.deletedCount,
+        bookings: b.deletedCount,
+        conversations: c.deletedCount,
+        messages: m.deletedCount
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 export default router;

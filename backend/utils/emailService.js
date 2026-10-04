@@ -63,6 +63,30 @@ const sendViaResend = async (apiKey, toEmail, otp, userName, htmlContent) => {
   return data;
 };
 
+// Send via Brevo HTTP API (Port 443 HTTPS - sends to ANY @tkmce.ac.in address without domain verification)
+const sendViaBrevo = async (apiKey, toEmail, otp, userName, htmlContent) => {
+  const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.SMTP_USER || 'studentrentalhub@gmail.com';
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey.trim(),
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { name: 'TKMCE Student Rental Hub', email: senderEmail },
+      to: [{ email: toEmail, name: userName }],
+      subject: `${otp} is your TKMCE Student Rental Hub verification code`,
+      htmlContent
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || JSON.stringify(data));
+  }
+  return data;
+};
+
 /**
  * Send 6-digit verification OTP email
  * @param {string} toEmail - Recipient email
@@ -117,7 +141,18 @@ export const sendVerificationEmail = async (toEmail, otp, userName = 'Student') 
     </html>
   `;
 
-  // 1. If Resend HTTPS API key is available, use it (Port 443 HTTPS - 100% reliable on Render)
+  // 1. If Brevo HTTPS API key is available, use it (Port 443 HTTPS - sends to ANY @tkmce.ac.in without domain verification)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      const result = await sendViaBrevo(process.env.BREVO_API_KEY, toEmail, otp, userName, htmlContent);
+      console.log(`[EMAIL SERVICE via BREVO HTTPS] Verification email sent to ${toEmail}. MessageId: ${result.messageId}`);
+      return { success: true, messageId: result.messageId };
+    } catch (brevoError) {
+      console.warn(`[BREVO HTTPS WARNING]: ${brevoError.message}. Trying next provider...`);
+    }
+  }
+
+  // 2. If Resend HTTPS API key is available, use it (Port 443 HTTPS)
   if (process.env.RESEND_API_KEY) {
     try {
       const result = await sendViaResend(process.env.RESEND_API_KEY, toEmail, otp, userName, htmlContent);
@@ -128,7 +163,7 @@ export const sendVerificationEmail = async (toEmail, otp, userName = 'Student') 
     }
   }
 
-  // 2. Try Nodemailer SMTP
+  // 3. Try Nodemailer SMTP
   const transporter = createTransporter();
   if (transporter) {
     try {

@@ -59,8 +59,7 @@ router.post('/signup', async (req, res) => {
 
       return res.status(200).json({
         message: 'A new verification OTP has been sent to your email.',
-        email: userExists.email,
-        otp: userExists.verificationOTP
+        email: userExists.email
       });
     }
 
@@ -91,8 +90,7 @@ router.post('/signup', async (req, res) => {
 
     res.status(201).json({
       message: 'Signup successful. A verification OTP has been sent to your email.',
-      email: user.email,
-      otp // Return OTP in response for mock/test convenience
+      email: user.email
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -199,8 +197,7 @@ router.post('/resend-otp', async (req, res) => {
       .catch(err => console.error('[EMAIL BACKGROUND ERROR]:', err.message));
 
     res.json({
-      message: 'A new verification OTP has been sent to your email.',
-      otp
+      message: 'A new verification OTP has been sent to your email.'
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -41,8 +41,8 @@ export const SignUp = () => {
         throw new Error(data.message || 'Registration failed');
       }
 
-      // Successful signup, redirect to verification pending with OTP
-      navigate('/verify', { state: { email, otp: data.otp } });
+      // Successful signup, redirect to verification pending
+      navigate('/verify', { state: { email } });
     } catch (err) {
       if (err.name === 'AbortError') {
         setErrorMsg('Server took too long to respond. Please ensure the backend is running.');

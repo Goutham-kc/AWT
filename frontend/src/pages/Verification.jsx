@@ -7,11 +7,9 @@ export const Verification = () => {
   const navigate = useNavigate();
   const { login } = useApp();
   const emailState = location.state?.email || '';
-  const initialOtp = location.state?.otp || '';
 
   const [email, setEmail] = useState(emailState);
-  const [otp, setOtp] = useState(initialOtp);
-  const [demoOtp, setDemoOtp] = useState(initialOtp);
+  const [otp, setOtp] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -68,7 +66,7 @@ export const Verification = () => {
 
   const handleResendOTP = async () => {
     if (!email) {
-      setErrorMsg('Please enter your email address to get the code.');
+      setErrorMsg('Please enter your email address first.');
       return;
     }
     setErrorMsg('');
@@ -84,16 +82,12 @@ export const Verification = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Failed to generate code');
+        throw new Error(data.message || 'Failed to resend code');
       }
 
-      if (data.otp) {
-        setDemoOtp(data.otp);
-        setOtp(data.otp);
-      }
-      setSuccessMsg('Fresh verification code generated successfully!');
+      setSuccessMsg('A fresh verification code has been sent to your email.');
     } catch (err) {
-      setErrorMsg(err.message || 'Failed to generate OTP');
+      setErrorMsg(err.message || 'Failed to resend OTP');
     } finally {
       setResending(false);
     }
@@ -107,25 +101,9 @@ export const Verification = () => {
             Verification Pending
           </h2>
           <p className="mt-2 text-center text-sm text-on-surface-variant">
-            Enter your 6-digit OTP code to activate your student account
+            Please enter the 6-digit OTP code sent to your @tkmce.ac.in email
           </p>
         </div>
-
-        {demoOtp && (
-          <div className="bg-primary/10 border border-primary/30 text-primary p-3 rounded-lg text-sm flex items-center justify-between">
-            <div>
-              <span className="block text-xs uppercase font-bold tracking-wider text-on-surface-variant">Verification Code</span>
-              <span className="font-mono text-xl font-bold tracking-widest text-primary">{demoOtp}</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOtp(demoOtp)}
-              className="px-3 py-1.5 bg-primary text-white text-xs font-bold rounded hover:bg-primary-container transition-colors shadow-sm"
-            >
-              Auto-fill Code
-            </button>
-          </div>
-        )}
 
         {errorMsg && (
           <div className="bg-error-container/20 border border-error-red text-error-red p-3 rounded-lg text-sm font-semibold">
@@ -161,7 +139,7 @@ export const Verification = () => {
                 onChange={(e) => setOtp(e.target.value)}
                 maxLength={6}
                 className="w-full px-4 py-2 text-center tracking-widest font-mono border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-lg transition-all duration-200"
-                placeholder="000000"
+                placeholder="••••••"
                 required
               />
             </div>
@@ -184,7 +162,7 @@ export const Verification = () => {
             onClick={handleResendOTP}
             className="text-primary font-bold hover:underline disabled:opacity-50 ml-1"
           >
-            {resending ? 'Generating...' : 'Get / Resend Code'}
+            {resending ? 'Sending...' : 'Resend Code'}
           </button>
         </div>
       </div>

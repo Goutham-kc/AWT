@@ -20,9 +20,9 @@ const createTransporter = () => {
         user,
         pass
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 10000
     });
   }
 
@@ -34,10 +34,33 @@ const createTransporter = () => {
       user,
       pass
     },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 10000
   });
+};
+
+// Send via Resend HTTP API (Port 443 HTTPS - works everywhere including Render free tier where SMTP ports are blocked)
+const sendViaResend = async (apiKey, toEmail, otp, userName, htmlContent) => {
+  const from = process.env.RESEND_FROM || 'TKMCE Student Rental Hub <onboarding@resend.dev>';
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey.trim()}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from,
+      to: [toEmail],
+      subject: `${otp} is your TKMCE Student Rental Hub verification code`,
+      html: htmlContent
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || JSON.stringify(data));
+  }
+  return data;
 };
 
 /**
@@ -47,20 +70,8 @@ const createTransporter = () => {
  * @param {string} userName - Optional student name
  */
 export const sendVerificationEmail = async (toEmail, otp, userName = 'Student') => {
-  const transporter = createTransporter();
-
-  // If no SMTP credentials are provided in .env, log to console as fallback
-  if (!transporter) {
-    console.log(`\n======================================================`);
-    console.log(`[EMAIL NOTICE] No SMTP credentials configured in .env.`);
-    console.log(`[OTP VERIFICATION CODE FOR ${toEmail}]: ${otp}`);
-    console.log(`To send real emails, set SMTP_USER and SMTP_PASS in backend/.env`);
-    console.log(`======================================================\n`);
-    return { success: false, fallback: true, otp };
-  }
-
   const fromName = process.env.SMTP_FROM_NAME || 'TKMCE Student Rental Hub';
-  const fromAddress = `"${fromName}" <${process.env.SMTP_USER}>`;
+  const fromAddress = `"${fromName}" <${process.env.SMTP_USER || 'no-reply@tkmce.ac.in'}>`;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -106,21 +117,40 @@ export const sendVerificationEmail = async (toEmail, otp, userName = 'Student') 
     </html>
   `;
 
-  try {
-    const info = await transporter.sendMail({
-      from: fromAddress,
-      to: toEmail,
-      subject: `${otp} is your TKMCE Student Rental Hub verification code`,
-      text: `Hello ${userName},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 15 minutes.\n\n- TKMCE Student Rental Hub`,
-      html: htmlContent
-    });
-
-    console.log(`[EMAIL SERVICE] Verification email successfully sent to ${toEmail}. MessageId: ${info.messageId}`);
-    return { success: true, messageId: info.messageId };
-  } catch (error) {
-    console.error(`[EMAIL SERVICE ERROR] Failed to send email to ${toEmail}: ${error.message}`);
-    // Log OTP to console so testing is never blocked even if SMTP network fails
-    console.log(`[EMAIL FALLBACK OTP FOR ${toEmail}]: ${otp}`);
-    return { success: false, error: error.message, fallback: true, otp };
+  // 1. If Resend HTTPS API key is available, use it (Port 443 HTTPS - 100% reliable on Render)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const result = await sendViaResend(process.env.RESEND_API_KEY, toEmail, otp, userName, htmlContent);
+      console.log(`[EMAIL SERVICE via RESEND HTTPS] Verification email sent to ${toEmail}. Id: ${result.id}`);
+      return { success: true, messageId: result.id };
+    } catch (resendError) {
+      console.warn(`[RESEND HTTPS WARNING]: ${resendError.message}. Trying SMTP fallback...`);
+    }
   }
+
+  // 2. Try Nodemailer SMTP
+  const transporter = createTransporter();
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail({
+        from: fromAddress,
+        to: toEmail,
+        subject: `${otp} is your TKMCE Student Rental Hub verification code`,
+        text: `Hello ${userName},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 15 minutes.\n\n- TKMCE Student Rental Hub`,
+        html: htmlContent
+      });
+
+      console.log(`[EMAIL SERVICE via SMTP] Verification email successfully sent to ${toEmail}. MessageId: ${info.messageId}`);
+      return { success: true, messageId: info.messageId };
+    } catch (error) {
+      console.warn(`[EMAIL SMTP NOTICE] SMTP connection to ${toEmail} failed (${error.message}).`);
+    }
+  }
+
+  // 3. Fallback: Log to console
+  console.log(`\n======================================================`);
+  console.log(`[EMAIL FALLBACK ACTIVE]`);
+  console.log(`[OTP VERIFICATION CODE FOR ${toEmail}]: ${otp}`);
+  console.log(`======================================================\n`);
+  return { success: false, fallback: true, otp };
 };

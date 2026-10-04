@@ -17,12 +17,15 @@ import referralRoutes from './routes/referrals.js';
 
 // Import socket handlers
 import { registerChatHandlers } from './sockets/chatHandler.js';
+import { seedInitialData } from './config/seed.js';
 
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB();
+// Connect to MongoDB and seed initial data if empty
+connectDB().then(() => {
+  seedInitialData();
+});
 
 const app = express();
 const server = http.createServer(app);

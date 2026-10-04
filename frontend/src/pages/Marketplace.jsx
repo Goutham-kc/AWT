@@ -62,7 +62,7 @@ const SAMPLE_LISTINGS = [
 
 export const Marketplace = () => {
   const navigate = useNavigate();
-  const { addToCart, token } = useApp();
+  const { addToCart, token, setIsLoginOpen } = useApp();
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,7 +96,7 @@ export const Marketplace = () => {
   const handleConfirmAddToCart = () => {
     if (!selectedCartItem) return;
     if (!token) {
-      alert('Please log in first to rent items.');
+      setIsLoginOpen(true);
       setSelectedCartItem(null);
       return;
     }
@@ -124,7 +124,7 @@ export const Marketplace = () => {
   const handleMessageSeller = async (e, item) => {
     e.stopPropagation();
     if (!token) {
-      alert('Please log in first to message the seller.');
+      setIsLoginOpen(true);
       return;
     }
 

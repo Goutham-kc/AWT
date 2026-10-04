@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export default function CreateListing() {
-  const { token } = useApp();
+  const { token, setIsLoginOpen } = useApp();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ export default function CreateListing() {
       <div className="max-w-2xl mx-auto p-6 mt-8 bg-white rounded-xl border border-outline-variant shadow-sm text-center">
         <h2 className="text-xl font-bold mb-4">Authentication Required</h2>
         <p className="text-on-surface-variant mb-4">You need to log in to create a listing.</p>
-        <button onClick={() => navigate('/login')} className="px-4 py-2 bg-primary text-white rounded-md font-medium hover:bg-primary/90">
+        <button onClick={() => setIsLoginOpen(true)} className="px-4 py-2 bg-primary text-white rounded-md font-medium hover:bg-primary/90">
           Log In
         </button>
       </div>

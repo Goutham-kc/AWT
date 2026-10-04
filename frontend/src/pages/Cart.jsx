@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
 export const Cart = () => {
-  const { cart, user, token, removeFromCart, updateUserCredits } = useApp();
+  const { cart, user, token, removeFromCart, updateUserCredits, setIsLoginOpen } = useApp();
   const navigate = useNavigate();
 
   const [useReferralCredits, setUseReferralCredits] = useState(false);
@@ -23,7 +23,7 @@ export const Cart = () => {
 
   const handleMessageLister = async (listingId) => {
     if (!token) {
-      navigate('/login');
+      setIsLoginOpen(true);
       return;
     }
     try {
@@ -58,7 +58,10 @@ export const Cart = () => {
   const grandTotal = subtotalSum + depositSum + serviceFeeSum - referralDiscount;
 
   const handleCheckout = async () => {
-    if (!token) return;
+    if (!token) {
+      setIsLoginOpen(true);
+      return;
+    }
     setCheckoutStatus('validating');
     setErrorMsg('');
 

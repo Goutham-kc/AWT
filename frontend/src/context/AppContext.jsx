@@ -35,7 +35,7 @@ export const AppProvider = ({ children }) => {
         })
         .then(userData => {
           const mappedUser = {
-            id: userData._id,
+            id: userData._id || userData.id,
             name: userData.name,
             email: userData.email,
             institution: userData.institution,

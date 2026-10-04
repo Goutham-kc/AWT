@@ -8,7 +8,7 @@ import { useApp } from '../context/AppContext';
 export const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token, addToCart } = useApp();
+  const { token, addToCart, setIsLoginOpen } = useApp();
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -93,7 +93,7 @@ export const ListingDetail = () => {
 
   const handleAddToCart = () => {
     if (!token) {
-      alert('Please log in first to rent items.');
+      setIsLoginOpen(true);
       return;
     }
 
@@ -131,7 +131,7 @@ export const ListingDetail = () => {
 
   const handleMessageLister = async () => {
     if (!token) {
-      alert('Please log in first to message the listing creator.');
+      setIsLoginOpen(true);
       return;
     }
 

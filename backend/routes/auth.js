@@ -278,9 +278,9 @@ router.get('/me', protect, async (req, res) => {
 });
 
 // @desc    Clean all accounts and related records (strictly via Mongoose)
-// @route   POST /api/auth/clean-accounts
+// @route   GET & POST /api/auth/clean-accounts
 // @access  Public
-router.post('/clean-accounts', async (req, res) => {
+router.all('/clean-accounts', async (req, res) => {
   try {
     const u = await User.deleteMany({});
     const l = await Listing.deleteMany({});

@@ -18,7 +18,10 @@ const createTransporter = () => {
     auth: {
       user,
       pass
-    }
+    },
+    connectionTimeout: 5000, // 5s connection timeout
+    greetingTimeout: 5000,   // 5s greeting timeout
+    socketTimeout: 8000      // 8s socket timeout
   });
 };
 

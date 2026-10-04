@@ -18,9 +18,13 @@ export const SignUp = () => {
     setLoading(true);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           name,
           email,
@@ -30,6 +34,7 @@ export const SignUp = () => {
           referredBy: referredBy || undefined
         })
       });
+      clearTimeout(timeoutId);
       const data = await res.json();
       
       if (!res.ok) {
@@ -39,7 +44,11 @@ export const SignUp = () => {
       // Successful signup, redirect to verification pending with OTP
       navigate('/verify', { state: { email, otp: data.otp } });
     } catch (err) {
-      setErrorMsg(err.message || 'Something went wrong');
+      if (err.name === 'AbortError') {
+        setErrorMsg('Server took too long to respond. Please ensure the backend is running.');
+      } else {
+        setErrorMsg(err.message || 'Something went wrong');
+      }
     } finally {
       setLoading(false);
     }

@@ -53,8 +53,9 @@ router.post('/signup', async (req, res) => {
       userExists.referredBy = referredBy || null;
       await userExists.save();
 
-      // Send verification email via Nodemailer (or fallback to console if SMTP unconfigured)
-      await sendVerificationEmail(normalizedEmail, userExists.verificationOTP, userExists.name);
+      // Send verification email via Nodemailer asynchronously in background
+      sendVerificationEmail(normalizedEmail, userExists.verificationOTP, userExists.name)
+        .catch(err => console.error('[EMAIL BACKGROUND ERROR]:', err.message));
 
       return res.status(200).json({
         message: 'A new verification OTP has been sent to your email.',
@@ -84,8 +85,9 @@ router.post('/signup', async (req, res) => {
       isVerified: false
     });
 
-    // Send verification email via Nodemailer
-    await sendVerificationEmail(normalizedEmail, otp, name);
+    // Send verification email via Nodemailer asynchronously in background
+    sendVerificationEmail(normalizedEmail, otp, name)
+      .catch(err => console.error('[EMAIL BACKGROUND ERROR]:', err.message));
 
     res.status(201).json({
       message: 'Signup successful. A verification OTP has been sent to your email.',
@@ -193,7 +195,8 @@ router.post('/resend-otp', async (req, res) => {
     user.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    await sendVerificationEmail(user.email, otp, user.name);
+    sendVerificationEmail(user.email, otp, user.name)
+      .catch(err => console.error('[EMAIL BACKGROUND ERROR]:', err.message));
 
     res.json({
       message: 'A new verification OTP has been sent to your email.',

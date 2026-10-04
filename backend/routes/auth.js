@@ -28,22 +28,24 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Registration is restricted to whitelisted college email domains (e.g. .edu, .ac.in)' });
     }
 
-    const userExists = await User.findOne({ email });
+    // Use Mongoose findOne to check for duplicate email
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: 'An account with this email already exists' });
     }
 
-    // Generate salt and hash password
+    // Hash password using bcrypt
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Generate 6-digit verification OTP
+    // Generate 6-digit OTP and set expiry
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins expiry
 
+    // Create and save user document via Mongoose
     const user = await User.create({
       name,
-      email,
+      email: email.toLowerCase().trim(),
       passwordHash,
       institution,
       homeCampus,
@@ -65,7 +67,7 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// @desc    Verify OTP
+// @desc    Verify OTP and auto-login
 // @route   POST /api/auth/verify-otp
 // @access  Public
 router.post('/verify-otp', async (req, res) => {
@@ -76,47 +78,64 @@ router.post('/verify-otp', async (req, res) => {
       return res.status(400).json({ message: 'Email and OTP are required' });
     }
 
-    const user = await User.findOne({ email });
+    // Use Mongoose findOne to find the pending user
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ message: 'User is already verified' });
+      return res.status(400).json({ message: 'This account is already verified. Please log in.' });
     }
 
     if (user.verificationOTP !== otp || new Date() > user.otpExpiresAt) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    // Generate a unique referral code for this user
-    const randomSuffix = Math.floor(100 + Math.random() * 900); // 3 digit code
+    // Generate a unique referral code for this verified user
+    const randomSuffix = Math.floor(100 + Math.random() * 900);
     const baseCode = user.name.replace(/\s+/g, '').toUpperCase().slice(0, 5);
     const referralCode = `${baseCode}-${randomSuffix}`;
 
-    // Verify and apply referral if present
+    // Apply referral credits if user signed up with a referral code
     let creditAppliedMessage = '';
     if (user.referredBy) {
       const inviter = await User.findOne({ referralCode: user.referredBy });
       if (inviter) {
-        inviter.referralCredits += 50; // Give inviter 50 credits
+        inviter.referralCredits += 50;
         await inviter.save();
-        
-        user.referralCredits += 50; // Give invitee 50 credits
+        user.referralCredits += 50;
         creditAppliedMessage = ' Referral credit applied! You both earned 50 credits.';
       }
     }
 
+    // Mark user as verified and clear OTP fields
     user.isVerified = true;
     user.verificationOTP = null;
     user.otpExpiresAt = null;
     user.referralCode = referralCode;
     await user.save();
 
+    // Issue a JWT token so user is automatically logged in after verification
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'supersecretjwtkeyforstudentrentalhubdev',
+      { expiresIn: '30d' }
+    );
+
     res.status(200).json({
       message: `Account verified successfully.${creditAppliedMessage}`,
-      referralCode: user.referralCode
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        institution: user.institution,
+        homeCampus: user.homeCampus,
+        referralCode: user.referralCode,
+        referralCredits: user.referralCredits
+      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -130,19 +149,25 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Use Mongoose findOne to look up user by email (normalize to lowercase)
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     if (!user.isVerified) {
-      return res.status(400).json({ message: 'Please verify your account first.' });
+      return res.status(401).json({ message: 'Please verify your account before logging in.' });
     }
 
+    // Use bcrypt to compare the provided password against the stored hash
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     // Generate JWT token
@@ -169,11 +194,22 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// @desc    Get user profile
+// @desc    Get current logged-in user profile
 // @route   GET /api/auth/me
 // @access  Private
 router.get('/me', protect, async (req, res) => {
-  res.json(req.user);
+  // req.user is the Mongoose document (minus passwordHash) populated by protect middleware
+  const user = req.user;
+  res.json({
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    institution: user.institution,
+    homeCampus: user.homeCampus,
+    referralCode: user.referralCode,
+    referralCredits: user.referralCredits,
+    isVerified: user.isVerified
+  });
 });
 
 export default router;

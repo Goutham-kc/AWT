@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 export const Verification: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { login } = useApp();
   const emailState = location.state?.email || '';
 
   const [email, setEmail] = useState(emailState);
@@ -37,6 +39,20 @@ export const Verification: React.FC = () => {
       }
 
       setSuccessMsg(`${data.message} Redirecting...`);
+
+      // Auto-login: use the token and user returned from the backend
+      if (data.token && data.user) {
+        login(data.token, {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          institution: data.user.institution,
+          homeCampus: data.user.homeCampus,
+          referralCode: data.user.referralCode,
+          referralCredits: data.user.referralCredits
+        });
+      }
+
       setTimeout(() => {
         navigate('/marketplace');
       }, 1500);

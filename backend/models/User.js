@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema({
   },
   homeCampus: {
     type: String,
-    required: true,
+    required: false,
+    default: 'Main Campus',
     trim: true,
   },
   isVerified: {

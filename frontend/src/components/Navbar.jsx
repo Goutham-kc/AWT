@@ -57,8 +57,13 @@ export const Navbar = () => {
         {/* Left Section: Brand Logo & Navigation Links */}
         <div className="flex items-center gap-6 lg:gap-8">
           <Link 
-            className="font-headline text-xl sm:text-2xl font-extrabold text-primary flex items-center gap-2 tracking-tight group" 
-            to="/marketplace"
+            className="font-headline text-xl sm:text-2xl font-extrabold text-primary flex items-center gap-2 tracking-tight group cursor-pointer" 
+            to="/"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              setMobileMenuOpen(false);
+            }}
+            title="Go to Home"
           >
             <span className="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">school</span>
             <span>Academica Exchange</span>

@@ -7,7 +7,6 @@ export const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [institution, setInstitution] = useState('');
-  const [homeCampus, setHomeCampus] = useState('');
   const [referredBy, setReferredBy] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +29,6 @@ export const SignUp = () => {
           email,
           password,
           institution,
-          homeCampus,
           referredBy: referredBy || undefined
         })
       });
@@ -81,7 +79,7 @@ export const SignUp = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200"
-                placeholder="e.g. Goutham K C"
+                placeholder="e.g. John Doe"
                 required
               />
             </div>
@@ -120,19 +118,7 @@ export const SignUp = () => {
                 value={institution}
                 onChange={(e) => setInstitution(e.target.value)}
                 className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200"
-                placeholder="e.g. MIT"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-on-surface mb-1">Home Campus</label>
-              <input
-                type="text"
-                value={homeCampus}
-                onChange={(e) => setHomeCampus(e.target.value)}
-                className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200"
-                placeholder="e.g. Main Campus"
+                placeholder="e.g. TKM College of Engineering"
                 required
               />
             </div>

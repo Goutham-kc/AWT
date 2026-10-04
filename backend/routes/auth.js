@@ -23,7 +23,7 @@ router.post('/signup', async (req, res) => {
   const { name, email, password, institution, homeCampus, referredBy } = req.body;
 
   try {
-    if (!name || !email || !password || !institution || !homeCampus) {
+    if (!name || !email || !password || !institution) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -32,6 +32,7 @@ router.post('/signup', async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const finalHomeCampus = homeCampus || institution || 'Main Campus';
 
     // Use Mongoose findOne to check for existing email
     const userExists = await User.findOne({ email: normalizedEmail });
@@ -47,7 +48,7 @@ router.post('/signup', async (req, res) => {
       userExists.passwordHash = await bcrypt.hash(password, salt);
       userExists.name = name;
       userExists.institution = institution;
-      userExists.homeCampus = homeCampus;
+      userExists.homeCampus = finalHomeCampus;
       userExists.verificationOTP = Math.floor(100000 + Math.random() * 900000).toString();
       userExists.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 mins expiry
       userExists.referredBy = referredBy || null;
@@ -77,7 +78,7 @@ router.post('/signup', async (req, res) => {
       email: normalizedEmail,
       passwordHash,
       institution,
-      homeCampus,
+      homeCampus: finalHomeCampus,
       verificationOTP: otp,
       otpExpiresAt,
       referredBy: referredBy || null,

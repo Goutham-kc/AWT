@@ -56,7 +56,7 @@ const SAMPLE_LISTINGS = [
     deposit: 150,
     category: 'cycles',
     imageUrl: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=400&q=80',
-    lister: { name: 'Goutham KC', isVerified: true }
+    lister: { name: 'John Doe', isVerified: true }
   }
 ];
 

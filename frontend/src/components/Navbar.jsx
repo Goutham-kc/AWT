@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
@@ -12,6 +13,18 @@ export const Navbar = () => {
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsLoginOpen(false);
+      }
+    };
+    if (isLoginOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLoginOpen]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -228,18 +241,25 @@ export const Navbar = () => {
         </div>
       )}
 
-      {/* Login Modal Overlay */}
-      {isLoginOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl border border-outline-variant shadow-lg max-w-md w-full p-6 relative">
+      {/* Login Modal Overlay via Portal to prevent header containing-block clipping */}
+      {isLoginOpen && createPortal(
+        <div 
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsLoginOpen(false);
+          }}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4 transition-opacity animate-in fade-in duration-200"
+        >
+          <div className="bg-white rounded-2xl border border-outline-variant shadow-2xl max-w-md w-full p-6 sm:p-8 relative">
             <button 
               onClick={() => setIsLoginOpen(false)} 
-              className="absolute top-4 right-4 text-outline hover:text-on-surface"
+              className="absolute top-4 right-4 text-outline hover:text-on-surface p-1 rounded-full hover:bg-surface-container-low transition-colors cursor-pointer"
+              title="Close"
             >
-              <span className="material-symbols-outlined">close</span>
+              <span className="material-symbols-outlined text-xl">close</span>
             </button>
             
-            <h2 className="font-headline text-2xl font-bold text-primary mb-4 text-center">Log In to Your Account</h2>
+            <h2 className="font-headline text-2xl font-bold text-primary mb-1 text-center">Log In to Your Account</h2>
+            <p className="text-xs text-on-surface-variant text-center mb-6">Enter your student credentials to continue</p>
             
             {errorMsg && (
               <div className="bg-error-container/20 border border-error-red text-error-red p-3 rounded-lg mb-4 text-sm font-semibold">
@@ -254,7 +274,7 @@ export const Navbar = () => {
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200" 
+                  className="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200" 
                   placeholder="e.g. yourname@tkmce.ac.in" 
                   required
                 />
@@ -266,7 +286,7 @@ export const Navbar = () => {
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent font-body-sm text-body-sm transition-all duration-200" 
+                  className="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200" 
                   placeholder="••••••••" 
                   required
                 />
@@ -275,17 +295,25 @@ export const Navbar = () => {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50"
+                className="w-full py-2.5 bg-primary text-white text-sm rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-sm font-bold disabled:opacity-50 cursor-pointer mt-2"
               >
                 {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
             
-            <div className="mt-4 text-center text-sm text-on-surface-variant">
-              Don't have an account? <Link to="/signup" onClick={() => setIsLoginOpen(false)} className="text-primary font-bold hover:underline">Get Started</Link>
+            <div className="mt-5 text-center text-sm text-on-surface-variant">
+              Don't have an account?{' '}
+              <Link 
+                to="/signup" 
+                onClick={() => setIsLoginOpen(false)} 
+                className="text-primary font-bold hover:underline"
+              >
+                Get Started
+              </Link>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </header>
   );

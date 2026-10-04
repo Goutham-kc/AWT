@@ -62,7 +62,7 @@ const SAMPLE_LISTINGS = [
 
 export const Marketplace = () => {
   const navigate = useNavigate();
-  const { addToCart, token, setIsLoginOpen } = useApp();
+  const { addToCart, token, user, setIsLoginOpen } = useApp();
 
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,6 +130,11 @@ export const Marketplace = () => {
 
     const recipientId = item.lister?._id;
     if (!recipientId) {
+      navigate('/conversations');
+      return;
+    }
+
+    if (user?.id && recipientId === user.id) {
       navigate('/conversations');
       return;
     }

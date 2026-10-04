@@ -10,19 +10,27 @@ export const Chat = () => {
 
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const activeConvRef = useRef(null);
 
   const [conversations, setConversations] = useState([]);
   const [activeConv, setActiveConv] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
   
   // Message input state
   const [inputText, setInputText] = useState('');
+  const [sending, setSending] = useState(false);
   
   // Proposal modal states
   const [showProposal, setShowProposal] = useState(false);
   const [proposedPrice, setProposedPrice] = useState('');
   const [meetupLocation, setMeetupLocation] = useState('');
   const [meetupTime, setMeetupTime] = useState('');
+
+  // Keep activeConvRef in sync with activeConv
+  useEffect(() => {
+    activeConvRef.current = activeConv;
+  }, [activeConv]);
 
   // Fetch Conversations list
   const fetchConversations = async () => {
@@ -32,13 +40,16 @@ export const Chat = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && Array.isArray(data)) {
         setConversations(data);
         if (targetConvId) {
           const found = data.find(c => c._id === targetConvId);
-          if (found) setActiveConv(found);
-          else if (data.length > 0) setActiveConv(data[0]);
-        } else if (data.length > 0 && !activeConv) {
+          if (found) {
+            setActiveConv(found);
+          } else if (data.length > 0 && !activeConvRef.current) {
+            setActiveConv(data[0]);
+          }
+        } else if (data.length > 0 && !activeConvRef.current) {
           setActiveConv(data[0]);
         }
       }
@@ -62,19 +73,22 @@ export const Chat = () => {
     socket.on('connect', () => {
       console.log('Socket.io connected to server.');
       socket.emit('register_user', user.id);
+      if (activeConvRef.current?._id) {
+        socket.emit('join_conversation', activeConvRef.current._id);
+      }
     });
 
     // Listen for new incoming messages
     socket.on('new_message', (msg) => {
-      // Append to active message log if conversation matches
-      setMessages((prev) => {
-        if (prev.length > 0 && prev[0].conversation === msg.conversation) {
-          // Prevent duplicates
+      const currentActive = activeConvRef.current;
+      const msgConvId = typeof msg.conversation === 'object' ? msg.conversation?._id : msg.conversation;
+
+      if (currentActive && currentActive._id === msgConvId) {
+        setMessages((prev) => {
           if (prev.some(m => m._id === msg._id)) return prev;
           return [...prev, msg];
-        }
-        return prev;
-      });
+        });
+      }
 
       // Refresh last message preview in list
       fetchConversations();
@@ -85,16 +99,17 @@ export const Chat = () => {
     };
   }, [token, user]);
 
-  // Load message log on active conversation change
+  // Load message history on active conversation change
   useEffect(() => {
     const fetchMessages = async () => {
       if (!token || !activeConv) return;
+      setLoadingMessages(true);
       try {
         const res = await fetch(`/api/chats/conversations/${activeConv._id}/messages`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
-        if (res.ok) {
+        if (res.ok && Array.isArray(data)) {
           setMessages(data);
           
           // Join conversation Socket room
@@ -102,31 +117,71 @@ export const Chat = () => {
         }
       } catch (err) {
         console.error('Failed to load message history:', err);
+      } finally {
+        setLoadingMessages(false);
       }
     };
+
     fetchMessages();
-  }, [activeConv, token]);
+  }, [activeConv?._id, token]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!inputText.trim() || !activeConv || !user) return;
-
-    socketRef.current?.emit('send_message', {
-      conversationId: activeConv._id,
-      senderId: user.id,
-      content,
-      type: 'text'
-    });
+    const text = inputText.trim();
+    if (!text || !activeConv || !user || sending) return;
 
     setInputText('');
+    setSending(true);
+
+    try {
+      // Send via REST API endpoint (persists to DB and triggers socket broadcast)
+      const res = await fetch(`/api/chats/conversations/${activeConv._id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          content: text,
+          type: 'text'
+        })
+      });
+
+      if (res.ok) {
+        const savedMsg = await res.json();
+        setMessages((prev) => {
+          if (prev.some(m => m._id === savedMsg._id)) return prev;
+          return [...prev, savedMsg];
+        });
+        fetchConversations();
+      } else {
+        // Fallback to socket directly
+        socketRef.current?.emit('send_message', {
+          conversationId: activeConv._id,
+          senderId: user.id,
+          content: text,
+          type: 'text'
+        });
+      }
+    } catch (err) {
+      // Fallback to socket on network glitch
+      socketRef.current?.emit('send_message', {
+        conversationId: activeConv._id,
+        senderId: user.id,
+        content: text,
+        type: 'text'
+      });
+    } finally {
+      setSending(false);
+    }
   };
 
-  const handleSendProposal = (e) => {
+  const handleSendProposal = async (e) => {
     e.preventDefault();
     if (!activeConv || !user) return;
 
@@ -147,13 +202,45 @@ export const Chat = () => {
       return;
     }
 
-    socketRef.current?.emit('send_message', {
-      conversationId: activeConv._id,
-      senderId: user.id,
-      content,
-      type,
-      metadata
-    });
+    try {
+      const res = await fetch(`/api/chats/conversations/${activeConv._id}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          content: contentStr,
+          type,
+          metadata
+        })
+      });
+
+      if (res.ok) {
+        const savedMsg = await res.json();
+        setMessages((prev) => {
+          if (prev.some(m => m._id === savedMsg._id)) return prev;
+          return [...prev, savedMsg];
+        });
+        fetchConversations();
+      } else {
+        socketRef.current?.emit('send_message', {
+          conversationId: activeConv._id,
+          senderId: user.id,
+          content: contentStr,
+          type,
+          metadata
+        });
+      }
+    } catch (err) {
+      socketRef.current?.emit('send_message', {
+        conversationId: activeConv._id,
+        senderId: user.id,
+        content: contentStr,
+        type,
+        metadata
+      });
+    }
 
     // Reset proposal fields
     setProposedPrice('');
@@ -163,48 +250,67 @@ export const Chat = () => {
   };
 
   const getRecipientName = (conv) => {
-    const peer = conv.participants.find(p => p._id !== user?.id);
-    return peer ? peer.name : 'Unknown User';
+    if (!conv?.participants || !Array.isArray(conv.participants)) return 'Chat';
+    const peer = conv.participants.find(p => {
+      const pid = typeof p === 'object' ? p?._id?.toString() : p?.toString();
+      return pid && pid !== user?.id?.toString();
+    });
+    return peer?.name || 'Classmate';
   };
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex gap-6 h-[calc(100vh-80px)] min-h-[500px]">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6 h-[calc(100vh-80px)] min-h-[500px]">
       
       {/* Left panel: Conversation list */}
       <aside className="w-full md:w-80 flex-shrink-0 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col">
-        <h3 className="font-headline font-bold text-lg text-primary p-4 border-b border-outline-variant">Messages Inbox</h3>
+        <h3 className="font-headline font-bold text-lg text-primary p-4 border-b border-outline-variant flex items-center justify-between">
+          <span>Messages Inbox</span>
+          <span className="text-xs bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">
+            {conversations.length}
+          </span>
+        </h3>
         <div className="flex-1 overflow-y-auto divide-y divide-outline-variant">
           {conversations.length === 0 ? (
-            <div className="text-center py-12 text-outline text-sm">No active chats.</div>
+            <div className="text-center py-12 px-4 text-outline text-sm">
+              <span className="material-symbols-outlined text-4xl mb-2 text-outline/60 block">chat_bubble_outline</span>
+              No active conversations yet.<br />
+              <span className="text-xs text-on-surface-variant">Message a seller from Marketplace or Cart to start chatting!</span>
+            </div>
           ) : (
-            conversations.map((conv) => (
-              <div 
-                key={conv._id}
-                onClick={() => setActiveConv(conv)}
-                className={`p-4 cursor-pointer transition-colors ${
-                  activeConv?._id === conv._id ? 'bg-primary/5 border-l-4 border-primary' : 'hover:bg-surface-container-low'
-                }`}
-              >
-                <div className="flex justify-between items-start gap-1">
-                  <h4 className="font-headline font-bold text-sm text-on-surface line-clamp-1">
-                    {getRecipientName(conv)}
-                  </h4>
-                  <span className="text-[10px] text-outline font-semibold">
-                    {new Date(conv.updatedAt).toLocaleDateString()}
-                  </span>
+            conversations.map((conv) => {
+              const isSelected = activeConv?._id === conv._id;
+              const lastSenderId = (conv.lastMessage?.sender?._id || conv.lastMessage?.sender)?.toString();
+              const isMe = lastSenderId === user?.id?.toString();
+
+              return (
+                <div 
+                  key={conv._id}
+                  onClick={() => setActiveConv(conv)}
+                  className={`p-4 cursor-pointer transition-colors ${
+                    isSelected ? 'bg-primary/5 border-l-4 border-primary' : 'hover:bg-surface-container-low'
+                  }`}
+                >
+                  <div className="flex justify-between items-start gap-1">
+                    <h4 className="font-headline font-bold text-sm text-on-surface line-clamp-1">
+                      {getRecipientName(conv)}
+                    </h4>
+                    <span className="text-[10px] text-outline font-semibold whitespace-nowrap">
+                      {new Date(conv.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  {conv.associatedListing && (
+                    <p className="text-xs text-primary font-semibold mt-1 line-clamp-1">
+                      Item: {conv.associatedListing.title}
+                    </p>
+                  )}
+                  {conv.lastMessage && (
+                    <p className="text-xs text-outline line-clamp-1 mt-1">
+                      {isMe ? 'You: ' : ''}{conv.lastMessage.content}
+                    </p>
+                  )}
                 </div>
-                {conv.associatedListing && (
-                  <p className="text-xs text-primary font-bold mt-1 line-clamp-1">
-                    Ref: {conv.associatedListing.title}
-                  </p>
-                )}
-                {conv.lastMessage && (
-                  <p className="text-xs text-outline line-clamp-1 mt-1">
-                    {conv.lastMessage.sender._id === user?.id ? 'You: ' : ''}{conv.lastMessage.content}
-                  </p>
-                )}
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </aside>
@@ -216,11 +322,12 @@ export const Chat = () => {
             {/* Context Header */}
             <div className="p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center flex-shrink-0">
               <div>
-                <h3 className="font-headline font-bold text-on-surface text-base">
-                  {getRecipientName(activeConv)}
+                <h3 className="font-headline font-bold text-on-surface text-base flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-xl">account_circle</span>
+                  <span>{getRecipientName(activeConv)}</span>
                 </h3>
                 {activeConv.associatedListing && (
-                  <p className="text-xs text-primary font-bold">
+                  <p className="text-xs text-primary font-semibold mt-0.5">
                     Referencing Item: {activeConv.associatedListing.title} ({activeConv.associatedListing.pricePerDay} credits/day)
                   </p>
                 )}
@@ -228,9 +335,9 @@ export const Chat = () => {
               
               <button 
                 onClick={() => setShowProposal(!showProposal)}
-                className="px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-container transition-colors shadow-sm"
+                className="px-3 py-1.5 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary-container transition-colors shadow-sm cursor-pointer"
               >
-                Propose Terms
+                {showProposal ? 'Close Terms' : 'Propose Terms'}
               </button>
             </div>
 
@@ -239,38 +346,38 @@ export const Chat = () => {
               <div className="p-4 bg-white border-b border-outline-variant space-y-3">
                 <h4 className="text-sm font-bold text-primary">Propose Meetup or Rate adjustment</h4>
                 <form onSubmit={handleSendProposal} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <label className="block text-xs font-semibold text-on-surface">Adjust Rate (credits/day)</label>
                     <input 
                       type="number" 
                       placeholder="e.g. 12"
                       value={proposedPrice}
                       onChange={(e) => setProposedPrice(e.target.value)}
-                      className="w-full px-3 py-1 border border-outline-variant rounded-md text-xs focus:outline-none"
+                      className="w-full px-3 py-1.5 border border-outline-variant rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <label className="block text-xs font-semibold text-on-surface">Handoff Meetup Location</label>
                     <input 
                       type="text" 
-                      placeholder="e.g. Dorm Block B Entrance"
+                      placeholder="e.g. Mechanical Block Entrance"
                       value={meetupLocation}
                       onChange={(e) => setMeetupLocation(e.target.value)}
-                      className="w-full px-3 py-1 border border-outline-variant rounded-md text-xs focus:outline-none"
+                      className="w-full px-3 py-1.5 border border-outline-variant rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
-                  <div className="space-y-2 md:col-span-2">
+                  <div className="space-y-1 md:col-span-2">
                     <label className="block text-xs font-semibold text-on-surface">Meetup Date & Time</label>
                     <input 
                       type="datetime-local" 
                       value={meetupTime}
                       onChange={(e) => setMeetupTime(e.target.value)}
-                      className="w-full px-3 py-1 border border-outline-variant rounded-md text-xs focus:outline-none"
+                      className="w-full px-3 py-1.5 border border-outline-variant rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                   </div>
                   <button 
                     type="submit"
-                    className="md:col-span-2 py-1.5 bg-secondary text-white text-xs font-bold rounded-lg hover:bg-secondary-container transition-colors"
+                    className="md:col-span-2 py-2 bg-secondary text-white text-xs font-bold rounded-lg hover:bg-secondary/90 transition-colors cursor-pointer"
                   >
                     Submit Proposal
                   </button>
@@ -280,58 +387,82 @@ export const Chat = () => {
 
             {/* Messages Area */}
             <div className="flex-1 p-4 overflow-y-auto bg-surface-container-lowest space-y-4">
-              {messages.map((msg) => {
-                const isMe = msg.sender._id === user?.id;
-                const isSystem = msg.content.startsWith('System:');
-                
-                if (isSystem) {
-                  return (
-                    <div key={msg._id} className="flex justify-center my-2">
-                      <span className="bg-primary/10 border border-primary/20 text-primary text-xs font-semibold px-4 py-1.5 rounded-full text-center max-w-xl">
-                        {msg.content}
-                      </span>
-                    </div>
-                  );
-                }
+              {loadingMessages ? (
+                <div className="text-center py-8 text-outline text-xs font-semibold">Loading messages...</div>
+              ) : messages.length === 0 ? (
+                <div className="text-center py-12 text-outline text-xs font-semibold">
+                  <span className="material-symbols-outlined text-4xl mb-1 text-outline/50 block">forum</span>
+                  No messages yet. Send a message below to start coordinating!
+                </div>
+              ) : (
+                messages.map((msg) => {
+                  const senderId = (msg.sender?._id || msg.sender)?.toString();
+                  const isMe = senderId === user?.id?.toString();
+                  const isSystem = msg.content?.startsWith('System:');
+                  
+                  if (isSystem) {
+                    return (
+                      <div key={msg._id} className="flex justify-center my-2">
+                        <span className="bg-primary/10 border border-primary/20 text-primary text-xs font-semibold px-4 py-1.5 rounded-full text-center max-w-xl">
+                          {msg.content}
+                        </span>
+                      </div>
+                    );
+                  }
 
-                return (
-                  <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[70%] rounded-xl px-4 py-2 text-sm shadow-sm ${
-                      isMe ? 'bg-primary text-white rounded-tr-none' : 'bg-surface border border-outline-variant text-on-surface rounded-tl-none'
-                    }`}>
-                      <div className="text-[10px] opacity-75 font-semibold mb-0.5">{msg.sender.name}</div>
-                      <p className="text-sm leading-relaxed">{msg.content}</p>
-                      <div className="text-[9px] opacity-50 text-right mt-1">
-                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  const isProposal = msg.type === 'price_proposal' || msg.type === 'meetup_proposal';
+
+                  return (
+                    <div key={msg._id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[75%] rounded-xl px-4 py-2.5 text-sm shadow-sm ${
+                        isProposal 
+                          ? 'bg-secondary/10 border border-secondary text-on-surface'
+                          : isMe 
+                            ? 'bg-primary text-white rounded-tr-none' 
+                            : 'bg-white border border-outline-variant text-on-surface rounded-tl-none'
+                      }`}>
+                        <div className={`text-[10px] font-semibold mb-0.5 ${isMe ? 'text-white/80' : 'text-primary'}`}>
+                          {isMe ? 'You' : (msg.sender?.name || 'Classmate')}
+                        </div>
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                        <div className={`text-[9px] text-right mt-1 ${isMe ? 'text-white/60' : 'text-outline'}`}>
+                          {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
               <div ref={messagesEndRef} />
             </div>
 
             {/* Input Form */}
-            <form onSubmit={handleSendMessage} className="p-4 border-t border-outline-variant flex gap-2 flex-shrink-0">
+            <form onSubmit={handleSendMessage} className="p-4 border-t border-outline-variant flex gap-2 flex-shrink-0 bg-white">
               <input 
                 type="text" 
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                disabled={sending}
+                className="flex-1 px-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm transition-all"
               />
               <button 
                 type="submit"
-                className="px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary-container transition-colors shadow-sm"
+                disabled={sending || !inputText.trim()}
+                className="px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary-container transition-colors shadow-sm disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
               >
-                Send
+                <span>Send</span>
+                <span className="material-symbols-outlined text-[18px]">send</span>
               </button>
             </form>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-outline">
-            <span className="material-symbols-outlined text-5xl mb-2">forum</span>
-            <p className="text-sm font-semibold">Select a conversation thread to start real-time coordination.</p>
+          <div className="flex-1 flex flex-col items-center justify-center text-outline p-6 text-center">
+            <span className="material-symbols-outlined text-5xl mb-2 text-outline/60">forum</span>
+            <h4 className="font-bold text-on-surface text-base mb-1">Your Messages</h4>
+            <p className="text-sm font-semibold max-w-sm">
+              Select a conversation thread from the left or message a student from any listing to discuss handoffs and pricing.
+            </p>
           </div>
         )}
       </div>

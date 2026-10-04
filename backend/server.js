@@ -35,6 +35,7 @@ const io = new Server(server, {
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
+app.set('io', io);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

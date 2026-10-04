@@ -8,7 +8,7 @@ import { useApp } from '../context/AppContext';
 export const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token, addToCart, setIsLoginOpen } = useApp();
+  const { token, user, addToCart, setIsLoginOpen } = useApp();
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -137,6 +137,11 @@ export const ListingDetail = () => {
 
     if (!listing?.lister?._id) {
       alert('Enquiry messaging is available for registered seller accounts.');
+      return;
+    }
+
+    if (user?.id && listing.lister._id === user.id) {
+      navigate('/conversations');
       return;
     }
 

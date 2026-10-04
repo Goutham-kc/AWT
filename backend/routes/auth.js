@@ -7,6 +7,7 @@ import Booking from '../models/Booking.js';
 import Conversation from '../models/Conversation.js';
 import Message from '../models/Message.js';
 import { protect } from '../middleware/auth.js';
+import { sendVerificationEmail } from '../utils/emailService.js';
 
 const router = express.Router();
 
@@ -52,7 +53,8 @@ router.post('/signup', async (req, res) => {
       userExists.referredBy = referredBy || null;
       await userExists.save();
 
-      console.log(`[MOCK EMAIL SERVICE] OTP for ${normalizedEmail}: ${userExists.verificationOTP}`);
+      // Send verification email via Nodemailer (or fallback to console if SMTP unconfigured)
+      await sendVerificationEmail(normalizedEmail, userExists.verificationOTP, userExists.name);
 
       return res.status(200).json({
         message: 'A new verification OTP has been sent to your email.',
@@ -82,7 +84,8 @@ router.post('/signup', async (req, res) => {
       isVerified: false
     });
 
-    console.log(`[MOCK EMAIL SERVICE] OTP for ${normalizedEmail}: ${otp}`);
+    // Send verification email via Nodemailer
+    await sendVerificationEmail(normalizedEmail, otp, name);
 
     res.status(201).json({
       message: 'Signup successful. A verification OTP has been sent to your email.',
@@ -190,10 +193,10 @@ router.post('/resend-otp', async (req, res) => {
     user.otpExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
     await user.save();
 
-    console.log(`[MOCK EMAIL SERVICE] Resent OTP for ${user.email}: ${otp}`);
+    await sendVerificationEmail(user.email, otp, user.name);
 
     res.json({
-      message: 'A new verification OTP has been generated.',
+      message: 'A new verification OTP has been sent to your email.',
       otp
     });
   } catch (err) {

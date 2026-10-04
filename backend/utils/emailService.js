@@ -4,24 +4,39 @@ import nodemailer from 'nodemailer';
 const createTransporter = () => {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = Number(process.env.SMTP_PORT) || 587;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER ? process.env.SMTP_USER.trim() : null;
+  // Automatically strip all spaces from the 16-character Google App Password
+  const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : null;
 
   if (!user || !pass) {
     return null;
   }
 
+  // If using Gmail, use the native 'gmail' service config
+  if (host === 'smtp.gmail.com' || (user && user.endsWith('@gmail.com'))) {
+    return nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user,
+        pass
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000
+    });
+  }
+
   return nodemailer.createTransport({
     host,
     port,
-    secure: port === 465, // true for 465, false for other ports
+    secure: port === 465,
     auth: {
       user,
       pass
     },
-    connectionTimeout: 5000, // 5s connection timeout
-    greetingTimeout: 5000,   // 5s greeting timeout
-    socketTimeout: 8000      // 8s socket timeout
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000
   });
 };
 

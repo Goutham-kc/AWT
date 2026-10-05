@@ -173,7 +173,7 @@ router.post('/request', protect, async (req, res) => {
     }
 
     // Post system message in conversation notifying of the request
-    const sysMsgText = `System: ${req.user.name} requested to rent "${listing.title}" from ${start.toLocaleDateString()} to ${end.toLocaleDateString()} for a grand total of ${grandTotal} credits (including deposit).`;
+    const sysMsgText = `System: ${req.user.name} requested to rent "${listing.title}" from ${start.toLocaleDateString()} to ${end.toLocaleDateString()} for a grand total of ₹${grandTotal} (including deposit).`;
     const message = await Message.create({
       conversation: conversation._id,
       sender: req.user._id,

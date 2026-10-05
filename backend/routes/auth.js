@@ -165,7 +165,9 @@ router.post('/verify-otp', async (req, res) => {
         institution: user.institution,
         homeCampus: user.homeCampus,
         referralCode: user.referralCode,
-        referralCredits: user.referralCredits
+        referralCredits: user.referralCredits,
+        bio: user.bio || '',
+        phone: user.phone || ''
       }
     });
   } catch (error) {
@@ -249,7 +251,9 @@ router.post('/login', async (req, res) => {
         institution: user.institution,
         homeCampus: user.homeCampus,
         referralCode: user.referralCode,
-        referralCredits: user.referralCredits
+        referralCredits: user.referralCredits,
+        bio: user.bio || '',
+        phone: user.phone || ''
       }
     });
   } catch (error) {
@@ -271,8 +275,62 @@ router.get('/me', protect, async (req, res) => {
     homeCampus: user.homeCampus,
     referralCode: user.referralCode,
     referralCredits: user.referralCredits,
+    bio: user.bio || '',
+    phone: user.phone || '',
     isVerified: user.isVerified
   });
+});
+
+// @desc    Update user profile & password
+// @route   PUT /api/auth/profile
+// @access  Private
+router.put('/profile', protect, async (req, res) => {
+  const { name, bio, phone, currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (name) user.name = name.trim();
+    if (bio !== undefined) user.bio = bio.trim();
+    if (phone !== undefined) user.phone = phone.trim();
+
+    // Password change verification if requested
+    if (newPassword) {
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+      }
+      if (currentPassword) {
+        const isMatch = await bcrypt.compare(currentPassword, user.passwordHash);
+        if (!isMatch) {
+          return res.status(400).json({ message: 'Current password does not match' });
+        }
+      }
+      const salt = await bcrypt.genSalt(10);
+      user.passwordHash = await bcrypt.hash(newPassword, salt);
+    }
+
+    await user.save();
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        institution: user.institution,
+        homeCampus: user.homeCampus,
+        referralCode: user.referralCode,
+        referralCredits: user.referralCredits,
+        bio: user.bio || '',
+        phone: user.phone || ''
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 // @desc    Clean all accounts and related records (strictly via Mongoose)

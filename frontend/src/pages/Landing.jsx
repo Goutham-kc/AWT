@@ -194,9 +194,14 @@ export const Landing = () => {
             <div className="text-on-surface-variant">© 2026 Academica Exchange. All rights reserved.</div>
           </div>
           <nav className="flex flex-wrap justify-center gap-6">
-            <Link className="text-on-surface-variant hover:underline hover:text-primary transition-colors" to="/marketplace">Browse</Link>
+            <Link className="text-on-surface-variant hover:underline hover:text-primary transition-colors" to="/marketplace">Marketplace</Link>
+            <Link className="text-on-surface-variant hover:underline hover:text-primary transition-colors" to="/student-trust">Student Trust & Safety</Link>
             <Link className="text-on-surface-variant hover:underline hover:text-primary transition-colors" to="/referrals">Invite Friends</Link>
-            <span className="text-on-surface-variant hover:underline hover:text-primary transition-colors cursor-pointer" onClick={() => setIsLoginOpen(true)}>Log In</span>
+            {token ? (
+              <Link className="text-on-surface-variant hover:underline hover:text-primary transition-colors" to="/profile">My Profile</Link>
+            ) : (
+              <span className="text-on-surface-variant hover:underline hover:text-primary transition-colors cursor-pointer" onClick={() => setIsLoginOpen(true)}>Log In</span>
+            )}
           </nav>
         </div>
       </footer>

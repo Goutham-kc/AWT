@@ -41,7 +41,9 @@ export const AppProvider = ({ children }) => {
             institution: userData.institution,
             homeCampus: userData.homeCampus,
             referralCode: userData.referralCode,
-            referralCredits: userData.referralCredits
+            referralCredits: userData.referralCredits,
+            bio: userData.bio || '',
+            phone: userData.phone || ''
           };
           setUser(mappedUser);
           localStorage.setItem('user', JSON.stringify(mappedUser));
@@ -68,6 +70,15 @@ export const AppProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('cart');
+  };
+
+  const updateUser = (fields) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, ...fields };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const addToCart = (item) => {
@@ -104,6 +115,7 @@ export const AppProvider = ({ children }) => {
       setIsLoginOpen,
       login,
       logout,
+      updateUser,
       addToCart,
       removeFromCart,
       clearCart,

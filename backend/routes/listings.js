@@ -56,6 +56,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @desc    Get listings created by the logged-in user
+// @route   GET /api/listings/mine
+// @access  Private
+router.get('/mine', protect, async (req, res) => {
+  try {
+    const listings = await Listing.find({ lister: req.user._id }).sort({ createdAt: -1 });
+    res.json(listings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Get single listing details
 // @route   GET /api/listings/:id
 // @access  Public

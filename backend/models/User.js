@@ -53,6 +53,16 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  bio: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  phone: {
+    type: String,
+    default: '',
+    trim: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

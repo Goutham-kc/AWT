@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 export const Settings = () => {
-  const [fullName, setFullName] = useState('Alex Chen');
+  const { user, token, updateUser, logout } = useApp();
+
+  const [fullName, setFullName] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  const [campus, setCampus] = useState('NYU');
+  const [campus, setCampus] = useState('TKMCE Kollam');
   const [nearbyCampuses, setNearbyCampuses] = useState(true);
 
   const [notifications, setNotifications] = useState({
@@ -18,14 +22,24 @@ export const Settings = () => {
   });
 
   const [twoFactor, setTwoFactor] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
-  const showMessage = (text) => {
+  useEffect(() => {
+    if (user) {
+      setFullName(user.name || '');
+      setCampus(user.institution || user.homeCampus || 'TKM College of Engineering');
+    }
+  }, [user]);
+
+  const showToast = (text, error = false) => {
     setMessage(text);
-
+    setIsError(error);
     setTimeout(() => {
       setMessage('');
-    }, 2500);
+      setIsError(false);
+    }, 3000);
   };
 
   const handleNotificationChange = (name) => {
@@ -35,56 +49,121 @@ export const Settings = () => {
     }));
   };
 
+  const handleSaveAccount = async () => {
+    if (!token) {
+      showToast('Please log in first', true);
+      return;
+    }
+
+    if (newPassword && newPassword !== confirmPassword) {
+      showToast('New passwords do not match', true);
+      return;
+    }
+
+    if (newPassword && newPassword.length < 6) {
+      showToast('New password must be at least 6 characters', true);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = { name: fullName };
+      if (newPassword) {
+        payload.currentPassword = currentPassword;
+        payload.newPassword = newPassword;
+      }
+
+      const res = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to update settings');
+      }
+
+      updateUser({ name: data.user.name });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      showToast('Account changes saved successfully!');
+    } catch (err) {
+      showToast(err.message || 'Error updating settings', true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="flex-grow bg-slate-50 text-slate-900">
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        {/* Header Breadcrumb */}
+        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+          <div>
+            <h1 className="text-3xl font-extrabold text-slate-900">Settings</h1>
+            <p className="text-sm text-slate-500 mt-1">Manage your student credentials, security, and notification preferences.</p>
+          </div>
+          <Link
+            to="/profile"
+            className="px-4 py-2 border border-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-100 transition-colors flex items-center gap-1.5"
+          >
+            <span className="material-symbols-outlined text-base">person</span>
+            View Profile
+          </Link>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
           {/* Sidebar */}
           <aside className="lg:col-span-1">
-            <div className="bg-white rounded-2xl border border-slate-200 p-5 sticky top-6">
-              <h2 className="text-xl font-bold mb-5">Settings</h2>
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 sticky top-20 shadow-sm space-y-4">
+              <h2 className="text-lg font-bold">Preferences</h2>
 
-              <nav className="space-y-2">
+              <nav className="space-y-1 text-sm font-medium">
                 <a
                   href="#account"
-                  className="block px-4 py-3 rounded-xl bg-slate-100 font-medium"
+                  className="block px-4 py-2.5 rounded-xl bg-slate-100 text-primary font-bold transition-colors"
                 >
-                  Account
+                  Account & Security
                 </a>
 
                 <a
                   href="#campus"
-                  className="block px-4 py-3 rounded-xl hover:bg-slate-100"
+                  className="block px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                 >
-                  Campus Preferences
+                  Campus Community
                 </a>
 
                 <a
                   href="#notifications"
-                  className="block px-4 py-3 rounded-xl hover:bg-slate-100"
+                  className="block px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                 >
                   Notifications
                 </a>
 
                 <a
                   href="#privacy"
-                  className="block px-4 py-3 rounded-xl hover:bg-slate-100"
+                  className="block px-4 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                 >
-                  Privacy & Security
-                </a>
-
-                <a
-                  href="#payments"
-                  className="block px-4 py-3 rounded-xl hover:bg-slate-100"
-                >
-                  Payment & Payouts
+                  Privacy & Sessions
                 </a>
               </nav>
 
-              <div className="mt-8 p-4 rounded-xl bg-orange-50 border border-orange-100">
-                <p className="text-sm text-slate-500">Referral Credits</p>
-                <p className="text-2xl font-bold mt-1">₹45.00</p>
+              <div className="p-4 rounded-xl bg-green-50 border border-green-100">
+                <p className="text-xs text-green-700 font-medium">Available Referral Credits</p>
+                <p className="text-2xl font-extrabold text-green-800 mt-1">₹{user?.referralCredits || 0}</p>
+                <Link
+                  to="/referrals"
+                  className="inline-block mt-2 text-xs font-bold text-green-700 hover:underline"
+                >
+                  Invite Friends & Earn &rarr;
+                </Link>
               </div>
             </div>
           </aside>
@@ -92,134 +171,134 @@ export const Settings = () => {
           {/* Main Settings */}
           <section className="lg:col-span-3 space-y-8">
 
-            {/* Account */}
+            {/* Account & Password */}
             <div
               id="account"
-              className="bg-white rounded-2xl border border-slate-200 p-6"
+              className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm"
             >
-              <h2 className="text-2xl font-bold">Account</h2>
-              <p className="text-slate-500 mt-1 mb-6">
-                Manage your personal account information.
+              <h2 className="text-xl font-bold text-slate-900">Student Account</h2>
+              <p className="text-slate-500 text-xs mt-1 mb-6">
+                Manage your student identity and account access credentials.
               </p>
-
-              <div className="flex items-center gap-5 mb-8">
-                <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6sJ0bY0JXQ0v7Q"
-                  alt="Profile"
-                  className="w-20 h-20 rounded-full object-cover border-4 border-white shadow"
-                />
-
-                <button
-                  onClick={() => showMessage('Profile photo option selected')}
-                  className="px-4 py-2 rounded-lg border border-slate-300 hover:bg-slate-50"
-                >
-                  Change Photo
-                </button>
-              </div>
 
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                     Full Name
                   </label>
-
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
-                    College Email
+                  <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                    Verified Institutional Email
                   </label>
-
                   <div className="flex gap-3">
                     <input
                       type="email"
-                      value="alex.chen@university.edu"
+                      value={user?.email || 'student@tkmce.ac.in'}
                       disabled
-                      className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-500"
+                      className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 text-sm font-mono"
                     />
-
-                    <span className="flex items-center px-4 rounded-xl bg-green-50 text-green-700 font-medium">
-                      Verified
+                    <span className="flex items-center px-3.5 py-1 rounded-xl bg-green-100 text-green-800 text-xs font-bold">
+                      ✓ Verified
                     </span>
                   </div>
+                  <p className="text-[11px] text-slate-400 mt-1">College emails cannot be modified to maintain community trust.</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      New Password
+                <div className="pt-4 border-t border-slate-100">
+                  <h3 className="text-sm font-bold text-slate-800 mb-3">Change Password (Optional)</h3>
+                  
+                  <div className="mb-4">
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Current Password
                     </label>
-
                     <input
                       type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      placeholder="Enter new password"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password to verify"
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Confirm Password
-                    </label>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">
+                        New Password
+                      </label>
+                      <input
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="At least 6 characters"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                      />
+                    </div>
 
-                    <input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm password"
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-300"
-                    />
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">
+                        Confirm New Password
+                      </label>
+                      <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Re-enter new password"
+                        className="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => showMessage('Account changes saved')}
-                  className="px-6 py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600"
-                >
-                  Save Changes
-                </button>
+                <div className="pt-2">
+                  <button
+                    onClick={handleSaveAccount}
+                    disabled={loading}
+                    className="px-6 py-2.5 rounded-xl bg-primary text-white font-bold hover:bg-primary-container text-sm shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  >
+                    {loading ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Campus Preferences */}
             <div
               id="campus"
-              className="bg-white rounded-2xl border border-slate-200 p-6"
+              className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm"
             >
-              <h2 className="text-2xl font-bold">Campus Preferences</h2>
-              <p className="text-slate-500 mt-1 mb-6">
-                Choose the campuses you want to discover.
+              <h2 className="text-xl font-bold text-slate-900">Campus Preferences</h2>
+              <p className="text-slate-500 text-xs mt-1 mb-6">
+                Your campus marketplace discovery range.
               </p>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Primary Campus
                 </label>
-
                 <select
                   value={campus}
                   onChange={(e) => setCampus(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-300 bg-white"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  <option value="NYU">NYU</option>
-                  <option value="Columbia">Columbia</option>
-                  <option value="Fordham">Fordham</option>
+                  <option value="TKM College of Engineering">TKM College of Engineering (Kollam)</option>
+                  <option value="Main Campus">Main Campus</option>
+                  <option value="Hostel Area">Hostel Area</option>
                 </select>
               </div>
 
               <div className="flex items-center justify-between py-4 border-t border-slate-200">
                 <div>
-                  <p className="font-semibold">Discover Nearby Campuses</p>
-                  <p className="text-sm text-slate-500">
-                    Show listings from nearby campuses.
+                  <p className="font-semibold text-sm">Discover Campus Hostels</p>
+                  <p className="text-xs text-slate-500">
+                    Show listings from affiliated college dorms and campus hostels.
                   </p>
                 </div>
 
@@ -227,149 +306,116 @@ export const Settings = () => {
                   type="checkbox"
                   checked={nearbyCampuses}
                   onChange={() => setNearbyCampuses(!nearbyCampuses)}
-                  className="w-5 h-5 accent-orange-500"
+                  className="w-5 h-5 accent-primary cursor-pointer"
                 />
               </div>
 
               <button
-                onClick={() => showMessage('Campus preferences saved')}
-                className="mt-4 px-6 py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600"
+                onClick={() => showToast('Campus preferences saved')}
+                className="mt-4 px-6 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition-colors cursor-pointer"
               >
-                Save Changes
+                Save Campus Preference
               </button>
             </div>
 
             {/* Notifications */}
             <div
               id="notifications"
-              className="bg-white rounded-2xl border border-slate-200 p-6"
+              className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm"
             >
-              <h2 className="text-2xl font-bold">Notifications</h2>
-              <p className="text-slate-500 mt-1 mb-6">
-                Choose how you want to receive notifications.
+              <h2 className="text-xl font-bold text-slate-900">Notification Alerts</h2>
+              <p className="text-slate-500 text-xs mt-1 mb-6">
+                Choose how you receive booking, chat, and rental updates.
               </p>
 
-              <div className="space-y-6">
-
+              <div className="space-y-5 text-sm">
                 <div>
-                  <p className="font-semibold mb-3">Direct Messages</p>
-
-                  <div className="flex gap-8">
-                    <label className="flex items-center gap-2">
+                  <p className="font-semibold mb-2">Direct Messages</p>
+                  <div className="flex gap-6">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={notifications.directMessagesEmail}
-                        onChange={() =>
-                          handleNotificationChange('directMessagesEmail')
-                        }
-                        className="accent-orange-500"
+                        onChange={() => handleNotificationChange('directMessagesEmail')}
+                        className="accent-primary"
                       />
-                      Email
+                      Email alerts
                     </label>
-
-                    <label className="flex items-center gap-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={notifications.directMessagesPush}
-                        onChange={() =>
-                          handleNotificationChange('directMessagesPush')
-                        }
-                        className="accent-orange-500"
+                        onChange={() => handleNotificationChange('directMessagesPush')}
+                        className="accent-primary"
                       />
-                      Push
+                      In-app alerts
                     </label>
                   </div>
                 </div>
 
-                <div>
-                  <p className="font-semibold mb-3">
-                    Booking & Transaction Updates
-                  </p>
-
-                  <div className="flex gap-8">
-                    <label className="flex items-center gap-2">
+                <div className="pt-3 border-t border-slate-100">
+                  <p className="font-semibold mb-2">Rental Requests & Confirmations</p>
+                  <div className="flex gap-6">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={notifications.bookingEmail}
-                        onChange={() =>
-                          handleNotificationChange('bookingEmail')
-                        }
-                        className="accent-orange-500"
+                        onChange={() => handleNotificationChange('bookingEmail')}
+                        className="accent-primary"
                       />
-                      Email
+                      Email alerts
                     </label>
-
-                    <label className="flex items-center gap-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={notifications.bookingPush}
-                        onChange={() =>
-                          handleNotificationChange('bookingPush')
-                        }
-                        className="accent-orange-500"
+                        onChange={() => handleNotificationChange('bookingPush')}
+                        className="accent-primary"
                       />
-                      Push
+                      In-app alerts
                     </label>
                   </div>
                 </div>
 
-                <div>
-                  <p className="font-semibold mb-3">
-                    Referral & Credit Alerts
-                  </p>
-
-                  <div className="flex gap-8">
-                    <label className="flex items-center gap-2">
+                <div className="pt-3 border-t border-slate-100">
+                  <p className="font-semibold mb-2">Referral Rewards</p>
+                  <div className="flex gap-6">
+                    <label className="flex items-center gap-2 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={notifications.referralEmail}
-                        onChange={() =>
-                          handleNotificationChange('referralEmail')
-                        }
-                        className="accent-orange-500"
+                        onChange={() => handleNotificationChange('referralEmail')}
+                        className="accent-primary"
                       />
-                      Email
-                    </label>
-
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={notifications.referralPush}
-                        onChange={() =>
-                          handleNotificationChange('referralPush')
-                        }
-                        className="accent-orange-500"
-                      />
-                      Push
+                      Email alerts
                     </label>
                   </div>
                 </div>
-
               </div>
 
               <button
-                onClick={() => showMessage('Notification settings saved')}
-                className="mt-6 px-6 py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600"
+                onClick={() => showToast('Notification preferences saved')}
+                className="mt-6 px-6 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm transition-colors cursor-pointer"
               >
-                Save Changes
+                Save Notifications
               </button>
             </div>
 
             {/* Privacy & Security */}
             <div
               id="privacy"
-              className="bg-white rounded-2xl border border-slate-200 p-6"
+              className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm"
             >
-              <h2 className="text-2xl font-bold">Privacy & Security</h2>
-              <p className="text-slate-500 mt-1 mb-6">
-                Protect your account and manage active sessions.
+              <h2 className="text-xl font-bold text-slate-900">Privacy & Security</h2>
+              <p className="text-slate-500 text-xs mt-1 mb-6">
+                Institutional session safety and logout.
               </p>
 
-              <div className="flex items-center justify-between py-5 border-b border-slate-200">
+              <div className="flex items-center justify-between py-4 border-b border-slate-200">
                 <div>
-                  <p className="font-semibold">Two-Factor Authentication</p>
-                  <p className="text-sm text-slate-500">
-                    Add an additional layer of security.
+                  <p className="font-semibold text-sm">Two-Factor Authentication (2FA)</p>
+                  <p className="text-xs text-slate-500">
+                    Require OTP verification on new browser sessions.
                   </p>
                 </div>
 
@@ -377,124 +423,23 @@ export const Settings = () => {
                   type="checkbox"
                   checked={twoFactor}
                   onChange={() => setTwoFactor(!twoFactor)}
-                  className="w-5 h-5 accent-orange-500"
+                  className="w-5 h-5 accent-primary cursor-pointer"
                 />
               </div>
 
-              <div className="py-5">
-                <h3 className="font-semibold mb-4">Active Sessions</h3>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50">
-                    <div>
-                      <p className="font-medium">MacBook Pro</p>
-                      <p className="text-sm text-slate-500">
-                        Current session
-                      </p>
-                    </div>
-
-                    <span className="text-sm text-green-600 font-medium">
-                      Active
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-slate-50">
-                    <div>
-                      <p className="font-medium">iPhone 15</p>
-                      <p className="text-sm text-slate-500">
-                        Last active recently
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => showMessage('Session logged out')}
-                      className="text-sm text-red-600 font-medium"
-                    >
-                      Log Out
-                    </button>
-                  </div>
+              <div className="pt-6 flex flex-wrap gap-4 items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Active Session</p>
+                  <p className="text-xs text-slate-500">Logged in via verified browser token</p>
                 </div>
-              </div>
-
-              <div className="pt-4 border-t border-slate-200">
                 <button
-                  onClick={() => showMessage('All other sessions logged out')}
-                  className="px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-50"
+                  onClick={() => {
+                    logout();
+                    showToast('Logged out of session');
+                  }}
+                  className="px-5 py-2 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-xs font-bold transition-colors cursor-pointer"
                 >
-                  Log Out of All Other Sessions
-                </button>
-              </div>
-            </div>
-
-            {/* Payment & Payouts */}
-            <div
-              id="payments"
-              className="bg-white rounded-2xl border border-slate-200 p-6"
-            >
-              <h2 className="text-2xl font-bold">Payment & Payouts</h2>
-              <p className="text-slate-500 mt-1 mb-6">
-                Manage your linked payment methods.
-              </p>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200">
-                  <div>
-                    <p className="font-semibold">Debit Card</p>
-                    <p className="text-sm text-slate-500">
-                      •••• 4242
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => showMessage('Card management selected')}
-                    className="text-orange-600 font-medium"
-                  >
-                    Manage
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200">
-                  <div>
-                    <p className="font-semibold">Bank Account</p>
-                    <p className="text-sm text-slate-500">
-                      •••• 1234
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => showMessage('Bank account management selected')}
-                    className="text-orange-600 font-medium"
-                  >
-                    Manage
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Account Management */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-2xl font-bold">Account Management</h2>
-
-              <div className="mt-5 flex flex-wrap gap-3">
-                <button
-                  onClick={() => showMessage('Data download requested')}
-                  className="px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-50"
-                >
-                  Download My Data
-                </button>
-
-                <button
-                  onClick={() => showMessage('Deactivate account selected')}
-                  className="px-5 py-3 rounded-xl border border-orange-300 text-orange-600"
-                >
-                  Deactivate Account
-                </button>
-
-                <button
-                  onClick={() => showMessage('Delete account selected')}
-                  className="px-5 py-3 rounded-xl border border-red-300 text-red-600"
-                >
-                  Delete Account
+                  Log Out of Session
                 </button>
               </div>
             </div>
@@ -505,7 +450,9 @@ export const Settings = () => {
 
       {/* Toast Message */}
       {message && (
-        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-lg">
+        <div className={`fixed bottom-6 right-6 px-5 py-3 rounded-xl shadow-xl z-50 text-sm font-semibold animate-in fade-in ${
+          isError ? 'bg-red-600 text-white' : 'bg-slate-900 text-white'
+        }`}>
           {message}
         </div>
       )}

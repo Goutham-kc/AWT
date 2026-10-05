@@ -94,6 +94,16 @@ export const Navbar = () => {
             >
               Marketplace
             </Link>
+            <Link 
+              className={`text-sm font-semibold transition-colors py-1 ${
+                location.pathname === '/student-trust' 
+                  ? 'text-primary font-bold border-b-2 border-primary' 
+                  : 'text-on-surface-variant hover:text-primary'
+              }`} 
+              to="/student-trust"
+            >
+              Student Trust
+            </Link>
             {token && (
               <>
                 <Link 
@@ -124,7 +134,17 @@ export const Navbar = () => {
                   }`} 
                   to="/create-listing"
                 >
-                  List an Item
+                  List Item
+                </Link>
+                <Link 
+                  className={`text-sm font-semibold transition-colors py-1 ${
+                    location.pathname === '/profile' 
+                      ? 'text-primary font-bold border-b-2 border-primary' 
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`} 
+                  to="/profile"
+                >
+                  Profile
                 </Link>
               </>
             )}
@@ -162,13 +182,25 @@ export const Navbar = () => {
 
           {/* User Session Profile Buttons */}
           {token ? (
-            <div className="flex items-center gap-3">
-              <span className="hidden lg:inline text-on-surface-variant text-sm">
-                Hi, <strong className="text-primary">{user?.name}</strong>
-              </span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Link 
+                to="/profile" 
+                className="hidden lg:flex items-center gap-1.5 text-on-surface-variant hover:text-primary text-sm transition-colors"
+                title="View your profile"
+              >
+                <span>Hi,</span>
+                <strong className="text-primary hover:underline">{user?.name}</strong>
+              </Link>
+              <Link
+                to="/settings"
+                className="p-1.5 text-outline hover:text-primary hover:bg-surface-container-low rounded-lg transition-colors hidden sm:block"
+                title="Account Settings"
+              >
+                <span className="material-symbols-outlined text-xl">tune</span>
+              </Link>
               <button 
                 onClick={logout} 
-                className="px-3.5 py-1.5 border border-outline hover:bg-surface-dim hover:text-on-surface rounded-lg transition-colors text-sm font-semibold cursor-pointer"
+                className="px-3 py-1.5 border border-outline hover:bg-surface-dim hover:text-on-surface rounded-lg transition-colors text-xs font-semibold cursor-pointer"
               >
                 Log Out
               </button>
@@ -213,7 +245,14 @@ export const Navbar = () => {
           >
             Marketplace
           </Link>
-          {token && (
+          <Link
+            to="/student-trust"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+          >
+            Student Trust & Safety
+          </Link>
+          {token ? (
             <>
               <Link
                 to="/conversations"
@@ -236,7 +275,49 @@ export const Navbar = () => {
               >
                 List an Item
               </Link>
+              <Link
+                to="/profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+              >
+                My Profile
+              </Link>
+              <Link
+                to="/settings"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-lg text-sm font-semibold text-on-surface hover:bg-surface-container-low"
+              >
+                Settings
+              </Link>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout();
+                }}
+                className="w-full text-left px-3 py-2 rounded-lg text-sm font-semibold text-red-600 hover:bg-red-50"
+              >
+                Log Out
+              </button>
             </>
+          ) : (
+            <div className="pt-2 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setIsLoginOpen(true);
+                }}
+                className="w-full py-2 text-center text-sm font-semibold text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+              >
+                Log In
+              </button>
+              <Link
+                to="/signup"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2 text-center text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-container transition-colors"
+              >
+                Get Started
+              </Link>
+            </div>
           )}
         </div>
       )}

@@ -50,11 +50,13 @@ export const Notifications = () => {
             if (booking.status === 'pending') {
               tempNotifications.push({
                 id: `book-${booking._id || idx}`,
+                bookingId: booking._id,
+                isActionable: true,
                 type: 'booking',
                 title: 'New Booking Request Received',
-                content: `${booking.renter?.name || 'Classmate'} requested to rent your "${booking.listing?.title || 'Item'}".`,
+                content: `${booking.renter?.name || 'Classmate'} requested to rent your "${booking.listing?.title || 'Item'}" from ${new Date(booking.startDate).toLocaleDateString()} to ${new Date(booking.endDate).toLocaleDateString()} (Total: ₹${booking.grandTotal}).`,
                 time: new Date(booking.createdAt).toLocaleDateString(),
-                unread: false,
+                unread: true,
                 link: '/conversations'
               });
             }
@@ -106,6 +108,39 @@ export const Notifications = () => {
 
   const handleMarkAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+  };
+
+  const handleBookingAction = async (e, notifId, bookingId, status) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => {
+          if (n.id === notifId) {
+            return {
+              ...n,
+              isActionable: false,
+              title: `Rental Request ${status === 'approved' ? 'Approved' : 'Rejected'}`,
+              content: `You ${status} this rental request.`,
+              unread: false
+            };
+          }
+          return n;
+        }));
+      } else {
+        alert(data.message || `Failed to ${status} booking`);
+      }
+    } catch (err) {
+      alert(`Error updating booking`);
+    }
   };
 
   const filteredNotifications = notifications.filter(n => {
@@ -167,7 +202,7 @@ export const Notifications = () => {
             <div
               key={notif.id}
               onClick={() => navigate(notif.link)}
-              className={`relative bg-white p-5 rounded-xl border border-outline-variant transition-all hover:border-primary cursor-pointer shadow-sm flex gap-4 items-start ${
+              className={`relative bg-white p-5 rounded-xl border border-outline-variant transition-all hover:border-primary cursor-pointer shadow-sm flex flex-col sm:flex-row gap-4 items-start ${
                 notif.unread ? 'border-l-4 border-l-primary' : ''
               }`}
             >
@@ -186,12 +221,39 @@ export const Notifications = () => {
                 </span>
               </div>
 
-              <div className="flex-grow">
+              <div className="flex-grow w-full">
                 <div className="flex justify-between items-start gap-2 mb-1">
                   <h3 className="font-headline font-bold text-sm text-on-surface">{notif.title}</h3>
                   <span className="text-xs text-outline font-semibold">{notif.time}</span>
                 </div>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{notif.content}</p>
+
+                {/* Inline Action Buttons for Pending Booking Requests */}
+                {notif.isActionable && notif.bookingId && (
+                  <div className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      onClick={(e) => handleBookingAction(e, notif.id, notif.bookingId, 'approved')}
+                      className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer transition-colors"
+                    >
+                      Approve Rental
+                    </button>
+                    <button
+                      onClick={(e) => handleBookingAction(e, notif.id, notif.bookingId, 'rejected')}
+                      className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg cursor-pointer transition-colors"
+                    >
+                      Decline
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/conversations');
+                      }}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors ml-auto"
+                    >
+                      Chat with Renter
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

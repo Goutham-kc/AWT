@@ -1,476 +1,551 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 export const MyProfile = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [twoFactor, setTwoFactor] = useState(false);
-  const [messageAlerts, setMessageAlerts] = useState(true);
-  const [rentalRequests, setRentalRequests] = useState(true);
-  const [marketingEmails, setMarketingEmails] = useState(false);
+  const { user, token, updateUser, setIsLoginOpen } = useApp();
+  const navigate = useNavigate();
+
   const [bio, setBio] = useState('');
+  const [phone, setPhone] = useState('');
+  const [myListings, setMyListings] = useState([]);
+  const [myRentals, setMyRentals] = useState([]);
+  const [myBookings, setMyBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [savingBio, setSavingBio] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const showToast = (msg) => {
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(''), 3000);
+  };
+
+  useEffect(() => {
+    if (user) {
+      setBio(user.bio || '');
+      setPhone(user.phone || '');
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        // 1. Fetch user's listings
+        const resListings = await fetch('/api/listings/mine', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resListings.ok) {
+          const listingsData = await resListings.json();
+          setMyListings(Array.isArray(listingsData) ? listingsData : []);
+        }
+
+        // 2. Fetch user's active rentals (items rented from others)
+        const resRentals = await fetch('/api/bookings/my-rentals', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resRentals.ok) {
+          const rentalsData = await resRentals.json();
+          setMyRentals(Array.isArray(rentalsData) ? rentalsData : []);
+        }
+
+        // 3. Fetch booking requests received (items others want to rent from user)
+        const resBookings = await fetch('/api/bookings/my-bookings', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resBookings.ok) {
+          const bookingsData = await resBookings.json();
+          setMyBookings(Array.isArray(bookingsData) ? bookingsData : []);
+        }
+      } catch (err) {
+        console.error('Error fetching profile data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, [token]);
+
+  const handleSaveBio = async () => {
+    if (!token) return;
+    setSavingBio(true);
+    try {
+      const res = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ bio, phone })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to update profile');
+      updateUser({ bio: data.user.bio, phone: data.user.phone });
+      showToast('Profile bio updated successfully!');
+    } catch (err) {
+      showToast(err.message || 'Failed to save bio');
+    } finally {
+      setSavingBio(false);
+    }
+  };
+
+  const handleDeleteListing = async (listingId) => {
+    if (!window.confirm('Are you sure you want to remove this listing?')) return;
+    try {
+      const res = await fetch(`/api/listings/${listingId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        setMyListings(prev => prev.filter(l => l._id !== listingId));
+        showToast('Listing removed successfully');
+      } else {
+        const err = await res.json();
+        showToast(err.message || 'Failed to delete listing');
+      }
+    } catch (err) {
+      showToast('Error removing listing');
+    }
+  };
+
+  const handleBookingStatus = async (bookingId, status) => {
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMyBookings(prev => prev.map(b => b._id === bookingId ? { ...b, status } : b));
+        showToast(`Booking request ${status}!`);
+      } else {
+        showToast(data.message || `Failed to ${status} request`);
+      }
+    } catch (err) {
+      showToast(`Error updating booking`);
+    }
+  };
+
+  if (!token) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low min-h-[500px]">
+        <div className="max-w-md w-full text-center bg-white p-8 rounded-2xl border border-outline-variant shadow-sm space-y-4">
+          <span className="material-symbols-outlined text-5xl text-primary">account_circle</span>
+          <h2 className="text-2xl font-bold text-on-surface">Please Log In</h2>
+          <p className="text-sm text-on-surface-variant">Log in with your verified college email to view and manage your profile.</p>
+          <button
+            onClick={() => setIsLoginOpen(true)}
+            className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-container shadow-sm transition-all cursor-pointer"
+          >
+            Log In
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className={`${darkMode ? 'dark' : ''} min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50/50 to-blue-50 text-on-background`}>
-
-      <div className="min-h-screen flex flex-col">
-
-        {/* Navigation */}
-        <header className="bg-white text-primary sticky top-0 z-50 shadow-md flex justify-between items-center w-full px-6 py-4">
-          <div className="font-headline text-xl font-bold">
-            Academica Exchange
+    <main className="flex-grow bg-slate-50 text-slate-900 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Profile Header Banner */}
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="relative h-40 bg-gradient-to-r from-primary to-primary-container">
+            <div className="absolute inset-0 bg-black/10"></div>
           </div>
 
-          <nav className="hidden md:flex gap-6 items-center">
-            <Link className="text-on-surface-variant hover:text-primary px-3 py-2 rounded-md" to="/marketplace">
-              Marketplace
-            </Link>
+          <div className="px-6 sm:px-8 pb-8">
+            <div className="relative -mt-16 flex flex-col md:flex-row gap-6 items-start">
+              
+              {/* Avatar */}
+              <div className="relative shrink-0">
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-primary/10 border-4 border-white shadow-md flex items-center justify-center text-primary font-bold text-4xl uppercase">
+                  {user?.name ? user.name.slice(0, 2) : 'ST'}
+                </div>
+                <div 
+                  className="absolute bottom-1 right-1 bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow"
+                  title="Institutional Email Verified"
+                >
+                  <span className="material-symbols-outlined text-sm font-bold">check</span>
+                </div>
+              </div>
 
-            <a className="text-on-surface-variant hover:text-primary px-3 py-2 rounded-md" href="#">
-              How It Works
-            </a>
-
-            <a className="text-on-surface-variant hover:text-primary px-3 py-2 rounded-md" href="#">
-              Student Trust
-            </a>
-
-            <a className="text-on-surface-variant hover:text-primary px-3 py-2 rounded-md" href="#">
-              Safety
-            </a>
-          </nav>
-
-          <div className="flex gap-3 items-center">
-            <button className="font-semibold text-primary hover:bg-primary/10 px-4 py-2 rounded-lg">
-              Log In
-            </button>
-
-            <button className="font-semibold bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90">
-              Get Started
-            </button>
-
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low text-primary"
-            >
-              <span className="material-symbols-outlined">
-                {darkMode ? 'dark_mode' : 'light_mode'}
-              </span>
-            </button>
-          </div>
-        </header>
-
-        {/* Main */}
-        <main className="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full">
-
-          {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-primary mb-3">
-              My Profile
-            </h1>
-
-            <p className="text-on-surface-variant">
-              Manage your identity, trust signals, and public presence.
-            </p>
-          </div>
-
-          {/* Main Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-
-            {/* Left Column */}
-            <div className="md:col-span-8 flex flex-col gap-6">
-
-              {/* Profile Card */}
-              <section className="bg-white rounded-xl shadow-xl overflow-hidden">
-
-                <div className="h-28 w-full bg-gradient-to-r from-primary to-primary-container"></div>
-
-                <div className="px-8 pb-8 -mt-14 flex flex-col md:flex-row gap-6 items-start relative">
-
-                  <div className="w-32 h-32 rounded-full bg-surface-container-high overflow-hidden shrink-0 shadow-lg border-4 border-white">
-                    <img
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuApTjvMX4aOxbeg-kVATSOmohoD3fT8t59achuUuzfBSqDoBKqsSg6VdomZwcyswbRQdo7I2yMxcm5LIkJ7SxbWeTCGTyOpn0IhRb_nnuDN2RZ_KMJPnlkSgYGe22-Mt_ThhxaCNAuE0InvWdlh8WDDGISa4eNdYnp1lL58Jp7m1yxzNSy1VNIstn1ZtDEVMBrGZ38Zc0jtDYF1a5bYStX2guEMUUvgSwdZdJLyMRjjJ9yW6M3UvGNT"
-                    />
-
-                    <div className="absolute bottom-1 left-24 w-8 h-8 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                      <span className="material-symbols-outlined text-white text-[16px]">
-                        check
+              {/* Main Bio & Stats */}
+              <div className="flex-grow pt-2 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-2">
+                      {user?.name || 'Verified Student'}
+                      <span className="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-bold inline-flex items-center gap-1">
+                        <span className="material-symbols-outlined text-xs">verified</span>
+                        Verified Student
+                      </span>
+                    </h1>
+                    <div className="flex items-center gap-3 mt-2 text-sm text-slate-500 flex-wrap">
+                      <span className="flex items-center gap-1 font-medium text-slate-700">
+                        <span className="material-symbols-outlined text-base text-primary">school</span>
+                        {user?.institution || 'TKM College of Engineering'}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <span className="material-symbols-outlined text-base text-slate-400">mail</span>
+                        {user?.email}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex-1 mt-2 md:mt-16">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-on-surface flex flex-wrap items-center gap-3 mb-2">
-                      Alex Johnson
+                  <div className="flex gap-3">
+                    <Link
+                      to="/settings"
+                      className="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-sm font-semibold flex items-center gap-1.5 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-base">settings</span>
+                      Settings
+                    </Link>
+                    <Link
+                      to="/create-listing"
+                      className="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container text-sm font-bold shadow-sm flex items-center gap-1.5 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-base">add</span>
+                      List Item
+                    </Link>
+                  </div>
+                </div>
 
-                      <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary rounded-full text-sm font-bold">
-                        <span className="material-symbols-outlined text-[16px]">
-                          verified
+                {/* Score & Referral Strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                  <div className="bg-blue-50/80 p-3.5 rounded-xl border border-blue-100 text-center">
+                    <p className="text-2xl font-bold text-primary">{myListings.length}</p>
+                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Listings</p>
+                  </div>
+                  <div className="bg-green-50/80 p-3.5 rounded-xl border border-green-100 text-center">
+                    <p className="text-2xl font-bold text-green-700">₹{user?.referralCredits || 0}</p>
+                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Referral Credits</p>
+                  </div>
+                  <div className="bg-amber-50/80 p-3.5 rounded-xl border border-amber-100 text-center">
+                    <p className="text-2xl font-bold text-amber-600">{myRentals.length}</p>
+                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Rentals</p>
+                  </div>
+                  <div className="bg-purple-50/80 p-3.5 rounded-xl border border-purple-100 text-center">
+                    <p className="text-2xl font-bold text-purple-700">100%</p>
+                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Campus Trust</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2 Column Main Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Left Column (2 Cols wide on desktop): Bio & Listings */}
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* Bio Editor */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary">edit_note</span>
+                  Public Campus Bio
+                </h2>
+                <span className="text-xs text-slate-500">Visible to other students</span>
+              </div>
+              
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Tell fellow students what you study, what gear you share (cameras, calculators, cycles), or preferred meetup spots on campus..."
+                className="w-full p-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm leading-relaxed"
+                rows="3"
+              />
+
+              <div className="flex items-center justify-between mt-4">
+                <div className="text-xs text-slate-500">
+                  {user?.referralCode && (
+                    <span>Referral Code: <strong className="text-primary font-mono">{user.referralCode}</strong></span>
+                  )}
+                </div>
+                <button
+                  onClick={handleSaveBio}
+                  disabled={savingBio}
+                  className="px-5 py-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary-container transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  {savingBio ? 'Saving...' : 'Save Bio'}
+                </button>
+              </div>
+            </section>
+
+            {/* My Active Listings */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">inventory_2</span>
+                    My Listings ({myListings.length})
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-1">Gears and items you are currently sharing with classmates</p>
+                </div>
+                <Link
+                  to="/create-listing"
+                  className="text-sm text-primary font-bold hover:underline flex items-center gap-1"
+                >
+                  + Add New
+                </Link>
+              </div>
+
+              {loading ? (
+                <div className="text-center py-8 text-slate-400">Loading your listings...</div>
+              ) : myListings.length === 0 ? (
+                <div className="text-center py-10 border-2 border-dashed border-slate-200 rounded-xl p-6">
+                  <span className="material-symbols-outlined text-4xl text-slate-300 mb-2">post_add</span>
+                  <p className="text-sm font-semibold text-slate-600">You haven't listed any items yet.</p>
+                  <p className="text-xs text-slate-400 mt-1 mb-4">Share textbooks, electronics, cycles, or dorm items to earn cash.</p>
+                  <Link
+                    to="/create-listing"
+                    className="inline-block px-4 py-2 bg-primary text-white text-xs font-bold rounded-lg hover:bg-primary-container"
+                  >
+                    Create Your First Listing
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {myListings.map((item) => (
+                    <div
+                      key={item._id}
+                      className="border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow flex flex-col justify-between"
+                    >
+                      <div className="relative aspect-video bg-slate-100 overflow-hidden">
+                        <img
+                          src={item.imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop&q=60'}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-bold bg-white/90 text-primary capitalize shadow-sm">
+                          {item.category}
                         </span>
-                        Verified
-                      </span>
+                      </div>
+                      
+                      <div className="p-4 flex-grow flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-bold text-slate-900 text-sm line-clamp-1">{item.title}</h3>
+                          <p className="text-xs text-slate-500 mt-1 line-clamp-2">{item.description}</p>
+                        </div>
 
-                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-surface text-on-surface-variant rounded-full text-sm font-medium border">
-                        3 Active Listings
-                      </span>
-                    </h2>
-
-                    <p className="text-lg text-on-surface-variant mb-6">
-                      Computer Science, Class of '25
-                    </p>
-
-                    <button className="border-2 border-primary text-primary px-5 py-2.5 rounded-lg hover:bg-primary/5 font-semibold">
-                      Edit Profile Picture
-                    </button>
-                  </div>
-
-                </div>
-              </section>
-
-              {/* Public Bio */}
-              <section className="bg-white rounded-xl p-6 shadow-sm border">
-
-                <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                    edit_document
-                  </span>
-                  Public Bio
-                </h3>
-
-                <p className="text-on-surface-variant mb-4">
-                  Hi! I'm Alex. I usually sell old textbooks and dorm essentials.
-                  Always happy to meet up on central campus for exchanges.
-                </p>
-
-                <textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  className="w-full rounded-lg border border-outline-variant bg-surface p-4"
-                  placeholder="Tell the community about yourself..."
-                  rows="3"
-                />
-
-                <div className="flex justify-end mt-4">
-                  <button className="bg-primary text-white px-6 py-2 rounded-lg font-semibold">
-                    Save Bio
-                  </button>
-                </div>
-              </section>
-
-              {/* My Listings */}
-              <section className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-primary border-y border-r">
-
-                <h3 className="text-lg font-bold text-primary mb-3 flex items-center gap-2">
-                  <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                    inventory_2
-                  </span>
-                  My Listings
-                </h3>
-
-                <p className="text-on-surface-variant mb-5">
-                  You currently have 3 active listings visible to the community.
-                </p>
-
-                <button className="border-2 border-primary text-primary px-4 py-2.5 rounded-lg w-full font-semibold">
-                  View All Active Listings
-                </button>
-              </section>
-
-            </div>
-
-            {/* Right Column */}
-            <div className="md:col-span-4 flex flex-col gap-6">
-
-              {/* Trust Score */}
-              <section className="bg-primary text-white rounded-xl p-8 shadow-xl relative overflow-hidden">
-
-                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined bg-white/20 p-1.5 rounded-lg">
-                    shield_person
-                  </span>
-                  Trust Score
-                </h3>
-
-                <div className="flex items-baseline gap-2 mb-6">
-                  <span className="text-5xl font-extrabold">92</span>
-                  <span className="text-lg opacity-80">/ 100</span>
-                </div>
-
-                <div className="bg-black/20 rounded-xl p-4">
-
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="font-semibold">Profile Completeness</span>
-                    <span className="font-semibold">80%</span>
-                  </div>
-
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div className="bg-white h-2 rounded-full w-[80%]"></div>
-                  </div>
-
-                </div>
-
-                <div className="mt-5">
-                  <p className="font-semibold mb-3">
-                    Improve your score:
-                  </p>
-
-                  <div className="flex items-center gap-2 bg-black/10 p-3 rounded-lg">
-                    <span className="material-symbols-outlined">
-                      add_circle
-                    </span>
-                    Verify phone number (+5 pts)
-                  </div>
-                </div>
-
-              </section>
-
-              {/* Account Security */}
-              <section className="bg-white rounded-xl p-5 shadow-sm border">
-
-                <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                    security
-                  </span>
-                  Account Security
-                </h3>
-
-                <div className="flex flex-col gap-5">
-
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">Password</p>
-                      <p className="text-xs text-on-surface-variant mt-1">
-                        Last changed 3 months ago
-                      </p>
+                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                          <div className="font-bold text-primary text-sm">
+                            ₹{item.pricePerDay} <span className="text-xs font-normal text-slate-500">/ day</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              to={`/listing/${item._id}`}
+                              className="text-xs text-primary font-semibold hover:underline"
+                            >
+                              View
+                            </Link>
+                            <button
+                              onClick={() => handleDeleteListing(item._id)}
+                              className="text-xs text-red-500 font-semibold hover:underline cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-
-                    <button className="border px-4 py-2 rounded-md font-semibold">
-                      Change
-                    </button>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-semibold">
-                        Two-Factor Authentication
-                      </p>
-                      <p className="text-xs text-on-surface-variant mt-1">
-                        Add an extra layer of security
-                      </p>
-                    </div>
-
-                    <input
-                      type="checkbox"
-                      checked={twoFactor}
-                      onChange={(e) => setTwoFactor(e.target.checked)}
-                      className="w-5 h-5"
-                    />
-                  </div>
-
+                  ))}
                 </div>
-              </section>
-
-              {/* Campus Settings */}
-              <section className="bg-white rounded-xl p-5 shadow-sm border">
-
-                <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
-                  <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                    location_on
-                  </span>
-                  Campus Settings
-                </h3>
-
-                <div className="bg-surface border rounded-lg p-4 flex items-center justify-between mb-5">
-                  <div>
-                    <p className="text-primary mb-1 font-semibold">
-                      Primary Campus
-                    </p>
-                    <p className="font-bold text-lg">
-                      State University
-                    </p>
-                  </div>
-
-                  <span className="material-symbols-outlined text-primary bg-primary/10 p-2.5 rounded-full">
-                    school
-                  </span>
-                </div>
-
-                <button className="w-full border-2 border-primary text-primary px-4 py-2.5 rounded-lg font-semibold">
-                  Change Campus
-                </button>
-
-              </section>
-
-            </div>
-          </div>
-
-          {/* Bottom Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
-            {/* Recent Activity */}
-            <section className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-l-primary border-y border-r">
-
-              <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
-                <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                  history
-                </span>
-                Recent Activity
-              </h3>
-
-              <div className="space-y-5">
-
-                <div className="flex items-start gap-4 pb-4 border-b">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <span className="material-symbols-outlined">
-                      handshake
-                    </span>
-                  </div>
-
-                  <div>
-                    <p>
-                      <span className="font-semibold">
-                        Rented Sony A7III
-                      </span>{' '}
-                      from Sarah Jenkins
-                    </p>
-
-                    <p className="text-sm text-on-surface-variant mt-1">
-                      Completed Oct 12 • 5 star review given
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4 pb-4 border-b">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <span className="material-symbols-outlined">
-                      outbox
-                    </span>
-                  </div>
-
-                  <div>
-                    <p>
-                      <span className="font-semibold">
-                        Lent Camping Tent
-                      </span>{' '}
-                      to Mike T.
-                    </p>
-
-                    <p className="text-sm text-on-surface-variant mt-1">
-                      Returned Sep 28 • Earned +10 Trust
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-
-              <button className="text-primary mt-5 hover:underline font-semibold">
-                View Full History
-              </button>
-
+              )}
             </section>
 
-            {/* Notifications */}
-            <section className="bg-white rounded-xl p-5 shadow-sm border">
+            {/* Received Booking Requests (For my listings) */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2 mb-2">
+                <span className="material-symbols-outlined text-primary">inbox</span>
+                Rental Requests Received ({myBookings.length})
+              </h2>
+              <p className="text-xs text-slate-500 mb-6">Booking requests made by other students for your shared items</p>
 
-              <h3 className="text-lg font-bold text-primary mb-5 flex items-center gap-2">
-                <span className="material-symbols-outlined bg-primary/10 p-1.5 rounded-lg">
-                  notifications
-                </span>
-                Notifications
-              </h3>
-
-              <div className="space-y-5">
-
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">
-                    Message Alerts
-                  </span>
-
-                  <input
-                    type="checkbox"
-                    checked={messageAlerts}
-                    onChange={(e) => setMessageAlerts(e.target.checked)}
-                    className="w-5 h-5"
-                  />
+              {myBookings.length === 0 ? (
+                <div className="text-center py-6 text-slate-400 text-sm">
+                  No rental requests received yet.
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  {myBookings.map((req) => (
+                    <div
+                      key={req._id}
+                      className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-slate-900 text-sm">
+                            {req.renter?.name || 'Classmate'} requested "{req.listing?.title || 'Your Gear'}"
+                          </h4>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                            req.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            req.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {req.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Dates: {new Date(req.startDate).toLocaleDateString()} to {new Date(req.endDate).toLocaleDateString()} • Total: <strong className="text-primary font-bold">₹{req.grandTotal}</strong>
+                        </p>
+                      </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">
-                    Rental Requests
-                  </span>
-
-                  <input
-                    type="checkbox"
-                    checked={rentalRequests}
-                    onChange={(e) => setRentalRequests(e.target.checked)}
-                    className="w-5 h-5"
-                  />
+                      <div className="flex items-center gap-2 shrink-0">
+                        {req.status === 'pending' ? (
+                          <>
+                            <button
+                              onClick={() => handleBookingStatus(req._id, 'approved')}
+                              className="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleBookingStatus(req._id, 'rejected')}
+                              className="px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-bold rounded-lg cursor-pointer"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        ) : (
+                          <Link
+                            to="/conversations"
+                            className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold rounded-lg"
+                          >
+                            Open Chat
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">
-                    Marketing Emails
-                  </span>
-
-                  <input
-                    type="checkbox"
-                    checked={marketingEmails}
-                    onChange={(e) => setMarketingEmails(e.target.checked)}
-                    className="w-5 h-5"
-                  />
-                </div>
-
-              </div>
+              )}
             </section>
 
           </div>
 
-        </main>
-
-        {/* Footer */}
-        <footer className="bg-white border-t border-outline-variant px-6 py-8">
-
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-
-            <div>
-              <div className="font-headline text-lg font-bold text-primary mb-3">
-                Academica Exchange
+          {/* Right Column: Account Trust & Quick Navigation */}
+          <div className="space-y-6">
+            
+            {/* Student Trust Card */}
+            <section className="bg-gradient-to-br from-primary to-primary-container text-white rounded-2xl p-6 shadow-md">
+              <div className="flex items-center justify-between mb-4">
+                <span className="material-symbols-outlined text-3xl">verified_user</span>
+                <span className="text-xs bg-white/20 px-2.5 py-1 rounded-full font-bold">Trust Verified</span>
               </div>
-
-              <p className="text-on-surface-variant text-sm">
-                © 2026 Academica Exchange. Student-to-student marketplace.
+              
+              <h3 className="font-bold text-xl mb-1">Campus Verification</h3>
+              <p className="text-xs text-white/90 leading-relaxed mb-4">
+                Your account is confirmed via institutional credentials at <strong>{user?.institution || 'TKMCE'}</strong>. All transactions are protected by peer escrow security.
               </p>
-            </div>
 
-            <div className="flex flex-col gap-2">
-              <a href="#" className="text-on-surface-variant hover:text-primary">
-                Terms of Service
-              </a>
-              <a href="#" className="text-on-surface-variant hover:text-primary">
-                Privacy Policy
-              </a>
-            </div>
+              <div className="space-y-2 border-t border-white/20 pt-4 text-xs">
+                <div className="flex justify-between items-center">
+                  <span>Student Domain:</span>
+                  <span className="font-mono font-bold">@tkmce.ac.in</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Campus Meetups:</span>
+                  <span className="font-bold">Designated Safe Zones</span>
+                </div>
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <a href="#" className="text-on-surface-variant hover:text-primary">
-                Campus Safety
-              </a>
-              <a href="#" className="text-on-surface-variant hover:text-primary">
-                Support
-              </a>
-            </div>
+              <Link
+                to="/student-trust"
+                className="mt-5 block text-center py-2 px-4 bg-white text-primary text-xs font-bold rounded-xl hover:bg-slate-100 transition-colors"
+              >
+                Learn About Student Trust & Safety
+              </Link>
+            </section>
 
-            <div>
-              <a href="#" className="text-on-surface-variant hover:text-primary">
-                Institutional Partners
-              </a>
-            </div>
+            {/* Referral Credits Summary */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-green-600">redeem</span>
+                  Referral Rewards
+                </h3>
+                <span className="text-green-700 font-bold text-lg">₹{user?.referralCredits || 0}</span>
+              </div>
+              <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                Invite classmates to join Academica Exchange. You both earn ₹50 credits when they verify!
+              </p>
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between mb-4">
+                <span className="text-xs text-slate-500 font-medium">Your Code:</span>
+                <span className="font-mono font-bold text-primary text-sm">{user?.referralCode || 'N/A'}</span>
+              </div>
+              <Link
+                to="/referrals"
+                className="block text-center w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors"
+              >
+                Manage Referrals
+              </Link>
+            </section>
+
+            {/* Quick Actions */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-2">
+              <h3 className="font-bold text-slate-900 text-sm mb-3">Quick Navigation</h3>
+              <Link
+                to="/conversations"
+                className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-base">forum</span>
+                  Direct Messages
+                </div>
+                <span className="material-symbols-outlined text-slate-400 text-sm">arrow_forward_ios</span>
+              </Link>
+              <Link
+                to="/cart"
+                className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-base">shopping_cart</span>
+                  My Cart
+                </div>
+                <span className="material-symbols-outlined text-slate-400 text-sm">arrow_forward_ios</span>
+              </Link>
+              <Link
+                to="/settings"
+                className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 text-xs font-semibold"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-base">tune</span>
+                  Account & Password Settings
+                </div>
+                <span className="material-symbols-outlined text-slate-400 text-sm">arrow_forward_ios</span>
+              </Link>
+            </section>
 
           </div>
 
-        </footer>
+        </div>
 
       </div>
-    </div>
+
+      {/* Toast Notification */}
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl z-50 text-sm font-semibold animate-in fade-in">
+          {toastMsg}
+        </div>
+      )}
+    </main>
   );
 };
+
+export default MyProfile;

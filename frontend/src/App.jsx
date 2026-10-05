@@ -12,6 +12,9 @@ import { Chat } from './pages/Chat';
 import { Referrals } from './pages/Referrals';
 import { Notifications } from './pages/Notifications';
 import CreateListing from './pages/CreateListing';
+import { MyProfile } from './pages/MyProfile';
+import { Settings } from './pages/settings';
+import { StudentTrust } from './pages/studenttrust';
 
 const App = () => {
   return (
@@ -23,6 +26,9 @@ const App = () => {
             {/* Primary React Routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/profile" element={<MyProfile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/student-trust" element={<StudentTrust />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/verify" element={<Verification />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
@@ -35,6 +41,7 @@ const App = () => {
             {/* Legacy .html Route Aliases */}
             <Route path="/cart.html" element={<Navigate to="/cart" replace />} />
             <Route path="/marketplace.html" element={<Navigate to="/marketplace" replace />} />
+            
             <Route path="/messages.html" element={<Navigate to="/conversations" replace />} />
             <Route path="/create_listing.html" element={<Navigate to="/create-listing" replace />} />
             <Route path="/referral.html" element={<Navigate to="/referrals" replace />} />

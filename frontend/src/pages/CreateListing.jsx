@@ -16,6 +16,8 @@ export default function CreateListing() {
     imageUrl: '',
     location: '',
     campus: '',
+    paymentMethod: 'UPI',
+    paymentDetails: '',
     allowDirectBooking: false
   });
 
@@ -180,6 +182,78 @@ export default function CreateListing() {
                   className="w-full px-4 py-2 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors"
                   placeholder="0"
                 />
+              </div>
+            </div>
+
+            {/* Payment & Payout Option Placeholder */}
+            <div className="p-4 rounded-xl border border-dashed border-outline-variant bg-surface-container-low/60 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-primary text-xl">payments</span>
+                  <h3 className="text-sm font-bold text-on-surface">Payment / Payout Option</h3>
+                </div>
+                <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                  Gateway Placeholder
+                </span>
+              </div>
+              <p className="text-xs text-on-surface-variant leading-relaxed">
+                Choose how you prefer to accept rental payments and refundable security deposits from borrowers.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="paymentMethod" className="block text-xs font-semibold text-on-surface mb-1">
+                    Accepted Payment Method
+                  </label>
+                  <select
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    value={formData.paymentMethod}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors bg-white text-sm"
+                  >
+                    <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                    <option value="Cash on Handoff">Cash on Handoff / Meetup</option>
+                    <option value="Campus Escrow">Academica Escrow / In-App Credits</option>
+                    <option value="Bank Transfer">Bank Transfer (NEFT / IMPS)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="paymentDetails" className="block text-xs font-semibold text-on-surface mb-1">
+                    {formData.paymentMethod === 'UPI'
+                      ? 'UPI ID / VPA'
+                      : formData.paymentMethod === 'Bank Transfer'
+                      ? 'Bank Account & IFSC Info'
+                      : formData.paymentMethod === 'Campus Escrow'
+                      ? 'Campus Student ID'
+                      : 'Handoff Payment Instructions'}
+                  </label>
+                  <input
+                    type="text"
+                    id="paymentDetails"
+                    name="paymentDetails"
+                    value={formData.paymentDetails}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors bg-white text-sm"
+                    placeholder={
+                      formData.paymentMethod === 'UPI'
+                        ? 'e.g. yourname@okhdfcbank or 9876543210@upi'
+                        : formData.paymentMethod === 'Bank Transfer'
+                        ? 'e.g. A/C No: 1234567890, IFSC: SBIN0001234'
+                        : formData.paymentMethod === 'Campus Escrow'
+                        ? 'e.g. STU-2024-8842 (or linked automatically)'
+                        : 'e.g. Exact cash upon item pickup at campus center'
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 p-2.5 bg-primary/5 rounded-lg border border-primary/10 text-xs text-on-surface-variant">
+                <span className="material-symbols-outlined text-primary text-base">lock</span>
+                <span>
+                  <strong>Secure Gateway Placeholder:</strong> Real-time payment processing (Razorpay, UPI Intent, or Student Escrow) will integrate directly here in future updates.
+                </span>
               </div>
             </div>
 

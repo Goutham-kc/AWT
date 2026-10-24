@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 
-
-
-
 export const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -66,13 +63,13 @@ export const ListingDetail = () => {
     }
 
     // Check conflict against blocked dates
-    const hasConflict = listing.blockedDates.some(blockedStr => {
+    const hasConflict = listing.blockedDates?.some(blockedStr => {
       // Compare dates in YYYY-MM-DD format
       const bd = new Date(blockedStr).toISOString().split('T')[0];
       const st = new Date(start).toISOString().split('T')[0];
       const en = new Date(end).toISOString().split('T')[0];
       return bd >= st && bd <= en;
-    });
+    }) || false;
 
     setDateConflict(hasConflict);
 
@@ -213,9 +210,10 @@ export const ListingDetail = () => {
             </p>
           </div>
 
-          <div className="border-t border-outline-variant pt-4 flex gap-4 text-sm font-semibold text-on-surface-variant">
+          <div className="border-t border-outline-variant pt-4 flex flex-wrap gap-4 text-sm font-semibold text-on-surface-variant">
             <div>Condition: <span className="text-primary font-bold">{listing.condition}</span></div>
             <div>Booking Type: <span className="text-primary font-bold">{listing.allowDirectBooking ? 'Direct Booking' : 'Negotiable'}</span></div>
+            <div>Accepted Payment: <span className="text-primary font-bold">{listing.paymentMethod || 'UPI (Google Pay / PhonePe / Paytm)'}</span></div>
           </div>
         </div>
       </div>
@@ -255,6 +253,12 @@ export const ListingDetail = () => {
                 className="w-full px-3 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
               />
             </div>
+          </div>
+
+          {/* Accepted Payment Placeholder Badge */}
+          <div className="flex items-center gap-2 p-2.5 bg-surface-container-low rounded-lg border border-outline-variant text-xs text-on-surface-variant">
+            <span className="material-symbols-outlined text-primary text-base">payments</span>
+            <span>Accepted Payment: <strong className="text-primary">{listing.paymentMethod || 'UPI / Cash'}</strong></span>
           </div>
 
           {/* Pricing breakdowns */}

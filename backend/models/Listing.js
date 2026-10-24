@@ -52,6 +52,14 @@ const listingSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  paymentMethod: {
+    type: String,
+    default: 'UPI',
+  },
+  paymentDetails: {
+    type: String,
+    default: '',
+  },
   availabilityStatus: {
     type: String,
     default: 'available',

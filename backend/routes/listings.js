@@ -90,7 +90,20 @@ router.get('/:id', async (req, res) => {
 // @route   POST /api/listings
 // @access  Private
 router.post('/', protect, async (req, res) => {
-  const { title, description, category, condition, pricePerDay, deposit, imageUrl, location, campus, allowDirectBooking } = req.body;
+  const {
+    title,
+    description,
+    category,
+    condition,
+    pricePerDay,
+    deposit,
+    imageUrl,
+    location,
+    campus,
+    allowDirectBooking,
+    paymentMethod,
+    paymentDetails
+  } = req.body;
 
   try {
     if (!title || !description || !category || !condition || pricePerDay === undefined || deposit === undefined || !location || !campus) {
@@ -108,6 +121,8 @@ router.post('/', protect, async (req, res) => {
       location,
       campus,
       allowDirectBooking,
+      paymentMethod: paymentMethod || 'UPI',
+      paymentDetails: paymentDetails || '',
       lister: req.user._id
     });
 

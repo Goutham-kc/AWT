@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-
+import { executeRazorpayPayment } from '../utils/razorpay';
 
 export const Notifications = () => {
   const { token, user } = useApp();
@@ -21,26 +21,32 @@ export const Notifications = () => {
       try {
         const tempNotifications = [];
 
-        // 1. Fetch rentals dashboard (Bookings)
+        // 1. Fetch rentals dashboard (Bookings requested by this user)
         const resRentals = await fetch('/api/bookings/my-rentals', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const rentals = await resRentals.json();
         if (resRentals.ok && Array.isArray(rentals)) {
           rentals.forEach((rental, idx) => {
+            const isApproved = rental.status === 'approved';
+            const isPaid = rental.paymentStatus === 'paid';
+
             tempNotifications.push({
               id: `rent-${rental._id || idx}`,
+              bookingId: rental._id,
+              isApprovedRental: isApproved && !isPaid,
+              amount: rental.grandTotal,
               type: 'booking',
-              title: rental.status === 'approved' ? 'Rental Request Approved' : 'Rental Request Pending',
-              content: `Your rental request for "${rental.listing?.title || 'Gear'}" from ${new Date(rental.startDate).toLocaleDateString()} is ${rental.status}.`,
+              title: isApproved ? (isPaid ? 'Rental Confirmed & Paid' : 'Rental Approved — Payment Due') : 'Rental Request Pending',
+              content: `Your rental request for "${rental.listing?.title || 'Gear'}" from ${new Date(rental.startDate).toLocaleDateString()} is ${rental.status}. ${isPaid ? 'Payment confirmed via Razorpay.' : `Total amount: ₹${rental.grandTotal}.`}`,
               time: new Date(rental.updatedAt || rental.createdAt).toLocaleDateString(),
-              unread: rental.status === 'approved',
+              unread: isApproved && !isPaid,
               link: '/conversations'
             });
           });
         }
 
-        // 2. Fetch booking requests received (Bookings)
+        // 2. Fetch booking requests received (Bookings for this user's listings)
         const resBookings = await fetch('/api/bookings/my-bookings', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -86,14 +92,14 @@ export const Notifications = () => {
         tempNotifications.push({
           id: 'sys-verify',
           type: 'system',
-          title: 'Account Verified',
-          content: `Welcome to Academica Exchange! Your institutional account is active and verified.`,
+          title: 'Account Verified & Secured',
+          content: `Welcome to Academica Exchange! Your institutional account is active and protected by Razorpay escrow security.`,
           time: 'Today',
           unread: false,
           link: '/marketplace'
         });
 
-        // Sort notifications, then normal sequence
+        // Sort notifications: unread first
         tempNotifications.sort((a, b) => (a.unread === b.unread ? 0 : a.unread ? -1 : 1));
         setNotifications(tempNotifications);
       } catch (err) {
@@ -140,6 +146,38 @@ export const Notifications = () => {
       }
     } catch (err) {
       alert(`Error updating booking`);
+    }
+  };
+
+  const handlePayApprovedRental = async (e, notif) => {
+    e.stopPropagation();
+    try {
+      await executeRazorpayPayment({
+        token,
+        user,
+        bookingIds: [notif.bookingId],
+        amount: notif.amount,
+        onSuccess: (data, paymentId) => {
+          setNotifications(prev => prev.map(n => {
+            if (n.id === notif.id) {
+              return {
+                ...n,
+                isApprovedRental: false,
+                title: 'Rental Confirmed & Paid',
+                content: `Payment of ₹${notif.amount} verified via Razorpay (Payment ID: ${paymentId}).`,
+                unread: false
+              };
+            }
+            return n;
+          }));
+          alert(`Payment of ₹${notif.amount} verified via Razorpay!`);
+        },
+        onError: (err) => {
+          alert(err.message || 'Payment failed or dismissed');
+        }
+      });
+    } catch (err) {
+      alert(err.message || 'Payment error');
     }
   };
 
@@ -228,9 +266,9 @@ export const Notifications = () => {
                 </div>
                 <p className="text-sm text-on-surface-variant leading-relaxed">{notif.content}</p>
 
-                {/* Inline Action Buttons for Pending Booking Requests */}
+                {/* Inline Action Buttons for Pending Booking Requests (Lister View) */}
                 {notif.isActionable && notif.bookingId && (
-                  <div className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100">
+                  <div className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100 flex-wrap">
                     <button
                       onClick={(e) => handleBookingAction(e, notif.id, notif.bookingId, 'approved')}
                       className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg shadow-sm cursor-pointer transition-colors"
@@ -251,6 +289,28 @@ export const Notifications = () => {
                       className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors ml-auto"
                     >
                       Chat with Renter
+                    </button>
+                  </div>
+                )}
+
+                {/* Inline Razorpay Pay Button for Approved Rentals (Renter View) */}
+                {notif.isApprovedRental && notif.bookingId && (
+                  <div className="mt-3 flex items-center gap-2 pt-2 border-t border-slate-100 flex-wrap">
+                    <button
+                      onClick={(e) => handlePayApprovedRental(e, notif)}
+                      className="px-4 py-1.5 bg-primary hover:bg-primary-container text-white text-xs font-extrabold rounded-lg shadow-sm cursor-pointer transition-colors flex items-center gap-1.5"
+                    >
+                      <span className="material-symbols-outlined text-sm">lock</span>
+                      Pay ₹{notif.amount} with Razorpay
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/conversations');
+                      }}
+                      className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition-colors ml-auto"
+                    >
+                      Message Owner
                     </button>
                   </div>
                 )}

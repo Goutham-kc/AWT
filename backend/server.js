@@ -14,6 +14,7 @@ import listingRoutes from './routes/listings.js';
 import bookingRoutes from './routes/bookings.js';
 import chatRoutes from './routes/chats.js';
 import referralRoutes from './routes/referrals.js';
+import paymentRoutes from './routes/payments.js';
 
 // Import socket handlers
 import { registerChatHandlers } from './sockets/chatHandler.js';
@@ -65,6 +66,7 @@ app.use('/api/listings', listingRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/referrals', referralRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health Check Endpoint
 app.get('/health', (req, res) => {

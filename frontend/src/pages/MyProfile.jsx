@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { executeRazorpayPayment } from '../utils/razorpay';
 
 export const MyProfile = () => {
   const { user, token, updateUser, setIsLoginOpen } = useApp();
@@ -133,6 +134,27 @@ export const MyProfile = () => {
       }
     } catch (err) {
       showToast(`Error updating booking`);
+    }
+  };
+
+  const handlePayRental = async (rental) => {
+    try {
+      showToast('Connecting to Razorpay...');
+      await executeRazorpayPayment({
+        token,
+        user,
+        bookingIds: [rental._id],
+        amount: rental.grandTotal,
+        onSuccess: (data, paymentId) => {
+          setMyRentals(prev => prev.map(r => r._id === rental._id ? { ...r, paymentStatus: 'paid', razorpayPaymentId: paymentId } : r));
+          showToast(`Payment of ₹${rental.grandTotal} verified via Razorpay!`);
+        },
+        onError: (err) => {
+          showToast(err.message || 'Payment failed or dismissed');
+        }
+      });
+    } catch (err) {
+      showToast(err.message || 'Payment failed');
     }
   };
 
@@ -437,6 +459,71 @@ export const MyProfile = () => {
               )}
             </section>
 
+            {/* My Borrowed Rentals (Gear I am borrowing from classmates) */}
+            <section className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2 mb-2">
+                <span className="material-symbols-outlined text-primary">shopping_bag</span>
+                My Borrowed Rentals ({myRentals.length})
+              </h2>
+              <p className="text-xs text-slate-500 mb-6">Equipment and items you have booked from fellow students</p>
+
+              {myRentals.length === 0 ? (
+                <div className="text-center py-6 text-slate-400 text-sm">
+                  You haven't requested any rentals yet.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {myRentals.map((rental) => (
+                    <div
+                      key={rental._id}
+                      className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="font-bold text-slate-900 text-sm">
+                            "{rental.listing?.title || 'Campus Item'}"
+                          </h4>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                            rental.status === 'approved' ? 'bg-green-100 text-green-800' :
+                            rental.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            'bg-amber-100 text-amber-800'
+                          }`}>
+                            {rental.status}
+                          </span>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                            rental.paymentStatus === 'paid' ? 'bg-blue-100 text-blue-800' : 'bg-slate-200 text-slate-700'
+                          }`}>
+                            {rental.paymentStatus === 'paid' ? '✓ Razorpay Paid' : 'Unpaid'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Owner: <strong>{rental.lister?.name || 'Classmate'}</strong> • Dates: {new Date(rental.startDate).toLocaleDateString()} to {new Date(rental.endDate).toLocaleDateString()} • Total: <strong className="text-primary font-bold">₹{rental.grandTotal}</strong>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        {rental.paymentStatus !== 'paid' && rental.status !== 'rejected' && (
+                          <button
+                            onClick={() => handlePayRental(rental)}
+                            className="px-3.5 py-1.5 bg-primary hover:bg-primary-container text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-1 cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm">payments</span>
+                            Pay ₹{rental.grandTotal}
+                          </button>
+                        )}
+                        <Link
+                          to="/conversations"
+                          className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg transition-colors"
+                        >
+                          Chat
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+
           </div>
 
           {/* Right Column: Account Trust & Quick Navigation */}
@@ -460,8 +547,8 @@ export const MyProfile = () => {
                   <span className="font-mono font-bold">@tkmce.ac.in</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>Campus Meetups:</span>
-                  <span className="font-bold">Designated Safe Zones</span>
+                  <span>Payment Gateway:</span>
+                  <span className="font-bold text-amber-200">Razorpay Enabled</span>
                 </div>
               </div>
 

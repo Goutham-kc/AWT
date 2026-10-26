@@ -13,7 +13,7 @@ router.get('/conversations', protect, async (req, res) => {
     const conversations = await Conversation.find({
       participants: { $in: [req.user._id] }
     })
-      .populate('participants', 'name homeCampus')
+      .populate('participants', 'name homeCampus trustScore')
       .populate('associatedListing', 'title pricePerDay imageUrl')
       .populate({
         path: 'lastMessage',

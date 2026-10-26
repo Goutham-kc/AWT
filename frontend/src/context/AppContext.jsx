@@ -1,8 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
-
-
-
 const AppContext = createContext(undefined);
 
 export const AppProvider = ({ children }) => {
@@ -43,7 +40,12 @@ export const AppProvider = ({ children }) => {
             referralCode: userData.referralCode,
             referralCredits: userData.referralCredits,
             bio: userData.bio || '',
-            phone: userData.phone || ''
+            phone: userData.phone || '',
+            trustScore: userData.trustScore || 50,
+            positiveRatingsCount: userData.positiveRatingsCount || 0,
+            totalRatingsCount: userData.totalRatingsCount || 0,
+            completedRentalsAsLister: userData.completedRentalsAsLister || 0,
+            completedRentalsAsRenter: userData.completedRentalsAsRenter || 0
           };
           setUser(mappedUser);
           localStorage.setItem('user', JSON.stringify(mappedUser));

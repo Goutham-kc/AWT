@@ -63,6 +63,28 @@ const userSchema = new mongoose.Schema({
     default: '',
     trim: true,
   },
+  trustScore: {
+    type: Number,
+    default: 50,
+    min: 0,
+    max: 100,
+  },
+  completedRentalsAsRenter: {
+    type: Number,
+    default: 0,
+  },
+  completedRentalsAsLister: {
+    type: Number,
+    default: 0,
+  },
+  positiveRatingsCount: {
+    type: Number,
+    default: 0,
+  },
+  totalRatingsCount: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

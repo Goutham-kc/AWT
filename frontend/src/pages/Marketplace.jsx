@@ -350,7 +350,16 @@ export const Marketplace = () => {
                 {/* Details */}
                 <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <h4 className="font-headline font-bold text-on-surface text-base line-clamp-1 mb-1">{item.title}</h4>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h4 className="font-headline font-bold text-on-surface text-base line-clamp-1">{item.title}</h4>
+                      <span 
+                        title={`Seller Trust Score: ${item.lister?.trustScore ?? 50}/100`}
+                        className="shrink-0 inline-flex items-center gap-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-purple-100"
+                      >
+                        <span className="material-symbols-outlined text-[11px]">verified_user</span>
+                        {item.lister?.trustScore ?? 50}
+                      </span>
+                    </div>
                     <p className="text-xs text-on-surface-variant line-clamp-2 mb-3">{item.description}</p>
                   </div>
 

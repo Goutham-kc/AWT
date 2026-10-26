@@ -79,6 +79,18 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  renterRating: {
+    satisfied: { type: Boolean, default: null },
+    rating: { type: Number, min: 1, max: 5 },
+    feedback: { type: String, default: '' },
+    ratedAt: { type: Date, default: null },
+  },
+  listerRating: {
+    satisfied: { type: Boolean, default: null },
+    rating: { type: Number, min: 1, max: 5 },
+    feedback: { type: String, default: '' },
+    ratedAt: { type: Date, default: null },
+  },
   createdAt: {
     type: Date,
     default: Date.now,

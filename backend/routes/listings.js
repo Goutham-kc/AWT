@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
     }
 
     const listings = await Listing.find(query)
-      .populate('lister', 'name institution homeCampus isVerified')
+      .populate('lister', 'name institution homeCampus isVerified trustScore')
       .sort({ createdAt: -1 });
 
     res.json(listings);
@@ -74,7 +74,7 @@ router.get('/mine', protect, async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const listing = await Listing.findById(req.params.id)
-      .populate('lister', 'name institution homeCampus isVerified');
+      .populate('lister', 'name institution homeCampus isVerified trustScore');
     
     if (!listing) {
       return res.status(404).json({ message: 'Listing not found' });

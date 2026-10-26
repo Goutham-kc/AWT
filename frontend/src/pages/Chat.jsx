@@ -249,12 +249,16 @@ export const Chat = () => {
     setShowProposal(false);
   };
 
-  const getRecipientName = (conv) => {
-    if (!conv?.participants || !Array.isArray(conv.participants)) return 'Chat';
-    const peer = conv.participants.find(p => {
+  const getRecipientUser = (conv) => {
+    if (!conv?.participants || !Array.isArray(conv.participants)) return null;
+    return conv.participants.find(p => {
       const pid = typeof p === 'object' ? p?._id?.toString() : p?.toString();
       return pid && pid !== user?.id?.toString();
     });
+  };
+
+  const getRecipientName = (conv) => {
+    const peer = getRecipientUser(conv);
     return peer?.name || 'Classmate';
   };
 
@@ -325,6 +329,15 @@ export const Chat = () => {
                 <h3 className="font-headline font-bold text-on-surface text-base flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-xl">account_circle</span>
                   <span>{getRecipientName(activeConv)}</span>
+                  {getRecipientUser(activeConv)?.trustScore !== undefined && (
+                    <span 
+                      title={`Peer Trust Score: ${getRecipientUser(activeConv)?.trustScore ?? 50}/100`}
+                      className="inline-flex items-center gap-0.5 bg-purple-50 text-purple-700 text-[11px] font-bold px-2 py-0.5 rounded-full border border-purple-100"
+                    >
+                      <span className="material-symbols-outlined text-xs">verified_user</span>
+                      {getRecipientUser(activeConv)?.trustScore ?? 50} Trust
+                    </span>
+                  )}
                 </h3>
                 {activeConv.associatedListing && (
                   <p className="text-xs text-primary font-semibold mt-0.5">

@@ -318,6 +318,78 @@ const runSmokeTest = async () => {
     }
   });
 
+  // 16. Mutual Trust Score Review: Buyer rates Seller
+  await test('Buyer Rates Seller Satisfaction & Updates Lister Trust Score (POST /api/bookings/:id/rate)', async () => {
+    const res = await fetch(`${BASE_URL}/api/bookings/${testBookingId}/rate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${renterToken}`
+      },
+      body: JSON.stringify({
+        satisfied: true,
+        rating: 5,
+        feedback: 'Item was in mint condition, seller was on time at library!'
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Rating failed');
+    if (data.newTrustScore !== 55) {
+      throw new Error(`Expected lister trust score 55, got ${data.newTrustScore}`);
+    }
+  });
+
+  // 17. Mutual Trust Score Review: Seller rates Buyer
+  await test('Seller Rates Buyer Satisfaction & Updates Renter Trust Score (POST /api/bookings/:id/rate)', async () => {
+    const res = await fetch(`${BASE_URL}/api/bookings/${testBookingId}/rate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${listerToken}`
+      },
+      body: JSON.stringify({
+        satisfied: true,
+        rating: 5,
+        feedback: 'Responsible borrower, returned gear cleanly.'
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Rating failed');
+    if (data.newTrustScore !== 55) {
+      throw new Error(`Expected renter trust score 55, got ${data.newTrustScore}`);
+    }
+  });
+
+  // 18. Duplicate Rating Prevention
+  await test('Prevent Duplicate Rating on Same Exchange (POST /api/bookings/:id/rate)', async () => {
+    const res = await fetch(`${BASE_URL}/api/bookings/${testBookingId}/rate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${renterToken}`
+      },
+      body: JSON.stringify({
+        satisfied: true,
+        rating: 5
+      })
+    });
+    if (res.status !== 400) {
+      throw new Error(`Expected status 400 for duplicate rating, received ${res.status}`);
+    }
+  });
+
+  // 19. Verify Updated User Profile Trust Scores (GET /api/auth/me)
+  await test('Verify Updated User Trust Scores in /api/auth/me', async () => {
+    const res = await fetch(`${BASE_URL}/api/auth/me`, {
+      headers: { 'Authorization': `Bearer ${renterToken}` }
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error('Failed to fetch renter profile');
+    if (data.trustScore !== 55 || data.positiveRatingsCount !== 1 || data.completedRentalsAsRenter !== 1) {
+      throw new Error(`Unexpected renter metrics: trustScore=${data.trustScore}, positiveRatingsCount=${data.positiveRatingsCount}`);
+    }
+  });
+
   console.log('\n====================================================');
   console.log(`  SMOKE TEST COMPLETE: ${passed} PASSED, ${failed} FAILED`);
   console.log('====================================================\n');

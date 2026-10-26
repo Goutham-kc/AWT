@@ -273,7 +273,7 @@ router.get('/my-rentals', protect, async (req, res) => {
   try {
     const rentals = await Booking.find({ renter: req.user._id })
       .populate('listing')
-      .populate('lister', 'name email homeCampus')
+      .populate('lister', 'name email homeCampus trustScore')
       .sort({ createdAt: -1 });
     res.json(rentals);
   } catch (error) {
@@ -288,9 +288,125 @@ router.get('/my-bookings', protect, async (req, res) => {
   try {
     const bookings = await Booking.find({ lister: req.user._id })
       .populate('listing')
-      .populate('renter', 'name email homeCampus')
+      .populate('renter', 'name email homeCampus trustScore')
       .sort({ createdAt: -1 });
     res.json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// @desc    Mutual rating & satisfaction review (updates Buyer and Seller Trust Score)
+// @route   POST /api/bookings/:id/rate
+// @access  Private
+router.post('/:id/rate', protect, async (req, res) => {
+  const { satisfied, rating, feedback } = req.body;
+
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate('listing')
+      .populate('renter', 'name trustScore completedRentalsAsRenter positiveRatingsCount totalRatingsCount')
+      .populate('lister', 'name trustScore completedRentalsAsLister positiveRatingsCount totalRatingsCount');
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
+    }
+
+    const currentUserId = req.user._id.toString();
+    const isRenter = booking.renter._id.toString() === currentUserId;
+    const isLister = booking.lister._id.toString() === currentUserId;
+
+    if (!isRenter && !isLister) {
+      return res.status(403).json({ message: 'You are not a participant in this rental exchange' });
+    }
+
+    const isSatisfied = satisfied === true || (rating && Number(rating) >= 4);
+    const starRating = rating ? Number(rating) : (isSatisfied ? 5 : 2);
+
+    let targetUser = null;
+    let reviewerRole = '';
+
+    if (isRenter) {
+      // Renter is rating the Lister (Seller)
+      if (booking.renterRating && booking.renterRating.ratedAt) {
+        return res.status(400).json({ message: 'You have already submitted a rating for this exchange' });
+      }
+      booking.renterRating = {
+        satisfied: isSatisfied,
+        rating: starRating,
+        feedback: feedback || '',
+        ratedAt: new Date()
+      };
+      targetUser = await User.findById(booking.lister._id);
+      reviewerRole = 'Borrower (Buyer)';
+    } else {
+      // Lister is rating the Renter (Buyer)
+      if (booking.listerRating && booking.listerRating.ratedAt) {
+        return res.status(400).json({ message: 'You have already submitted a rating for this exchange' });
+      }
+      booking.listerRating = {
+        satisfied: isSatisfied,
+        rating: starRating,
+        feedback: feedback || '',
+        ratedAt: new Date()
+      };
+      targetUser = await User.findById(booking.renter._id);
+      reviewerRole = 'Lister (Seller)';
+    }
+
+    if (!targetUser) {
+      return res.status(404).json({ message: 'Partner user profile not found' });
+    }
+
+    // Update target partner's Trust Score & stats
+    targetUser.totalRatingsCount = (targetUser.totalRatingsCount || 0) + 1;
+    if (isRenter) {
+      targetUser.completedRentalsAsLister = (targetUser.completedRentalsAsLister || 0) + 1;
+    } else {
+      targetUser.completedRentalsAsRenter = (targetUser.completedRentalsAsRenter || 0) + 1;
+    }
+
+    if (isSatisfied) {
+      targetUser.positiveRatingsCount = (targetUser.positiveRatingsCount || 0) + 1;
+      // Boost partner trust score by +5 points, capped at 100
+      targetUser.trustScore = Math.min(100, (targetUser.trustScore || 50) + 5);
+    } else {
+      // Deduct 5 points if unsatisfied, floor at 10
+      targetUser.trustScore = Math.max(10, (targetUser.trustScore || 50) - 5);
+    }
+
+    await targetUser.save();
+
+    // If approved, mark completed
+    if (booking.status === 'approved') {
+      booking.status = 'completed';
+    }
+    await booking.save();
+
+    // Notify in associated chat conversation
+    const conversation = await Conversation.findOne({
+      participants: { $all: [booking.renter._id, booking.lister._id] },
+      associatedListing: booking.listing._id
+    });
+
+    if (conversation) {
+      const msgText = `System: ${req.user.name} (${reviewerRole}) marked the exchange as ${isSatisfied ? 'Satisfied ⭐' : 'Unsatisfied'}. ${targetUser.name}'s Trust Score is now ${targetUser.trustScore}/100.`;
+      const message = await Message.create({
+        conversation: conversation._id,
+        sender: req.user._id,
+        content: msgText,
+        type: 'text'
+      });
+      conversation.lastMessage = message._id;
+      conversation.updatedAt = new Date();
+      await conversation.save();
+    }
+
+    res.json({
+      message: `Satisfaction rating submitted! ${targetUser.name}'s Trust Score updated to ${targetUser.trustScore}.`,
+      booking,
+      newTrustScore: targetUser.trustScore
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

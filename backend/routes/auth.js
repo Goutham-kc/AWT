@@ -167,7 +167,12 @@ router.post('/verify-otp', async (req, res) => {
         referralCode: user.referralCode,
         referralCredits: user.referralCredits,
         bio: user.bio || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        trustScore: user.trustScore || 50,
+        positiveRatingsCount: user.positiveRatingsCount || 0,
+        totalRatingsCount: user.totalRatingsCount || 0,
+        completedRentalsAsLister: user.completedRentalsAsLister || 0,
+        completedRentalsAsRenter: user.completedRentalsAsRenter || 0
       }
     });
   } catch (error) {
@@ -253,7 +258,12 @@ router.post('/login', async (req, res) => {
         referralCode: user.referralCode,
         referralCredits: user.referralCredits,
         bio: user.bio || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        trustScore: user.trustScore || 50,
+        positiveRatingsCount: user.positiveRatingsCount || 0,
+        totalRatingsCount: user.totalRatingsCount || 0,
+        completedRentalsAsLister: user.completedRentalsAsLister || 0,
+        completedRentalsAsRenter: user.completedRentalsAsRenter || 0
       }
     });
   } catch (error) {
@@ -277,6 +287,11 @@ router.get('/me', protect, async (req, res) => {
     referralCredits: user.referralCredits,
     bio: user.bio || '',
     phone: user.phone || '',
+    trustScore: user.trustScore || 50,
+    positiveRatingsCount: user.positiveRatingsCount || 0,
+    totalRatingsCount: user.totalRatingsCount || 0,
+    completedRentalsAsLister: user.completedRentalsAsLister || 0,
+    completedRentalsAsRenter: user.completedRentalsAsRenter || 0,
     isVerified: user.isVerified
   });
 });
@@ -325,7 +340,12 @@ router.put('/profile', protect, async (req, res) => {
         referralCode: user.referralCode,
         referralCredits: user.referralCredits,
         bio: user.bio || '',
-        phone: user.phone || ''
+        phone: user.phone || '',
+        trustScore: user.trustScore || 50,
+        positiveRatingsCount: user.positiveRatingsCount || 0,
+        totalRatingsCount: user.totalRatingsCount || 0,
+        completedRentalsAsLister: user.completedRentalsAsLister || 0,
+        completedRentalsAsRenter: user.completedRentalsAsRenter || 0
       }
     });
   } catch (error) {

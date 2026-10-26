@@ -319,6 +319,12 @@ export const ListingDetail = () => {
                 )}
               </div>
               <div className="text-xs text-outline font-semibold">{listing.lister.institution || 'Verified University'} · {listing.lister.homeCampus || listing.campus}</div>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span className="inline-flex items-center gap-1 bg-purple-50 text-purple-800 border border-purple-200 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                  <span className="material-symbols-outlined text-xs text-purple-600">verified_user</span>
+                  {listing.lister.trustScore ?? 50}/100 Campus Trust
+                </span>
+              </div>
             </div>
           </div>
 

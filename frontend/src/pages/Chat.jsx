@@ -263,10 +263,11 @@ export const Chat = () => {
   };
 
   return (
-    <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6 h-[calc(100vh-80px)] min-h-[500px]">
+    <div className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6 flex flex-col md:flex-row gap-4 sm:gap-6 h-[calc(100vh-70px)] sm:h-[calc(100vh-80px)] min-h-[480px]">
       
       {/* Left panel: Conversation list */}
-      <aside className="w-full md:w-80 flex-shrink-0 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col">
+      <aside className={`w-full md:w-80 flex-shrink-0 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col ${activeConv ? 'hidden md:flex' : 'flex flex-1'}`}>
+        {/* Mobile Header Title */}
         <h3 className="font-headline font-bold text-lg text-primary p-4 border-b border-outline-variant flex items-center justify-between">
           <span>Messages Inbox</span>
           <span className="text-xs bg-primary/10 text-primary font-bold px-2 py-0.5 rounded-full">
@@ -320,13 +321,23 @@ export const Chat = () => {
       </aside>
 
       {/* Right panel: Active conversation log */}
-      <div className="flex-1 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col">
+      <div className={`flex-1 bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col ${!activeConv ? 'hidden md:flex' : 'flex'}`}>
+
         {activeConv ? (
           <>
             {/* Context Header */}
-            <div className="p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center flex-shrink-0">
-              <div>
-                <h3 className="font-headline font-bold text-on-surface text-base flex items-center gap-2">
+            <div className="p-3 sm:p-4 border-b border-outline-variant bg-surface-container-low flex justify-between items-center flex-shrink-0 gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setActiveConv(null)}
+                  className="md:hidden p-1.5 -ml-1 text-slate-600 hover:text-primary hover:bg-slate-200/50 rounded-lg transition-colors cursor-pointer shrink-0"
+                  title="Back to all conversations"
+                >
+                  <span className="material-symbols-outlined text-2xl">arrow_back</span>
+                </button>
+                <div className="min-w-0">
+                  <h3 className="font-headline font-bold text-on-surface text-sm sm:text-base flex items-center gap-1.5 flex-wrap truncate">
                   <span className="material-symbols-outlined text-primary text-xl">account_circle</span>
                   <span>{getRecipientName(activeConv)}</span>
                   {getRecipientUser(activeConv)?.trustScore !== undefined && (
@@ -344,6 +355,7 @@ export const Chat = () => {
                     Referencing Item: {activeConv.associatedListing.title} (₹{activeConv.associatedListing.pricePerDay} / day)
                   </p>
                 )}
+                </div>
               </div>
               
               <button 

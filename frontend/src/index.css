@@ -39,12 +39,18 @@
   --spacing-stack-sm: 8px;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 body {
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   font-family: var(--font-sans);
   min-height: 100vh;
   margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Common layout and utility fallbacks */

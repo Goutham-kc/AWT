@@ -78,6 +78,8 @@ export const Marketplace = () => {
   const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const activeFiltersCount = [campus, category, minPrice, maxPrice].filter(Boolean).length;
 
   // Calculate dynamic pricing attributes
   const pricePerDay = selectedCartItem ? selectedCartItem.pricePerDay : 0;
@@ -225,8 +227,30 @@ export const Marketplace = () => {
   return (
     <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
       
+      {/* Mobile Filters Toggle Button */}
+      <div className="md:hidden w-full">
+        <button
+          type="button"
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className="w-full flex items-center justify-between p-3.5 bg-white border border-outline-variant rounded-xl shadow-xs text-sm font-bold text-slate-800 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-primary text-xl">tune</span>
+            <span>Filter Catalog</span>
+            {activeFiltersCount > 0 && (
+              <span className="bg-primary text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                {activeFiltersCount} active
+              </span>
+            )}
+          </div>
+          <span className="material-symbols-outlined text-outline">
+            {showMobileFilters ? 'expand_less' : 'expand_more'}
+          </span>
+        </button>
+      </div>
+
       {/* Sidebar Filters */}
-      <aside className="w-full md:w-64 flex-shrink-0 space-y-6">
+      <aside className={`w-full md:w-64 flex-shrink-0 space-y-5 ${showMobileFilters ? 'block' : 'hidden md:block'}`}>
         
         {/* Campus Selector */}
         <div className="bg-white p-4 rounded-xl border border-outline-variant shadow-sm sticky top-[90px] z-10">

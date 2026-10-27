@@ -97,7 +97,7 @@ export const Navbar = () => {
 
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-outline-variant shadow-xs sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         
         {/* Left Section: Brand Logo & Primary Desktop Navigation */}
         <div className="flex items-center gap-6 lg:gap-8 min-w-0">
@@ -111,7 +111,8 @@ export const Navbar = () => {
             title="Go to Home"
           >
             <span className="material-symbols-outlined text-2xl text-primary group-hover:scale-110 transition-transform">school</span>
-            <span className="truncate">Academica Exchange</span>
+            <span className="hidden sm:inline truncate">Academica Exchange</span>
+            <span className="sm:hidden font-extrabold text-base tracking-tight">Academica</span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -170,7 +171,7 @@ export const Navbar = () => {
         </div>
 
         {/* Right Section: Actions & User Menu */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-3 shrink-0">
           
           {/* List Item CTA (Desktop) */}
           {token && (
@@ -212,7 +213,7 @@ export const Navbar = () => {
 
           {/* User Account / Auth Area */}
           {token ? (
-            <div className="relative" ref={userMenuRef}>
+            <div className="hidden md:block relative" ref={userMenuRef}>
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                 className="flex items-center gap-2 p-1 pl-2 sm:pr-2.5 rounded-full hover:bg-surface-container-low border border-outline-variant transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -317,18 +318,18 @@ export const Navbar = () => {
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2 sm:gap-2.5">
+            <div className="flex items-center gap-1.5 sm:gap-2.5">
               <button 
                 onClick={() => setIsLoginOpen(true)} 
-                className="px-3 sm:px-4 py-1.5 text-primary text-xs sm:text-sm font-bold border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200 cursor-pointer"
+                className="px-2.5 sm:px-4 py-1.5 text-primary text-xs sm:text-sm font-bold border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors duration-200 cursor-pointer whitespace-nowrap"
               >
                 Log In
               </button>
               <Link 
-                className="px-3 sm:px-4 py-1.5 bg-primary text-white text-xs sm:text-sm font-bold rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-xs cursor-pointer"
+                className="px-2.5 sm:px-4 py-1.5 bg-primary text-white text-xs sm:text-sm font-bold rounded-lg hover:bg-primary-container transition-colors duration-200 shadow-xs cursor-pointer whitespace-nowrap"
                 to="/signup"
               >
-                Get Started
+                Sign Up
               </Link>
             </div>
           )}

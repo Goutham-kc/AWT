@@ -286,7 +286,7 @@ export const MyProfile = () => {
               <div className="flex-grow pt-2 w-full">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
-                    <h1 className="text-3xl font-extrabold text-slate-900 flex items-center gap-2">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2 flex-wrap">
                       {user?.name || 'Verified Student'}
                       <span className="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-bold inline-flex items-center gap-1">
                         <span className="material-symbols-outlined text-xs">verified</span>
@@ -306,7 +306,7 @@ export const MyProfile = () => {
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                     <Link
                       to="/settings"
                       className="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-sm font-semibold flex items-center gap-1.5 transition-colors"
@@ -791,7 +791,7 @@ export const MyProfile = () => {
       {/* Satisfaction Rating Modal */}
       {ratingModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 animate-in fade-in">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-5">
+          <div className="bg-white rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 sm:space-y-5 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-amber-500 text-2xl">stars</span>

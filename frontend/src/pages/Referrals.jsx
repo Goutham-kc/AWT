@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 
-
-
 export const Referrals = () => {
-  const { token } = useApp();
+  const { token, setIsLoginOpen } = useApp();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const fetchReferralSummary = async () => {
-      if (!token) return;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       try {
+        setLoading(true);
         const res = await fetch('/api/referrals/summary', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -37,8 +39,33 @@ export const Referrals = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  if (!token) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-8 bg-surface-container-low min-h-[500px]">
+        <div className="max-w-md w-full text-center bg-white p-8 rounded-2xl border border-outline-variant shadow-sm space-y-4">
+          <span className="material-symbols-outlined text-5xl text-primary">stars</span>
+          <h2 className="text-2xl font-bold text-on-surface">Referral Program</h2>
+          <p className="text-sm text-on-surface-variant">Log in with your verified college email to access your invite code and claim referral credits.</p>
+          <button
+            onClick={() => setIsLoginOpen(true)}
+            className="px-6 py-2.5 bg-primary text-white rounded-xl font-bold hover:bg-primary-container shadow-sm transition-all cursor-pointer"
+          >
+            Log In to View Referrals
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
-    return <div className="text-center py-12 text-outline">Loading referrals data...</div>;
+    return (
+      <div className="flex-1 flex items-center justify-center p-12 text-outline">
+        <div className="flex flex-col items-center gap-2">
+          <span className="material-symbols-outlined text-3xl animate-spin text-primary">progress_activity</span>
+          <p className="text-sm font-semibold">Loading referrals data...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,11 +113,11 @@ export const Referrals = () => {
       <div className="bg-white p-6 rounded-xl border border-outline-variant shadow-sm max-w-2xl mx-auto space-y-4">
         <h3 className="font-headline text-lg font-bold text-on-surface">Referred Classmates</h3>
         
-        {summary?.invitees.length === 0 ? (
+        {(!summary?.invitees || summary.invitees.length === 0) ? (
           <div className="text-center py-6 text-outline text-sm">No friends have registered with your link yet.</div>
         ) : (
           <div className="divide-y divide-outline-variant">
-            {summary?.invitees.map((friend, idx) => (
+            {summary.invitees.map((friend, idx) => (
               <div key={idx} className="flex justify-between items-center py-3">
                 <div>
                   <div className="font-semibold text-sm text-on-surface">{friend.name}</div>
@@ -112,3 +139,5 @@ export const Referrals = () => {
     </div>
   );
 };
+
+export default Referrals;

@@ -267,11 +267,12 @@ export const MyProfile = () => {
           </div>
 
           <div className="px-6 sm:px-8 pb-8">
-            <div className="relative -mt-16 flex flex-col md:flex-row gap-6 items-start">
+            {/* Top Bar: Avatar overlapping banner & Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 sm:-mt-20">
               
-              {/* Avatar */}
+              {/* Avatar circle */}
               <div className="relative shrink-0">
-                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-primary/10 border-4 border-white shadow-md flex items-center justify-center text-primary font-bold text-4xl uppercase">
+                <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-white border-4 border-white shadow-xl flex items-center justify-center text-primary font-extrabold text-4xl uppercase ring-4 ring-slate-100">
                   {user?.name ? user.name.slice(0, 2) : 'ST'}
                 </div>
                 <div 
@@ -282,68 +283,64 @@ export const MyProfile = () => {
                 </div>
               </div>
 
-              {/* Main Bio & Stats */}
-              <div className="flex-grow pt-2 w-full">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2 flex-wrap">
-                      {user?.name || 'Verified Student'}
-                      <span className="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-bold inline-flex items-center gap-1">
-                        <span className="material-symbols-outlined text-xs">verified</span>
-                        Verified Student
-                      </span>
-                    </h1>
-                    <div className="flex items-center gap-3 mt-2 text-sm text-slate-500 flex-wrap">
-                      <span className="flex items-center gap-1 font-medium text-slate-700">
-                        <span className="material-symbols-outlined text-base text-primary">school</span>
-                        {user?.institution || 'TKM College of Engineering'}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <span className="material-symbols-outlined text-base text-slate-400">mail</span>
-                        {user?.email}
-                      </span>
-                    </div>
-                  </div>
+              {/* Action Buttons sitting cleanly on white background */}
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <Link
+                  to="/settings"
+                  className="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-sm font-semibold flex items-center gap-1.5 transition-colors bg-white shadow-xs"
+                >
+                  <span className="material-symbols-outlined text-base">settings</span>
+                  Settings
+                </Link>
+                <Link
+                  to="/create-listing"
+                  className="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container text-sm font-bold shadow-sm flex items-center gap-1.5 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-base">add</span>
+                  List Item
+                </Link>
+              </div>
+            </div>
 
-                  <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                    <Link
-                      to="/settings"
-                      className="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-sm font-semibold flex items-center gap-1.5 transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-base">settings</span>
-                      Settings
-                    </Link>
-                    <Link
-                      to="/create-listing"
-                      className="px-5 py-2 rounded-xl bg-primary text-white hover:bg-primary-container text-sm font-bold shadow-sm flex items-center gap-1.5 transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-base">add</span>
-                      List Item
-                    </Link>
-                  </div>
+            {/* Profile Information (Rendered completely on crisp white background!) */}
+            <div className="mt-4 pt-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2 flex-wrap">
+                {user?.name || 'Verified Student'}
+                <span className="bg-green-100 text-green-800 text-xs px-2.5 py-0.5 rounded-full font-bold inline-flex items-center gap-1">
+                  <span className="material-symbols-outlined text-xs">verified</span>
+                  Verified Student
+                </span>
+              </h1>
+              <div className="flex items-center gap-3 mt-1.5 text-sm text-slate-500 flex-wrap">
+                <span className="flex items-center gap-1 font-medium text-slate-700">
+                  <span className="material-symbols-outlined text-base text-primary">school</span>
+                  {user?.institution || 'TKM College of Engineering'}
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1">
+                  <span className="material-symbols-outlined text-base text-slate-400">mail</span>
+                  {user?.email}
+                </span>
+              </div>
+
+              {/* Score & Referral Strip */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                <div className="bg-blue-50/80 p-3.5 rounded-xl border border-blue-100 text-center">
+                  <p className="text-2xl font-bold text-primary">{myListings.length}</p>
+                  <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Listings</p>
                 </div>
-
-                {/* Score & Referral Strip */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-                  <div className="bg-blue-50/80 p-3.5 rounded-xl border border-blue-100 text-center">
-                    <p className="text-2xl font-bold text-primary">{myListings.length}</p>
-                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Listings</p>
-                  </div>
-                  <div className="bg-green-50/80 p-3.5 rounded-xl border border-green-100 text-center">
-                    <p className="text-2xl font-bold text-green-700">₹{user?.referralCredits || 0}</p>
-                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Referral Credits</p>
-                  </div>
-                  <div className="bg-amber-50/80 p-3.5 rounded-xl border border-amber-100 text-center">
-                    <p className="text-2xl font-bold text-amber-600">{myRentals.length}</p>
-                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Rentals</p>
-                  </div>
-                  <div className="bg-purple-50/80 p-3.5 rounded-xl border border-purple-100 text-center">
-                    <p className="text-2xl font-bold text-purple-700">{user?.trustScore ?? 50}/100</p>
-                    <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Trust Score</p>
-                  </div>
+                <div className="bg-green-50/80 p-3.5 rounded-xl border border-green-100 text-center">
+                  <p className="text-2xl font-bold text-green-700">₹{user?.referralCredits || 0}</p>
+                  <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Referral Credits</p>
                 </div>
-
+                <div className="bg-amber-50/80 p-3.5 rounded-xl border border-amber-100 text-center">
+                  <p className="text-2xl font-bold text-amber-600">{myRentals.length}</p>
+                  <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Active Rentals</p>
+                </div>
+                <div className="bg-purple-50/80 p-3.5 rounded-xl border border-purple-100 text-center">
+                  <p className="text-2xl font-bold text-purple-700">{user?.trustScore ?? 50}/100</p>
+                  <p className="text-xs text-slate-600 font-medium uppercase tracking-wider mt-0.5">Trust Score</p>
+                </div>
               </div>
             </div>
           </div>
